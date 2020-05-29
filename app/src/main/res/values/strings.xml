@@ -6,4 +6,11 @@
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
     <string name="info">Info</string>
+    <string name="enterLatLong">Enter Latitude/Longitude</string>
+    <string name="enterSearchRadius">Enter Search Radius</string>
+    <string name="useCurrentLocation">Use Current Location</string>
+    <string name="selectLocationOnMap">SelectLocationOnMap</string>
+    <string name="enterLocation">Enter Location</string>
+    <string name="or">OR</string>
+
 </resources>
