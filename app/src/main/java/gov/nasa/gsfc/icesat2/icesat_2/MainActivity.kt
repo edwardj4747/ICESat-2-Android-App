@@ -1,12 +1,12 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
-import android.os.Handler
 import android.util.Log
 import androidx.appcompat.app.AppCompatActivity
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
-import kotlinx.coroutines.delay
+import kotlinx.android.synthetic.main.fragment_search.*
+
 
 private const val TAG = "MainActivity"
 
@@ -41,6 +41,43 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun searchButtonPressed() {
         Log.d(TAG, "MainActivity: Search Button Pressed")
+
+        //lat range -86, 86; lon range -180 180
+        if (editTextLat.text.toString() != "") {
+            val lat: Double = (editTextLat.text.toString()).toDouble()
+            if (lat < - 86 || lat > 86) {
+                Log.d(TAG, "invalid lat")
+                return
+            }
+        } else {
+            Log.d(TAG, "Please Enter Latitude")
+            return
+        }
+
+        if (editTextLon.text.toString() != "") {
+            val long: Double = (editTextLon.text.toString()).toDouble()
+            if (long < -180 || long > 180) {
+                Log.d(TAG, "invalid Long")
+                return
+            }
+        } else {
+            Log.d(TAG, "Please Enter Longitude")
+            return
+        }
+
+        if (editTextRadius.text.toString() != "") {
+            val radius = editTextRadius.text.toString().toDouble()
+            if (radius > 25) {
+                Log.d(TAG, "invalid radius")
+                return
+            }
+        } else {
+            Log.d(TAG, "Please Enter Radius")
+            return
+        }
+
+
+
         val downloadData = DownloadData()
         downloadData.startDownload("http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles")
         Log.d(TAG, "MainActivity: SearchButtonPressed ends")
