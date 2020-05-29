@@ -16,7 +16,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 const val TAG = "SearchFragment"
 class SearchFragment : Fragment() {
 
-
+    lateinit var listener: ISearchFragmentCallback
 
     companion object {
         private lateinit var searchViewModel: SearchViewModel
@@ -54,9 +54,17 @@ class SearchFragment : Fragment() {
             updateTextView(it[0].toString())
         })
 
+        btnSearch.setOnClickListener {
+            listener.searchButtonPressed()
+        }
+
     }
 
     private fun updateTextView(text: String) {
         textViewSearch.text = text
+    }
+
+    fun addSearchFragmentCallbackListener(theListener: ISearchFragmentCallback) {
+        listener = theListener
     }
 }
