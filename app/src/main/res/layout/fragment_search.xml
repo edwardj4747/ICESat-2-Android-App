@@ -79,24 +79,26 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
         android:layout_marginEnd="8dp"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/latHint"
         android:inputType="numberDecimal|numberSigned"
+        android:nextFocusDown="@id/editTextLon"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEnterLatLng"
-        android:autofillHints="" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewEnterLatLng" />
 
     <EditText
         android:id="@+id/editTextLon"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
+        android:autofillHints=""
         android:ems="10"
         android:hint="@string/longHint"
         android:inputType="numberDecimal|numberSigned"
+        android:nextFocusDown="@id/editTextRadius"
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextLat"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        android:autofillHints="" />
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
 
     <TextView
         android:id="@+id/textView4"
