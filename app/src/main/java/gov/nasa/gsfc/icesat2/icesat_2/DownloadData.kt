@@ -24,7 +24,7 @@ class DownloadData {
 
                 val state = jsonObject.getString("state")
                 if (state == "true") {
-                    var pointsArrayList = ArrayList<Point>()
+                    val pointsArrayList = ArrayList<Point>()
                     val queryResult = jsonObject.getJSONArray("result")
                     for (i in 0 until queryResult.length()) {
                         val individualPoint = queryResult.getJSONObject(i)
