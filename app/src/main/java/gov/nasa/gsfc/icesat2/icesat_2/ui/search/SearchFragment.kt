@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.ArrayAdapter
 import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
@@ -14,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 
 const val TAG = "SearchFragment"
+
 class SearchFragment : Fragment() {
 
     lateinit var listener: ISearchFragmentCallback
@@ -31,12 +33,12 @@ class SearchFragment : Fragment() {
     }
 
     override fun onCreateView(
-            inflater: LayoutInflater,
-            container: ViewGroup?,
-            savedInstanceState: Bundle?
+        inflater: LayoutInflater,
+        container: ViewGroup?,
+        savedInstanceState: Bundle?
     ): View? {
         searchViewModel =
-                ViewModelProviders.of(this).get(SearchViewModel::class.java)
+            ViewModelProviders.of(this).get(SearchViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_search, container, false)
         val textView: TextView = root.findViewById(R.id.textViewSearch)
         searchViewModel.text.observe(viewLifecycleOwner, Observer {
@@ -61,6 +63,11 @@ class SearchFragment : Fragment() {
         btnSearch.setOnClickListener {
             listener.searchButtonPressed()
         }
+
+
+        val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)
+        adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
+        unitSpinner.adapter = adapter
 
     }
 

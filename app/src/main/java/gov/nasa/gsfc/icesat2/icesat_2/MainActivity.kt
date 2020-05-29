@@ -47,11 +47,15 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     override fun searchButtonPressed() {
         Log.d(TAG, "MainActivity: Search Button Pressed")
 
-
         val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
         if (inputs != null) {
+            val unit = if (unitSpinner.selectedItem.toString() == "Kilometers") {
+                "kilometers"
+            } else {
+                "miles"
+            }
             //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
-            val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=miles"
+            val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=$unit"
             Log.d(TAG, "starting download from $serverLocation")
             val downloadData = DownloadData()
             downloadData.startDownload(serverLocation)

@@ -20,5 +20,9 @@
     <string name="or">OR</string>
     <string name="radius">Radius</string>
     <string name="miles">Miles</string>
+    <string-array name="unitSelector">
+        <item>Miles</item>
+        <item>Kilometers</item>
+    </string-array>
 
 </resources>
