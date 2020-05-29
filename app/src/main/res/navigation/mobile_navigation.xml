@@ -1,0 +1,25 @@
+<?xml version="1.0" encoding="utf-8"?>
+<navigation xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/mobile_navigation"
+    app:startDestination="@+id/navigation_home">
+
+    <fragment
+        android:id="@+id/navigation_home"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment"
+        android:label="@string/title_home"
+        tools:layout="@layout/fragment_search" />
+
+    <fragment
+        android:id="@+id/navigation_dashboard"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesFragment"
+        android:label="@string/title_dashboard"
+        tools:layout="@layout/fragment_favorite" />
+
+    <fragment
+        android:id="@+id/navigation_notifications"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.info.InfoFragment"
+        android:label="@string/title_notifications"
+        tools:layout="@layout/fragment_info" />
+</navigation>
