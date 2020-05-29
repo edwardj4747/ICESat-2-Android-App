@@ -162,7 +162,7 @@
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/radius"
-        android:inputType="number"
+        android:inputType="number|numberDecimal"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
