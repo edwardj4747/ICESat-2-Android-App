@@ -51,7 +51,11 @@ class SearchFragment : Fragment() {
         searchViewModel.getAllPointsList().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "AllPoints List Changed \n $it")
             Log.d(TAG, "length is ${it.size}")
-            updateTextView(it[0].toString())
+            if (it.size > 0) {
+                updateTextView(it[0].toString())
+            } else {
+                Log.d(TAG, "No Passovers for this location")
+            }
         })
 
         btnSearch.setOnClickListener {
