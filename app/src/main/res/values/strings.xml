@@ -1,16 +1,24 @@
 <resources>
     <string name="app_name">ICESat-2</string>
+
+<!--    nav bar-->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
     <string name="info">Info</string>
+
+    <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>
+    <string name="latHint">Lat</string>
+    <string name="longHint">Long</string>
     <string name="enterSearchRadius">Enter Search Radius</string>
     <string name="useCurrentLocation">Use Current Location</string>
-    <string name="selectLocationOnMap">SelectLocationOnMap</string>
+    <string name="selectLocationOnMap">Select Location On Map</string>
     <string name="enterLocation">Enter Location</string>
     <string name="or">OR</string>
+    <string name="radius">Radius</string>
+    <string name="miles">Miles</string>
 
 </resources>
