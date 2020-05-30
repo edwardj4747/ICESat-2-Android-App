@@ -49,6 +49,7 @@ class SearchFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivityCreated points[0] is ${searchViewModel.allPointsList.value?.get(0).toString()}")
         //searchViewModel.allPointsList.value = Point.allPoints
         searchViewModel.getAllPointsList().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "AllPoints List Changed \n $it")
@@ -60,10 +61,16 @@ class SearchFragment : Fragment() {
             }
         })
 
+        updateTextView(searchViewModel.allPointsList.value?.get(0).toString())
+
         btnSearch.setOnClickListener {
             listener.searchButtonPressed()
         }
 
+
+        btnSelectOnMap.setOnClickListener {
+            listener.searchButtonPressed()
+        }
 
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)

@@ -23,14 +23,24 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main)
 
-        val fragmentTransaction = fragmentManger.beginTransaction()
-        val searchFragment = SearchFragment()
-        searchFragment.addSearchFragmentCallbackListener(this) // important!!
-        fragmentTransaction.apply {
-            replace(R.id.fragmentContainer, searchFragment)
-            commit()
+        //created for the first time
+        if (savedInstanceState == null) {
+            val fragmentTransaction = fragmentManger.beginTransaction()
+            val searchFragment = SearchFragment()
+            searchFragment.addSearchFragmentCallbackListener(this) // important!!
+            fragmentTransaction.apply {
+                replace(R.id.fragmentContainer, searchFragment)
+                commit()
+            }
+        } else {
+            var currFrag = fragmentManger.findFragmentById(R.id.fragmentContainer)
+            if (currFrag != null) {
+                currFrag = currFrag as SearchFragment
+                currFrag.addSearchFragmentCallbackListener(this)
+            } else {
+                Log.d(TAG, "current frag is null so the listener could not be reattached")
+            }
         }
-
 
 
 
