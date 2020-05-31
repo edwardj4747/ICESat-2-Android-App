@@ -1,8 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.util.Log
-import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
-import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchViewModel
 import kotlinx.coroutines.CoroutineScope
 import kotlinx.coroutines.Dispatchers
 import kotlinx.coroutines.launch
@@ -35,9 +33,13 @@ class DownloadData {
                         val newPoint = Point(date, time, lon, lat)
                         pointsArrayList.add(newPoint)
                     }
-                    val searchViewModel = SearchFragment.getSearchViewModel()
+                   /* val searchViewModel = SearchFragment.getSearchViewModel()
                     if (searchViewModel != null) {
                         searchViewModel.allPointsList.postValue(pointsArrayList)
+                    }*/
+                    val mainActivityViewModel = MainActivity.getMainViewModel()
+                    if (mainActivityViewModel != null) {
+                        mainActivityViewModel.allPointsList.postValue(pointsArrayList)
                     }
                 } else {
                     Log.d(TAG, "state is not true $state")

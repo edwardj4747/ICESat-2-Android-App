@@ -12,8 +12,11 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
+import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
+import gov.nasa.gsfc.icesat2.icesat_2.MainViewModel
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
+import java.lang.Exception
 
 
 const val TAG = "SearchFragment"
@@ -24,49 +27,34 @@ private const val RADIUS_INPUT_ERROR = "Please Enter Radius between 1.1 and 25.0
 class SearchFragment : Fragment() {
 
     lateinit var listener: ISearchFragmentCallback
-
-    companion object {
-        private lateinit var searchViewModel: SearchViewModel
-
-        fun getSearchViewModel(): SearchViewModel? {
-            if (this::searchViewModel.isInitialized) {
-                return searchViewModel
-            } else {
-                return null
-            }
-        }
-    }
+    private var viewModel: MainViewModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        searchViewModel =
-            ViewModelProviders.of(this).get(SearchViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_search, container, false)
-        val textView: TextView = root.findViewById(R.id.textViewSearch)
-        searchViewModel.text.observe(viewLifecycleOwner, Observer {
-            textView.text = it
-        })
         return root
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        Log.d(TAG, "onActivityCreated points[0] is ${searchViewModel.allPointsList.value?.get(0).toString()}")
-        //searchViewModel.allPointsList.value = Point.allPoints
-        searchViewModel.getAllPointsList().observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "AllPoints List Changed \n $it")
-            Log.d(TAG, "length is ${it.size}")
-            if (it.size > 0) {
-                updateTextView(it[0].toString())
-            } else {
-                Log.d(TAG, "No Passovers for this location")
-            }
-        })
 
-        updateTextView(searchViewModel.allPointsList.value?.get(0).toString())
+        if (MainActivity.getMainViewModel() != null) {
+            Log.d(TAG, "********************")
+            Log.d(TAG, "SearchFragment assigning viewModel to MainActivity View Model")
+            viewModel = MainActivity.getMainViewModel()
+
+            viewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
+                Log.d(TAG, "SearchFragment value of allPoints is $it")
+                try {
+                    updateTextView(it[0].toString())
+                } catch (e: Exception) {
+                    Log.d(TAG, "SearchFragment no values in all Points array")
+                }
+            })
+        }
 
         btnSearch.setOnClickListener {
             Log.d(TAG, "SearchFragment: Search Button Pressed")
@@ -85,6 +73,9 @@ class SearchFragment : Fragment() {
             Log.d(TAG, "SearchFragment: SearchButtonPressed ends")
         }
 
+        btnUseCurrentLoc.setOnClickListener {
+            listener.useCurrentLocationButtonPressed()
+        }
 
 
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)

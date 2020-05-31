@@ -1,4 +1,13 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-class MainViewModel {
+import androidx.lifecycle.LiveData
+import androidx.lifecycle.MutableLiveData
+import androidx.lifecycle.ViewModel
+
+class MainViewModel : ViewModel() {
+    var allPointsList = MutableLiveData<ArrayList<Point>>()
+
+    fun getAllPointsList(): LiveData<ArrayList<Point>> {
+        return allPointsList
+    }
 }
