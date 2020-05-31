@@ -19,14 +19,14 @@ import kotlinx.android.synthetic.main.fragment_search.*
 import java.lang.Exception
 
 
-const val TAG = "SearchFragment"
+private const val TAG = "SearchFragment"
 private const val LAT_INPUT_ERROR = "Please Enter Latitude between -86.0 and 86.0 ${0x00B0.toChar()}N"
 private const val LONG_INPUT_ERROR = "Please Enter Longitude between -180.0 and 180.0 ${0x00B0.toChar()}E"
 private const val RADIUS_INPUT_ERROR = "Please Enter Radius between 1.1 and 25.0"
 
 class SearchFragment : Fragment() {
 
-    lateinit var listener: ISearchFragmentCallback
+    private lateinit var listener: ISearchFragmentCallback
     private var viewModel: MainViewModel? = null
 
     override fun onCreateView(
