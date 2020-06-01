@@ -4,10 +4,12 @@ import android.util.Log
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.IOException
+import java.lang.IllegalArgumentException
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
+import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
@@ -17,6 +19,16 @@ class DownloadData {
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
+    private val comparator = object : Comparator<Date> {
+        override fun compare(o1: Date?, o2: Date?): Int {
+            if (o1 != null && o2 != null) {
+                return (o1.time - o2.time).toInt()
+            } else {
+                Log.d(TAG, "Error in comparator method")
+                throw IllegalArgumentException("Passed a null date into the comparator")
+            }
+        }
+    }
 
     fun startDownload(string: String) {
         Log.d(TAG, "startDownload method begins")
@@ -41,9 +53,9 @@ class DownloadData {
                         }
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
-                        //once conversion is completed, add the point if it is in the future
+                        //once conversion is completed, add the point if in future
                         if (convertedDateTime.await() != DATE_ALREADY_PASSED) {
-                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await())
+                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await(), null)
                             pointsArrayList.add(newPoint)
                         }
                     }
