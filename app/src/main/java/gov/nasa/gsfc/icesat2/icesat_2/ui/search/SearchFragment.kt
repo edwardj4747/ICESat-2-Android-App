@@ -50,10 +50,10 @@ class SearchFragment : Fragment() {
             viewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
                 Log.d(TAG, "SearchFragment value of allPoints is $it")
                 Log.d(TAG, "size of allPoints is ${it.size}")
-                Log.d(TAG, "=========================")
+                /*Log.d(TAG, "=========================")
                 Log.d(TAG, "testPointArray ${DownloadData.getTestArrayMethod()}")
                 Log.d(TAG, "////////////////////////////")
-                Log.d(TAG, "sortedTestPointArray ${DownloadData.getSortedTestArrayMethod()}")
+                Log.d(TAG, "sortedTestPointArray ${DownloadData.getSortedTestArrayMethod()}")*/
                 try {
                     updateTextView(it[0].toString())
                 } catch (e: Exception) {

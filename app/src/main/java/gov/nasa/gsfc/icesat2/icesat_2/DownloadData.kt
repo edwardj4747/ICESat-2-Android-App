@@ -19,11 +19,23 @@ class DownloadData {
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
+    val comparator = object : Comparator<Point> {
+        override fun compare(o1: Point?, o2: Point?): Int {
+            if (o1 != null && o2 != null) {
+                return (o1.dateObject.time - o2.dateObject.time).toInt()
+            } else {
+                Log.d(TAG, "Error in comparator method")
+                throw IllegalArgumentException("Passed a null date into the comparator")
+            }
+        }
+
+    }
+
 
     companion object {
         val testArray = ArrayList<TestPoint>()
 
-        private val comparator = object : Comparator<TestPoint> {
+        private val testComparator = object : Comparator<TestPoint> {
             override fun compare(o1: TestPoint?, o2: TestPoint?): Int {
                 if (o1 != null && o2 != null) {
                     return (o1.dateObject.time - o2.dateObject.time).toInt()
@@ -40,7 +52,7 @@ class DownloadData {
         }
 
         fun getSortedTestArrayMethod(): ArrayList<TestPoint> {
-            Collections.sort(testArray, comparator)
+            Collections.sort(testArray, testComparator)
             return testArray
         }
     }
@@ -64,18 +76,28 @@ class DownloadData {
                         val date = individualPoint.getString("date")
                         val time = individualPoint.getString("time")
 
-                        //calculate conversion without blocking thread
-                        val convertedDateTime: Deferred<String> = async(Dispatchers.IO) {
+                        //convert date/ time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
+                        val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
                             convertDateTime(date, time)
                         }
+
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
-                        //once conversion is completed, add the point if in future
-                        if (convertedDateTime.await() != DATE_ALREADY_PASSED) {
-                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await(), null)
+
+                        //Wait until conversion is completed. Add the point only if it is in future
+                        if (convertedDateTime.await()[0] != DATE_ALREADY_PASSED) {
+                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as Date)
                             pointsArrayList.add(newPoint)
                         }
                     }
+
+                    Log.d(TAG, "prior to sorting pointArrayList is $pointsArrayList")
+                    val sortPointArrayUnit: Deferred<Unit> = async {
+                        Collections.sort(pointsArrayList, comparator)
+                    }
+                    sortPointArrayUnit.await()
+                    Log.d(TAG, "after sorting pointArrayList is $pointsArrayList")
+
                     val mainActivityViewModel = MainActivity.getMainViewModel()
                     if (mainActivityViewModel != null) {
                         mainActivityViewModel.allPointsList.postValue(pointsArrayList)
@@ -97,7 +119,7 @@ class DownloadData {
         Log.d(TAG, "startDownload method ends")
     }
 
-    private fun convertDateTime(dateString: String, timeString: String): String {
+    private fun convertDateTime(dateString: String, timeString: String): Array<Any?> {
         val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val inputDate = "$dateString $timeString"
@@ -105,12 +127,12 @@ class DownloadData {
         if (dateTimeToConvert.before(currentTime)) {
             //I think this means that the date has already passed
             Log.d(TAG, "inputDate has already passed $inputDate")
-            return DATE_ALREADY_PASSED
+            return arrayOf(DATE_ALREADY_PASSED, null)
         }
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getDefault()
         val convertedDateString = outputFormat.format(dateTimeToConvert)
         testArray.add(TestPoint(convertedDateString, dateTimeToConvert))
-        return convertedDateString
+        return arrayOf(convertedDateString, dateTimeToConvert)
     }
 }
