@@ -48,6 +48,7 @@ class SearchFragment : Fragment() {
 
             viewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
                 Log.d(TAG, "SearchFragment value of allPoints is $it")
+                Log.d(TAG, "size of allPoints is ${it.size}")
                 try {
                     updateTextView(it[0].toString())
                 } catch (e: Exception) {

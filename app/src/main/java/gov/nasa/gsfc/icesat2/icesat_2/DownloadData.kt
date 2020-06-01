@@ -1,17 +1,23 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.util.Log
-import kotlinx.coroutines.CoroutineScope
-import kotlinx.coroutines.Dispatchers
-import kotlinx.coroutines.launch
+import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.IOException
 import java.net.MalformedURLException
 import java.net.URL
+import java.text.SimpleDateFormat
+import java.util.*
+import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
+private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 
 class DownloadData {
+
+    private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
+
+
     fun startDownload(string: String) {
         Log.d(TAG, "startDownload method begins")
         CoroutineScope(Dispatchers.IO).launch {
@@ -28,15 +34,19 @@ class DownloadData {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
                         val time = individualPoint.getString("time")
+
+                        //calculate conversion without blocking thread
+                        val convertedDateTime: Deferred<String> = async(Dispatchers.IO) {
+                            convertDateTime(date, time)
+                        }
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
-                        val newPoint = Point(date, time, lon, lat)
-                        pointsArrayList.add(newPoint)
+                        //once conversion is completed, add the point if it is in the future
+                        if (convertedDateTime.await() != DATE_ALREADY_PASSED) {
+                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await())
+                            pointsArrayList.add(newPoint)
+                        }
                     }
-                   /* val searchViewModel = SearchFragment.getSearchViewModel()
-                    if (searchViewModel != null) {
-                        searchViewModel.allPointsList.postValue(pointsArrayList)
-                    }*/
                     val mainActivityViewModel = MainActivity.getMainViewModel()
                     if (mainActivityViewModel != null) {
                         mainActivityViewModel.allPointsList.postValue(pointsArrayList)
@@ -56,5 +66,20 @@ class DownloadData {
             }
         }
         Log.d(TAG, "startDownload method ends")
+    }
+
+    private fun convertDateTime(dateString: String, timeString: String): String {
+        val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
+        inputFormat.timeZone = TimeZone.getTimeZone("UTC")
+        val inputDate = "$dateString $timeString"
+        val dateTimeToConvert = inputFormat.parse(inputDate)
+        if (dateTimeToConvert.before(currentTime)) {
+            //I think this means that the date has already passed
+            Log.d(TAG, "inputDate has already passed $inputDate")
+            return DATE_ALREADY_PASSED
+        }
+        val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())
+        outputFormat.timeZone = TimeZone.getDefault()
+        return outputFormat.format(dateTimeToConvert)
     }
 }
