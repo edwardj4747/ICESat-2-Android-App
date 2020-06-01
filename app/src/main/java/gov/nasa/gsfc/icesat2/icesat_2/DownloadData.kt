@@ -66,7 +66,6 @@ class DownloadData {
                         Collections.sort(pointsArrayList, comparator)
                     }
                     sortPointArrayUnit.await()
-                    Log.d(TAG, "after sorting pointArrayList is $pointsArrayList")
 
                     val mainActivityViewModel = MainActivity.getMainViewModel()
                     if (mainActivityViewModel != null) {
@@ -95,7 +94,6 @@ class DownloadData {
         val dateTimeToConvert = inputFormat.parse(inputDate)
         if (dateTimeToConvert.before(currentTime)) {
             //I think this means that the date has already passed
-            Log.d(TAG, "inputDate has already passed $inputDate")
             return arrayOf(DATE_ALREADY_PASSED, null)
         }
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())
