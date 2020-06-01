@@ -108,7 +108,7 @@ class DownloadData {
     }
 
     private fun splitPointsByDate(allPointsList: ArrayList<Point>): ArrayList<ArrayList<Point>> {
-        val timingThreshold = 60
+        val timingThreshold = 60 //TODO: check with tom that this is a good threshold
         var chainIndex = 0
         val splitByDateArrayList = ArrayList<ArrayList<Point>>()
         splitByDateArrayList.add(ArrayList<Point>())
