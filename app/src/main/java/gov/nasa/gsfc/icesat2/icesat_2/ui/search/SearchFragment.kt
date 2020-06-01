@@ -12,6 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
+import gov.nasa.gsfc.icesat2.icesat_2.DownloadData
 import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
 import gov.nasa.gsfc.icesat2.icesat_2.MainViewModel
 import gov.nasa.gsfc.icesat2.icesat_2.R
@@ -49,6 +50,10 @@ class SearchFragment : Fragment() {
             viewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
                 Log.d(TAG, "SearchFragment value of allPoints is $it")
                 Log.d(TAG, "size of allPoints is ${it.size}")
+                Log.d(TAG, "=========================")
+                Log.d(TAG, "testPointArray ${DownloadData.getTestArrayMethod()}")
+                Log.d(TAG, "////////////////////////////")
+                Log.d(TAG, "sortedTestPointArray ${DownloadData.getSortedTestArrayMethod()}")
                 try {
                     updateTextView(it[0].toString())
                 } catch (e: Exception) {
