@@ -19,7 +19,7 @@ class DownloadData {
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
-    val comparator = object : Comparator<Point> {
+    private val comparator = object : Comparator<Point> {
         override fun compare(o1: Point?, o2: Point?): Int {
             if (o1 != null && o2 != null) {
                 return (o1.dateObject.time - o2.dateObject.time).toInt()
@@ -28,35 +28,7 @@ class DownloadData {
                 throw IllegalArgumentException("Passed a null date into the comparator")
             }
         }
-
     }
-
-
-    companion object {
-        val testArray = ArrayList<TestPoint>()
-
-        private val testComparator = object : Comparator<TestPoint> {
-            override fun compare(o1: TestPoint?, o2: TestPoint?): Int {
-                if (o1 != null && o2 != null) {
-                    return (o1.dateObject.time - o2.dateObject.time).toInt()
-                } else {
-                    Log.d(TAG, "Error in comparator method")
-                    throw IllegalArgumentException("Passed a null date into the comparator")
-                }
-            }
-        }
-
-
-        fun getTestArrayMethod(): ArrayList<TestPoint> {
-            return testArray
-        }
-
-        fun getSortedTestArrayMethod(): ArrayList<TestPoint> {
-            Collections.sort(testArray, testComparator)
-            return testArray
-        }
-    }
-
 
 
     fun startDownload(string: String) {
@@ -132,7 +104,6 @@ class DownloadData {
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getDefault()
         val convertedDateString = outputFormat.format(dateTimeToConvert)
-        testArray.add(TestPoint(convertedDateString, dateTimeToConvert))
         return arrayOf(convertedDateString, dateTimeToConvert)
     }
 }
