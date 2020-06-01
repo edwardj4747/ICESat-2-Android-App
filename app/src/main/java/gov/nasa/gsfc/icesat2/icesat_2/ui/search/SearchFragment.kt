@@ -53,7 +53,14 @@ class SearchFragment : Fragment() {
                     Log.d(TAG, "SearchFragment no values in all Points array")
                 }
 
-                splitPointsByDate(it)
+            })
+
+            viewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
+                Log.d(TAG, "=======Split into Chains Array===========")
+                Log.d(TAG, "number of chains ${it.size}")
+                for (i in 0 until it.size) {
+                    Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
+                }
             })
         }
 
@@ -142,28 +149,5 @@ class SearchFragment : Fragment() {
         listener = theListener
     }
 
-    private fun splitPointsByDate(allPointsList: ArrayList<Point>) {
-        val timingThreshold = 60
-        var chainIndex = 0
-        val splitByDateArrayList = ArrayList<ArrayList<Point>>()
-        splitByDateArrayList.add(ArrayList<Point>())
-        splitByDateArrayList[0].add(allPointsList[0])
-        var startingDateTime = allPointsList[0].dateObject.time
-        for (i in 1 until allPointsList.size) {
-            if (startingDateTime + timingThreshold * 1000 > allPointsList[i].dateObject.time) {
-                splitByDateArrayList[chainIndex].add(allPointsList[i])
-            } else {
-                startingDateTime = allPointsList[i].dateObject.time
-                splitByDateArrayList.add(ArrayList())
-                chainIndex++
-                splitByDateArrayList[chainIndex].add(allPointsList[i])
-            }
-        }
 
-        Log.d(TAG, "=======Split into Chains Array===========")
-        Log.d(TAG, "number of chains ${splitByDateArrayList.size}")
-        for (i in 0 until splitByDateArrayList.size) {
-            Log.d(TAG, "chain $i. size of chain ${splitByDateArrayList[i].size}: ${splitByDateArrayList[i]}")
-        }
-    }
 }

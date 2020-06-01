@@ -10,4 +10,10 @@ class MainViewModel : ViewModel() {
     fun getAllPointsList(): LiveData<ArrayList<Point>> {
         return allPointsList
     }
+
+    var allPointsChain = MutableLiveData<ArrayList<ArrayList<Point>>>()
+
+    fun getAllPointsChain(): LiveData<ArrayList<ArrayList<Point>>> {
+        return allPointsChain
+    }
 }

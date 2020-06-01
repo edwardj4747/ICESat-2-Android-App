@@ -67,9 +67,15 @@ class DownloadData {
                     }
                     sortPointArrayUnit.await()
 
+                    val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
+                        splitPointsByDate(pointsArrayList)
+                    }
+
                     val mainActivityViewModel = MainActivity.getMainViewModel()
                     if (mainActivityViewModel != null) {
+                        //TODO: remove allPointsList in ViewModel?
                         mainActivityViewModel.allPointsList.postValue(pointsArrayList)
+                        mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
                     }
                 } else {
                     Log.d(TAG, "state is not true $state")
@@ -99,5 +105,26 @@ class DownloadData {
         outputFormat.timeZone = TimeZone.getDefault()
         val convertedDateString = outputFormat.format(dateTimeToConvert)
         return arrayOf(convertedDateString, dateTimeToConvert)
+    }
+
+    private fun splitPointsByDate(allPointsList: ArrayList<Point>): ArrayList<ArrayList<Point>> {
+        val timingThreshold = 60
+        var chainIndex = 0
+        val splitByDateArrayList = ArrayList<ArrayList<Point>>()
+        splitByDateArrayList.add(ArrayList<Point>())
+        splitByDateArrayList[0].add(allPointsList[0])
+        var startingDateTime = allPointsList[0].dateObject.time
+        for (i in 1 until allPointsList.size) {
+            if (startingDateTime + timingThreshold * 1000 > allPointsList[i].dateObject.time) {
+                splitByDateArrayList[chainIndex].add(allPointsList[i])
+            } else {
+                startingDateTime = allPointsList[i].dateObject.time
+                splitByDateArrayList.add(ArrayList())
+                chainIndex++
+                splitByDateArrayList[chainIndex].add(allPointsList[i])
+            }
+        }
+
+        return splitByDateArrayList
     }
 }
