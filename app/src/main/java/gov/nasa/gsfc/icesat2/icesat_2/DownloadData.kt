@@ -93,7 +93,6 @@ class DownloadData {
         val inputDate = "$dateString $timeString"
         val dateTimeToConvert = inputFormat.parse(inputDate)
         if (dateTimeToConvert.before(currentTime)) {
-            //I think this means that the date has already passed
             return arrayOf(DATE_ALREADY_PASSED, null)
         }
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())

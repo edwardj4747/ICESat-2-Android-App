@@ -12,10 +12,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.material.snackbar.Snackbar
-import gov.nasa.gsfc.icesat2.icesat_2.DownloadData
-import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
-import gov.nasa.gsfc.icesat2.icesat_2.MainViewModel
-import gov.nasa.gsfc.icesat2.icesat_2.R
+import gov.nasa.gsfc.icesat2.icesat_2.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import java.lang.Exception
 
@@ -55,6 +52,8 @@ class SearchFragment : Fragment() {
                 } catch (e: Exception) {
                     Log.d(TAG, "SearchFragment no values in all Points array")
                 }
+
+                splitPointsByDate(it)
             })
         }
 
@@ -141,5 +140,30 @@ class SearchFragment : Fragment() {
 
     fun addSearchFragmentCallbackListener(theListener: ISearchFragmentCallback) {
         listener = theListener
+    }
+
+    private fun splitPointsByDate(allPointsList: ArrayList<Point>) {
+        val timingThreshold = 60
+        var chainIndex = 0
+        val splitByDateArrayList = ArrayList<ArrayList<Point>>()
+        splitByDateArrayList.add(ArrayList<Point>())
+        splitByDateArrayList[0].add(allPointsList[0])
+        var startingDateTime = allPointsList[0].dateObject.time
+        for (i in 1 until allPointsList.size) {
+            if (startingDateTime + timingThreshold * 1000 > allPointsList[i].dateObject.time) {
+                splitByDateArrayList[chainIndex].add(allPointsList[i])
+            } else {
+                startingDateTime = allPointsList[i].dateObject.time
+                splitByDateArrayList.add(ArrayList())
+                chainIndex++
+                splitByDateArrayList[chainIndex].add(allPointsList[i])
+            }
+        }
+
+        Log.d(TAG, "=======Split into Chains Array===========")
+        Log.d(TAG, "number of chains ${splitByDateArrayList.size}")
+        for (i in 0 until splitByDateArrayList.size) {
+            Log.d(TAG, "chain $i. size of chain ${splitByDateArrayList[i].size}: ${splitByDateArrayList[i]}")
+        }
     }
 }
