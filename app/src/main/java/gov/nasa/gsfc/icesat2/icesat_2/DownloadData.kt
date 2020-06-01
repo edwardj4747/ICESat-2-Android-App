@@ -47,15 +47,13 @@ class DownloadData {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
                         val time = individualPoint.getString("time")
-
-                        //convert date/ time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
-                        val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
-                            convertDateTime(date, time)
-                        }
-
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
 
+                        //convert date + time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
+                        val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
+                            convertDateTime(date, time)
+                        }
                         //Wait until conversion is completed. Add the point only if it is in future
                         if (convertedDateTime.await()[0] != DATE_ALREADY_PASSED) {
                             val newPoint = Point(date, time, lon, lat, convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as Date)
@@ -63,7 +61,7 @@ class DownloadData {
                         }
                     }
 
-                    Log.d(TAG, "prior to sorting pointArrayList is $pointsArrayList")
+                   //sort the pointsArrayList based on date with earlier dates coming at the beginning
                     val sortPointArrayUnit: Deferred<Unit> = async {
                         Collections.sort(pointsArrayList, comparator)
                     }
@@ -78,7 +76,6 @@ class DownloadData {
                     Log.d(TAG, "state is not true $state")
                     //TODO: Handle these cases
                 }
-
 
             } catch (e: MalformedURLException) {
                 Log.d(TAG, "Malformed URL Exception ${e.message}")
