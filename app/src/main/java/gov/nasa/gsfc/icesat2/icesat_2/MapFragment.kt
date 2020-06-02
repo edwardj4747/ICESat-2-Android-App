@@ -7,10 +7,7 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.google.android.gms.maps.CameraUpdateFactory
-import com.google.android.gms.maps.GoogleMap
-import com.google.android.gms.maps.OnMapReadyCallback
-import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.*
 import com.google.android.gms.maps.model.*
 
 private const val ZOOM_LEVEL = 10f
@@ -87,11 +84,32 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         addCircleRadius(25.0)
     }
 
-    private fun addCircleRadius(radiusParam: Double) {
+    private fun addCircleRadius(radius: Double) {
         val MILES_TO_METERS = 1609.34
-        val circleOptions = CircleOptions().radius(radiusParam * MILES_TO_METERS).center(LatLng(10.0, 10.0))
+        val circleOptions = CircleOptions().radius(radius * MILES_TO_METERS).center(LatLng(10.0, 10.0))
         mMap.addCircle(circleOptions)
         //mMap.addMarker(MarkerOptions().position(LatLng(10.0, 10.0)))
+
+        moveCamera()
+    }
+
+    private fun moveCamera() {
+        val radius = 25.0
+        val MILES_PER_LATLNG = 69
+        val offset = radius/MILES_PER_LATLNG
+        val centerLat = 10.0
+        val centerLong = 10.0
+        val center = LatLng(centerLat, centerLong)
+        val top = LatLng(centerLat + offset, centerLong)
+        val bottom = LatLng(centerLat - offset, centerLong)
+        val left = LatLng(centerLat, centerLong + offset)
+        val right = LatLng(centerLat, centerLong - offset)
+        //need to convert the 10 to have something to do with the radius
+
+        val latLngBounds = LatLngBounds.builder().include(top).include(bottom).include(left).include(right).build()
+        val cameraUpdate = CameraUpdateFactory.newLatLngBounds(latLngBounds, 100)
+        //val cameraUpdate = CameraUpdateFactory.newLatLng(LatLng(10.0, 10.0))
+        mMap.animateCamera(cameraUpdate)
     }
 
    /* private fun userLocation() {
