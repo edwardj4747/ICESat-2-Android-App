@@ -1,11 +1,11 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
-import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -50,8 +50,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                 Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
             }
 
+            //if no results show a dialog explaining that there are no results
             if (it.size == 0) {
-                Toast.makeText(requireContext(), "No Results", Toast.LENGTH_LONG).show()
+               val alertBuilder = AlertDialog.Builder(requireContext())
+                alertBuilder.setMessage(R.string.noResultsDetails)
+                    ?.setTitle(R.string.noResults)
+                    ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
+                alertBuilder.show()
             }
 
 

@@ -26,4 +26,9 @@
     </string-array>
     <string name="title_activity_delete_me">Map</string>
 
+<!--    Map Fragment Dialog-->
+    <string name="noResults">No Results</string>
+    <string name="noResultsDetails">There are currently no results for your search criteria.
+    New cycle data will be available soon. Try searching in another location</string>
+    <string name="backToSearch">Back to Search</string>
 </resources>
