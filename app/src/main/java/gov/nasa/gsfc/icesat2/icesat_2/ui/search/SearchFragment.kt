@@ -57,11 +57,11 @@ class SearchFragment : Fragment() {
             })
 
             viewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
-                Log.d(TAG, "=======Split into Chains Array===========")
+                /*Log.d(TAG, "=======Split into Chains Array===========")
                 Log.d(TAG, "number of chains ${it.size}")
                 for (i in 0 until it.size) {
                     Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
-                }
+                }*/
             })
         }
 

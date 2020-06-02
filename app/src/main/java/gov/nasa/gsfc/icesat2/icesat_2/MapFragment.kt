@@ -6,6 +6,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
@@ -20,6 +21,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     var markers = ArrayList<Marker>()
+    private lateinit var pointChains: ArrayList<ArrayList<Point>>
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -39,14 +41,43 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        MainActivity.getMainViewModel()?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "=======Split into Chains Array===========")
+            Log.d(TAG, "number of chains ${it.size}")
+            for (i in 0 until it.size) {
+                Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
+            }
+            pointChains = it
+            if (this::mMap.isInitialized) {
+                Log.d(TAG, "Add polylines from inside observer")
+                for (i in 0 until it.size) {
+                    addChainPolyline(it[i])
+                }
+            }
+        })
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
-        newPoint(50.0, 20.1)
+
+        if (this::pointChains.isInitialized) {
+            Log.d(TAG, "Adding polyline from inside onMapReady")
+            for (i in 0 until pointChains.size) {
+                addChainPolyline(pointChains[i])
+            }
+        }
     }
 
+    private fun addChainPolyline(chain:ArrayList<Point>) {
+        Log.d(TAG, "addChainPolyLine Starts")
+        val polylineOptions = PolylineOptions()
+
+        for (i in 0 until chain.size) {
+            polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
+        }
+        mMap.addPolyline(polylineOptions)
+    }
 
    /* private fun userLocation() {
         try {
