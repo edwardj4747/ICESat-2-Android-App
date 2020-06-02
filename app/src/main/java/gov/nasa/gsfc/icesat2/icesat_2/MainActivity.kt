@@ -70,11 +70,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     override fun useCurrentLocationButtonPressed() {
         //testing adding a new Fragment over top
         Log.d(TAG, "MainActivity: Replacing search fragment starts")
-        val newFrag = SearchFragment()
+        /*val newFrag = SearchFragment()
         newFrag.addSearchFragmentCallbackListener(this)
         val fragmentTransaction = fragmentManger.beginTransaction()
         fragmentTransaction.apply {
             replace(R.id.fragmentContainer, newFrag)
+            commit()
+        }*/
+        val mapFragment = MapFragment()
+        val fragmentTransaction = fragmentManger.beginTransaction()
+        fragmentTransaction.apply {
+            replace(R.id.fragmentContainer, mapFragment)
             commit()
         }
         Log.d(TAG, "MainActivity: replacing searchFragment ends")

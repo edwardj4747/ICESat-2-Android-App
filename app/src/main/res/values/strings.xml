@@ -1,7 +1,7 @@
 <resources>
     <string name="app_name">ICESat-2</string>
 
-<!--    nav bar-->
+    <!--    nav bar-->
     <string name="title_home">Home</string>
     <string name="title_dashboard">Dashboard</string>
     <string name="title_notifications">Notifications</string>
@@ -24,5 +24,6 @@
         <item>Miles</item>
         <item>Kilometers</item>
     </string-array>
+    <string name="title_activity_delete_me">Map</string>
 
 </resources>
