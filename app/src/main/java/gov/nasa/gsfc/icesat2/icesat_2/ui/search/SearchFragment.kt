@@ -131,12 +131,12 @@ class SearchFragment : Fragment() {
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
             Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
                 .setAction("OK") {  }
-                .setBackgroundTint(resources.getColor(R.color.colorPrimary, null))
+                .setBackgroundTint(resources.getColor(R.color.snackbarColor, null))
                 .show()
         } else {
             Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
                 .setAction("OK") {  }
-                .setBackgroundTint(resources.getColor(R.color.colorPrimary))
+                .setBackgroundTint(resources.getColor(R.color.snackbarColor))
                 .show()
         }
     }
