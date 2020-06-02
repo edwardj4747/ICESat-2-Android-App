@@ -20,7 +20,8 @@ import java.lang.Exception
 private const val TAG = "SearchFragment"
 private const val LAT_INPUT_ERROR = "Please Enter Latitude between -86.0 and 86.0 ${0x00B0.toChar()}N"
 private const val LONG_INPUT_ERROR = "Please Enter Longitude between -180.0 and 180.0 ${0x00B0.toChar()}E"
-private const val RADIUS_INPUT_ERROR = "Please Enter Radius between 1.1 and 25.0"
+private const val RADIUS_INPUT_ERROR_MILES = "Please Enter Radius between 1.1 and 25.0 Miles"
+private const val RADIUS_INPUT_ERROR_KILOMETERS = "Please Enter Radius between 1.1 and 40.2 Kilometers"
 
 class SearchFragment : Fragment() {
 
@@ -115,13 +116,23 @@ class SearchFragment : Fragment() {
             return null
         }
 
-        if (editTextRadius.text.toString() == "") {
-            createSnackBar(RADIUS_INPUT_ERROR)
+        val radiusSelection = unitSpinner.selectedItem.toString()
+        //No radius entered
+        if (radiusSelection == "Miles" && editTextRadius.text.toString() == "") {
+            createSnackBar(RADIUS_INPUT_ERROR_MILES)
+            return null
+        } else if (radiusSelection == "Kilometers" && editTextRadius.text.toString() == "") {
+            createSnackBar(RADIUS_INPUT_ERROR_KILOMETERS)
             return null
         }
+
+        //invalid value for radius
         val radius = editTextRadius.text.toString().toDouble()
-        if (radius < 1.1 || radius > 25) {
-            createSnackBar(RADIUS_INPUT_ERROR)
+        if (radiusSelection == "Miles" && radius < 1.1 || radius > 25) {
+            createSnackBar(RADIUS_INPUT_ERROR_MILES)
+            return null
+        } else if (radiusSelection == "Kilometers" && radius < 1.1 || radius > 40.2) {
+            createSnackBar(RADIUS_INPUT_ERROR_KILOMETERS)
             return null
         }
         return doubleArrayOf(lat, long, radius)
