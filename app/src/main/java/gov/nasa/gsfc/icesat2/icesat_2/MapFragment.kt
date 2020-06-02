@@ -23,6 +23,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     private lateinit var mMap: GoogleMap
     var markers = ArrayList<Marker>()
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
+    private lateinit var searchCenter: LatLng
+    private var searchRadius: Double = -1.0
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -42,7 +44,9 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        MainActivity.getMainViewModel()?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
+        val mainActivityViewModel = MainActivity.getMainViewModel()
+
+        mainActivityViewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "=======Split into Chains Array===========")
             Log.d(TAG, "number of chains ${it.size}")
             for (i in 0 until it.size) {
@@ -55,6 +59,16 @@ class MapFragment : Fragment(), OnMapReadyCallback {
                     addChainPolyline(it[i])
                 }
             }
+        })
+
+        mainActivityViewModel?.getSearchCenter()?.observe(viewLifecycleOwner, Observer{
+            Log.d(TAG, "MapFragment searchCenterObserved to be ${it.latitude}, ${it.longitude}")
+            searchCenter = it
+        })
+
+        mainActivityViewModel?.getSearchRadius()?.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "MapFrag searchRadius observed to be $it")
+            searchRadius = it
         })
     }
 
@@ -85,12 +99,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             color = (0xff32CD32.toInt())
         }
 
-        addCircleRadius(25.0)
+        addCircleRadius(searchRadius)
     }
 
     private fun addCircleRadius(radius: Double) {
         val MILES_TO_METERS = 1609.34
-        val circleOptions = CircleOptions().radius(radius * MILES_TO_METERS).center(LatLng(10.0, 10.0))
+        val circleOptions = CircleOptions().radius(radius * MILES_TO_METERS).center(searchCenter)
         mMap.addCircle(circleOptions)
         //mMap.addMarker(MarkerOptions().position(LatLng(10.0, 10.0)))
 

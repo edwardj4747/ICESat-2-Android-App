@@ -77,7 +77,7 @@ class SearchFragment : Fragment() {
                 }
                 //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
                 val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=$unit"
-                listener.searchButtonPressed(serverLocation)
+                listener.searchButtonPressed(serverLocation, inputs[0], inputs[1], inputs[2])
             }
             Log.d(TAG, "SearchFragment: SearchButtonPressed ends")
         }

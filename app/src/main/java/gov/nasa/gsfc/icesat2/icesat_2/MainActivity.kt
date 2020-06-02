@@ -4,10 +4,13 @@ import android.os.Bundle
 import android.util.Log
 import android.view.Menu
 import android.view.MenuItem
+import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import com.google.android.gms.maps.model.LatLng
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
+import kotlinx.android.synthetic.main.fragment_search.*
 
 
 private const val TAG = "MainActivity"
@@ -63,11 +66,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navView.setupWithNavController(navController)*/
     }
 
-    override fun searchButtonPressed(serverLocation: String) {
+    override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
         val downloadData = DownloadData()
         downloadData.startDownload(serverLocation)
         showMap()
+        mainViewModel.searchCenter.value = LatLng(lat, long)
+        mainViewModel.searchRadius.value = radius
     }
 
     override fun useCurrentLocationButtonPressed() {
@@ -80,7 +85,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             replace(R.id.fragmentContainer, newFrag)
             commit()
         }*/
-        showMap()
+
         Log.d(TAG, "MainActivity: replacing searchFragment ends")
     }
 
