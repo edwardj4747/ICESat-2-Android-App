@@ -61,21 +61,24 @@ class DownloadData {
                         }
                     }
 
-                   //sort the pointsArrayList based on date with earlier dates coming at the beginning
-                    val sortPointArrayUnit: Deferred<Unit> = async {
-                        Collections.sort(pointsArrayList, comparator)
-                    }
-                    sortPointArrayUnit.await()
+                    //if there are any results from the search. Sort them and split them accordingly
+                    if (pointsArrayList.size > 0) {
+                        //sort the pointsArrayList based on date with earlier dates coming at the beginning
+                        val sortPointArrayUnit: Deferred<Unit> = async {
+                            Collections.sort(pointsArrayList, comparator)
+                        }
+                        sortPointArrayUnit.await()
 
-                    val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
-                        splitPointsByDate(pointsArrayList)
-                    }
+                        val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
+                            splitPointsByDate(pointsArrayList)
+                        }
 
-                    val mainActivityViewModel = MainActivity.getMainViewModel()
-                    if (mainActivityViewModel != null) {
-                        //TODO: remove allPointsList in ViewModel?
-                        mainActivityViewModel.allPointsList.postValue(pointsArrayList)
-                        mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
+                        val mainActivityViewModel = MainActivity.getMainViewModel()
+                        if (mainActivityViewModel != null) {
+                            //TODO: remove allPointsList in ViewModel?
+                            mainActivityViewModel.allPointsList.postValue(pointsArrayList)
+                            mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
+                        }
                     }
                 } else {
                     Log.d(TAG, "state is not true $state")
