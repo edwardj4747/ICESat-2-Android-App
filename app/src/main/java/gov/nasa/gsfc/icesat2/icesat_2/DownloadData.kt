@@ -60,6 +60,7 @@ class DownloadData {
                             pointsArrayList.add(newPoint)
                         }
                     }
+                    val mainActivityViewModel = MainActivity.getMainViewModel()
 
                     //if there are any results from the search. Sort them and split them accordingly
                     if (pointsArrayList.size > 0) {
@@ -73,12 +74,14 @@ class DownloadData {
                             splitPointsByDate(pointsArrayList)
                         }
 
-                        val mainActivityViewModel = MainActivity.getMainViewModel()
                         if (mainActivityViewModel != null) {
                             //TODO: remove allPointsList in ViewModel?
                             mainActivityViewModel.allPointsList.postValue(pointsArrayList)
                             mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
                         }
+                    } else {
+                        //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
+                        mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
                     }
                 } else {
                     Log.d(TAG, "state is not true $state")

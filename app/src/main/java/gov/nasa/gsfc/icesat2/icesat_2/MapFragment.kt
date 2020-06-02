@@ -5,6 +5,7 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -48,6 +49,12 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             for (i in 0 until it.size) {
                 Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
             }
+
+            if (it.size == 0) {
+                Toast.makeText(requireContext(), "No Results", Toast.LENGTH_LONG).show()
+            }
+
+
             pointChains = it
             if (this::mMap.isInitialized) {
                 Log.d(TAG, "Add polylines from inside observer")
