@@ -73,10 +73,25 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "addChainPolyLine Starts")
         val polylineOptions = PolylineOptions()
 
+        //test addign a marker at each point - maybe polygons are a better way to do this
+        val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
+            mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
         }
-        mMap.addPolyline(polylineOptions)
+        mMap.addPolyline(polylineOptions).apply {
+            jointType = JointType.ROUND
+            color = (0xff32CD32.toInt())
+        }
+
+        addCircleRadius(25.0)
+    }
+
+    private fun addCircleRadius(radiusParam: Double) {
+        val MILES_TO_METERS = 1609.34
+        val circleOptions = CircleOptions().radius(radiusParam * MILES_TO_METERS).center(LatLng(10.0, 10.0))
+        mMap.addCircle(circleOptions)
+        //mMap.addMarker(MarkerOptions().position(LatLng(10.0, 10.0)))
     }
 
    /* private fun userLocation() {
