@@ -7,8 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
-import com.google.android.gms.maps.*
+import com.google.android.gms.maps.CameraUpdateFactory
+import com.google.android.gms.maps.GoogleMap
+import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+
 
 private const val ZOOM_LEVEL = 10f
 
@@ -90,11 +94,15 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         mMap.addCircle(circleOptions)
         //mMap.addMarker(MarkerOptions().position(LatLng(10.0, 10.0)))
 
-        moveCamera()
+        val circle = mMap.addCircle(circleOptions)
+
+        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(circleOptions.center, getZoomLevel(circle)))
+
+        //moveCamera()
     }
 
     private fun moveCamera() {
-        val radius = 25.0
+        /*val radius = 25.0
         val MILES_PER_LATLNG = 69
         val offset = radius/MILES_PER_LATLNG
         val centerLat = 10.0
@@ -109,7 +117,20 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         val latLngBounds = LatLngBounds.builder().include(top).include(bottom).include(left).include(right).build()
         val cameraUpdate = CameraUpdateFactory.newLatLngBounds(latLngBounds, 100)
         //val cameraUpdate = CameraUpdateFactory.newLatLng(LatLng(10.0, 10.0))
-        mMap.animateCamera(cameraUpdate)
+        mMap.animateCamera(cameraUpdate)*/
+
+
+    }
+
+    //https://stackoverflow.com/questions/11309632/how-to-find-zoom-level-based-on-circle-draw-on-map
+    private fun getZoomLevel(circle: Circle?): Float {
+        var zoomLevel = 11.0
+        if (circle != null) {
+            val radius = circle.radius + circle.radius / 2
+            val scale = radius / 500
+            zoomLevel = (16.25 - Math.log(scale) / Math.log(2.0))
+        }
+        return zoomLevel.toFloat()
     }
 
    /* private fun userLocation() {
