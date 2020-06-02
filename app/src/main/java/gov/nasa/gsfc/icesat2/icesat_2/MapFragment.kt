@@ -13,15 +13,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 
-
-private const val ZOOM_LEVEL = 10f
+private const val TAG = "MapFragment"
 
 class MapFragment : Fragment(), OnMapReadyCallback {
 
-    private val TAG = "MapFragment"
-
     private lateinit var mMap: GoogleMap
-    var markers = ArrayList<Marker>()
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
@@ -171,30 +167,6 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }*/
 
-    private fun newPoint(lat: Double, long: Double) {
-        Log.d(TAG, "newPoint method called")
-        val newPoint = LatLng(lat, long);
-        val newPointMarker = mMap.addMarker(MarkerOptions().position(newPoint).title("New Point"))
-        markers.add(newPointMarker)
-    }
 
-
-    private fun draw(radius: Double) {
-        val circleCenter = LatLng(-14.2, 144.5)
-        mMap.addCircle(CircleOptions().radius(radius * 1609.34).center(circleCenter))
-
-        val latLngBounds = LatLngBounds.builder().include(circleCenter).include(LatLng(-14.2 + 10, 144.5)).include(LatLng(-14.2 - 10, 144.5)).build()
-        val padding = 100
-
-        mMap.animateCamera(CameraUpdateFactory.newLatLngBounds(latLngBounds, padding))
-    }
-
-    private fun remove() {
-        Log.d(TAG, "remove function called")
-        Log.d(TAG, "markers.size = ${markers.size}")
-        for (i in 0 until markers.size) {
-            markers[i].remove()
-        }
-    }
 
 }
