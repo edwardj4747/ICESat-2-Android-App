@@ -2,6 +2,8 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
 import android.util.Log
+import android.view.Menu
+import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
@@ -65,6 +67,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
         val downloadData = DownloadData()
         downloadData.startDownload(serverLocation)
+        showMap()
     }
 
     override fun useCurrentLocationButtonPressed() {
@@ -77,13 +80,29 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             replace(R.id.fragmentContainer, newFrag)
             commit()
         }*/
+        showMap()
+        Log.d(TAG, "MainActivity: replacing searchFragment ends")
+    }
+
+    private fun showMap() {
         val mapFragment = MapFragment()
         val fragmentTransaction = fragmentManger.beginTransaction()
         fragmentTransaction.apply {
             replace(R.id.fragmentContainer, mapFragment)
+            addToBackStack(null)
             commit()
         }
-        Log.d(TAG, "MainActivity: replacing searchFragment ends")
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                onBackPressed()
+                supportActionBar?.setDisplayHomeAsUpEnabled(false)
+            }
+        }
+        return true
     }
 
 
