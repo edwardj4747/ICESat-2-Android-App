@@ -2,21 +2,17 @@ package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 
 import android.os.Build
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
-import android.widget.TextView
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
-import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
-import gov.nasa.gsfc.icesat2.icesat_2.*
+import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
+import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
-import java.lang.Exception
 
 
 private const val TAG = "SearchFragment"
@@ -59,13 +55,8 @@ class SearchFragment : Fragment() {
         btnSearch.setOnClickListener {
             val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
             if (inputs != null) {
-                val unit = if (unitSpinner.selectedItem.toString() == "Kilometers") {
-                    "kilometers"
-                } else {
-                    "miles"
-                }
                 //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
-                val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=$unit"
+                val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=miles"
                 listener.searchButtonPressed(serverLocation, inputs[0], inputs[1], inputs[2])
             }
         }
@@ -82,6 +73,7 @@ class SearchFragment : Fragment() {
     }
 
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
+    //NOTE RADIUS can be entered in kilometers but will be converted immediately into miles to make for seamless use
     private fun allInputsValid(): DoubleArray? {
         //lat range -86, 86; lon range -180 180
         if (editTextLat.text.toString() == "") {
@@ -115,13 +107,19 @@ class SearchFragment : Fragment() {
         }
 
         //invalid value for radius
-        val radius = editTextRadius.text.toString().toDouble()
-        if (radiusSelection == "Miles" && radius < 1.1 || radius > 25) {
+        var radius = editTextRadius.text.toString().toDouble()
+        if (radiusSelection == "Miles" && (radius < 1.1 || radius > 25)) {
             createSnackBar(RADIUS_INPUT_ERROR_MILES)
             return null
-        } else if (radiusSelection == "Kilometers" && radius < 1.1 || radius > 40.2) {
+        } else if (radiusSelection == "Kilometers" && (radius < 1.1 || radius > 40.2)) {
             createSnackBar(RADIUS_INPUT_ERROR_KILOMETERS)
             return null
+        }
+
+        //valid radius in kilometers -> convert it to miles
+        if (radiusSelection == "Kilometers") {
+            val KILO_TO_MILES = 0.621371
+            radius *= KILO_TO_MILES
         }
         return doubleArrayOf(lat, long, radius)
     }
