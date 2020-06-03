@@ -9,7 +9,7 @@ Current Progress (last update 6/3):
    * split up dates into chains based on date of fly over
    -----------
    -----------
-   *navigation bar and navigation components
-   *show results on map
+   * navigation bar and navigation components
+   * show results on map
    
    
