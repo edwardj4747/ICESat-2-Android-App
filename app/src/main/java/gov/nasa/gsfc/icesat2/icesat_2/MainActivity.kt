@@ -21,7 +21,6 @@ private const val TAG = "MainActivity"
 
 class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
-    private val fragmentManger = supportFragmentManager
     private lateinit var navController: NavController
 
     companion object {
@@ -40,12 +39,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_nav)
 
-       /* val navController = this.findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        findViewById<Toolbar>(R.id.toolbar)
-            .setupWithNavController(navController, appBarConfiguration)*/
-
-
         //setSupportActionBar(toolbar)
         //val appBarConfiguration = AppBarConfiguration(navController.graph)
         //toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -57,34 +50,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         bottom_nav_view.setupWithNavController(navController)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-        /*//created for the first time
-        if (savedInstanceState == null) {
-            val fragmentTransaction = fragmentManger.beginTransaction()
-            val searchFragment = SearchFragment()
-            searchFragment.addSearchFragmentCallbackListener(this) // important!!
-            fragmentTransaction.apply {
-                replace(R.id.fragmentContainer, searchFragment)
-                commit()
-            }
-        } else {
-            var currFrag = fragmentManger.findFragmentById(R.id.fragmentContainer)
-            if (currFrag != null) {
-                currFrag = currFrag as SearchFragment
-                currFrag.addSearchFragmentCallbackListener(this)
-            } else {
-                Log.d(TAG, "current frag is null so the listener could not be reattached")
-            }
-        }*/
-
-        /*val navView: BottomNavigationView = findViewById(R.id.nav_view)
-        val navController = findNavController(R.id.nav_host_fragment)
-        // Passing each menu ID as a set of Ids because each
-        // menu should be considered as top level destinations.
-        val appBarConfiguration = AppBarConfiguration(setOf(
-                R.id.navigation_home, R.id.navigation_dashboard, R.id.navigation_notifications))
-        setupActionBarWithNavController(navController, appBarConfiguration)
-        navView.setupWithNavController(navController)*/
     }
 
     override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
@@ -136,15 +101,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navController.navigate(R.id.action_navigation_home_to_mapFragment2)
     }
 
-    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
-        when (item.itemId) {
-            android.R.id.home -> {
-                onBackPressed()
-                supportActionBar?.setDisplayHomeAsUpEnabled(false)
-            }
-        }
-        return true
-    }*/
 
     private fun showNoResultsDialogOnMainThread() {
         GlobalScope.launch(Dispatchers.Main) {
