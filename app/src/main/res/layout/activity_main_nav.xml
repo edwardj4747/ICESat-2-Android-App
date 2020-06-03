@@ -10,12 +10,16 @@
         android:id="@+id/toolbar"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:background="@color/colorPrimary"
+        android:background="?attr/colorPrimary"
+        android:elevation="4dp"
+        android:minHeight="?attr/actionBarSize"
+        android:theme="@style/AppTheme"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent"
-        app:titleTextColor="@color/common_google_signin_btn_text_dark_default"
-        android:elevation="4dp"/>
+        app:popupTheme="@style/AppTheme"
+        app:theme="@style/ToolbarColoredBackArrow"
+        app:titleTextColor="@color/secondaryTextColor" />
 
     <fragment
         android:id="@+id/nav_host_fragment"
