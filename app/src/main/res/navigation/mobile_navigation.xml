@@ -9,7 +9,15 @@
         android:id="@+id/navigation_home"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment"
         android:label="@string/title_home"
-        tools:layout="@layout/fragment_search" />
+        tools:layout="@layout/fragment_search" >
+        <action
+            android:id="@+id/action_navigation_home_to_mapFragment2"
+            app:destination="@id/mapFragment2"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_dashboard"
@@ -22,4 +30,8 @@
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.info.InfoFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_info" />
+    <fragment
+        android:id="@+id/mapFragment2"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.MapFragment"
+        android:label="MapFragment" />
 </navigation>

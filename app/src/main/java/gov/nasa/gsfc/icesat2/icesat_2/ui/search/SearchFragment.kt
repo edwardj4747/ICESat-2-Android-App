@@ -11,6 +11,8 @@ import android.widget.TextView
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
+import androidx.navigation.Navigation
 import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.*
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -22,6 +24,8 @@ private const val LAT_INPUT_ERROR = "Please Enter Latitude between -86.0 and 86.
 private const val LONG_INPUT_ERROR = "Please Enter Longitude between -180.0 and 180.0 ${0x00B0.toChar()}E"
 private const val RADIUS_INPUT_ERROR_MILES = "Please Enter Radius between 1.1 and 25.0 Miles"
 private const val RADIUS_INPUT_ERROR_KILOMETERS = "Please Enter Radius between 1.1 and 40.2 Kilometers"
+
+private lateinit var navController:NavController
 
 class SearchFragment : Fragment() {
 
@@ -37,10 +41,19 @@ class SearchFragment : Fragment() {
         return root
     }
 
+    override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
+        super.onViewCreated(view, savedInstanceState)
+        navController = Navigation.findNavController(view)
+
+        btnSelectOnMap.setOnClickListener {
+            navController.navigate(R.id.action_navigation_home_to_mapFragment2)
+        }
+    }
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        if (MainActivity.getMainViewModel() != null) {
+        /*if (MainActivity.getMainViewModel() != null) {
             Log.d(TAG, "********************")
             Log.d(TAG, "SearchFragment assigning viewModel to MainActivity View Model")
             viewModel = MainActivity.getMainViewModel()
@@ -57,14 +70,14 @@ class SearchFragment : Fragment() {
             })
 
             viewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
-                /*Log.d(TAG, "=======Split into Chains Array===========")
+                *//*Log.d(TAG, "=======Split into Chains Array===========")
                 Log.d(TAG, "number of chains ${it.size}")
                 for (i in 0 until it.size) {
                     Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
-                }*/
+                }*//*
             })
         }
-
+*/
         btnSearch.setOnClickListener {
             Log.d(TAG, "SearchFragment: Search Button Pressed")
 

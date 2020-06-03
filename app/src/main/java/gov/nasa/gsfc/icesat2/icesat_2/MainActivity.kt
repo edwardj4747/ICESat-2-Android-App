@@ -4,11 +4,15 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
+import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
-import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
+import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.coroutines.*
 
 
@@ -32,11 +36,23 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_nav)
+
+       /* val navController = this.findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        findViewById<Toolbar>(R.id.toolbar)
+            .setupWithNavController(navController, appBarConfiguration)*/
+
+
+        setSupportActionBar(toolbar)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        toolbar.setupWithNavController(navController, appBarConfiguration)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        //created for the first time
+        /*//created for the first time
         if (savedInstanceState == null) {
             val fragmentTransaction = fragmentManger.beginTransaction()
             val searchFragment = SearchFragment()
@@ -53,7 +69,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             } else {
                 Log.d(TAG, "current frag is null so the listener could not be reattached")
             }
-        }
+        }*/
 
         /*val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
