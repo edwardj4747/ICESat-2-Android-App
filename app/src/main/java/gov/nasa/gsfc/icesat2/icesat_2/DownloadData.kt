@@ -31,9 +31,11 @@ class DownloadData {
     }
 
 
-    fun startDownload(string: String) {
+    //return true if any points meet search criteria. False if no points meet criteria
+    suspend fun startDownload(string: String) : Boolean{
         Log.d(TAG, "startDownload method begins")
-        CoroutineScope(Dispatchers.IO).launch {
+        var resultsFound = false
+        val job = CoroutineScope(Dispatchers.IO).launch {
             try {
                 val url = URL(string)
                 val jsonText = url.readText()
@@ -78,10 +80,12 @@ class DownloadData {
                             //TODO: remove allPointsList in ViewModel?
                             mainActivityViewModel.allPointsList.postValue(pointsArrayList)
                             mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
+                            resultsFound = true
                         }
                     } else {
                         //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
                         mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
+                        resultsFound = false
                     }
                 } else {
                     Log.d(TAG, "state is not true $state")
@@ -96,7 +100,10 @@ class DownloadData {
                 Log.d(TAG, "Exception ${e.message}")
             }
         }
-        Log.d(TAG, "startDownload method ends")
+
+        job.join()
+        Log.d(TAG, "startDownload method ends. returning $resultsFound")
+        return resultsFound
     }
 
     private fun convertDateTime(dateString: String, timeString: String): Array<Any?> {
