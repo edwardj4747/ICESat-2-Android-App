@@ -20,13 +20,13 @@
     </fragment>
 
     <fragment
-        android:id="@+id/navigation_dashboard"
+        android:id="@+id/navigation_favorites"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesFragment"
         android:label="@string/title_dashboard"
         tools:layout="@layout/fragment_favorite" />
 
     <fragment
-        android:id="@+id/navigation_notifications"
+        android:id="@+id/navigation_info"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.info.InfoFragment"
         android:label="@string/title_notifications"
         tools:layout="@layout/fragment_info" />

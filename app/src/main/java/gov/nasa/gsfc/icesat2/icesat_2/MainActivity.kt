@@ -4,11 +4,11 @@ import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
-import android.widget.Toolbar
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
@@ -44,11 +44,14 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             .setupWithNavController(navController, appBarConfiguration)*/
 
 
-        setSupportActionBar(toolbar)
+        //setSupportActionBar(toolbar)
+        //val appBarConfiguration = AppBarConfiguration(navController.graph)
+        //toolbar.setupWithNavController(navController, appBarConfiguration)
 
         val navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(navController.graph)
-        toolbar.setupWithNavController(navController, appBarConfiguration)
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_home, R.id.navigation_favorites, R.id.navigation_info))
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
