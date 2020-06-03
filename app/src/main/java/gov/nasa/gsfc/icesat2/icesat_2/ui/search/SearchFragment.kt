@@ -53,6 +53,10 @@ class SearchFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        //register the listener to be the parent activity every time the fragment is created. Gives access to all the methods in [ISearchFragmentCallback]
+        listener = requireActivity() as MainActivity
+
+
         /*if (MainActivity.getMainViewModel() != null) {
             Log.d(TAG, "********************")
             Log.d(TAG, "SearchFragment assigning viewModel to MainActivity View Model")
@@ -79,8 +83,6 @@ class SearchFragment : Fragment() {
         }
 */
         btnSearch.setOnClickListener {
-            Log.d(TAG, "SearchFragment: Search Button Pressed")
-
             val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
             if (inputs != null) {
                 val unit = if (unitSpinner.selectedItem.toString() == "Kilometers") {
@@ -92,12 +94,13 @@ class SearchFragment : Fragment() {
                 val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=$unit"
                 listener.searchButtonPressed(serverLocation, inputs[0], inputs[1], inputs[2])
             }
-            Log.d(TAG, "SearchFragment: SearchButtonPressed ends")
         }
 
         btnUseCurrentLoc.setOnClickListener {
             listener.useCurrentLocationButtonPressed()
         }
+
+
 
 
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)

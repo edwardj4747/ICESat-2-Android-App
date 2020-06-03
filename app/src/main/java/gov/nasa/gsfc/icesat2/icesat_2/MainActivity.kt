@@ -86,15 +86,16 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
-        /*Log.d(TAG, "MainActivity: starting download from $serverLocation")
+        Log.d(TAG, "MainActivity: starting download from $serverLocation")
+
 
         var searchResultsFound = false
 
-        *//**
+        /**
          * Determine if there are any results and store that in the searchFoundResults variable
          * Wait until that completes (jobDownloadData.join()) and if results found -> show them
          * otherwise display a dialog that no results were found
-         *//*
+         */
         CoroutineScope(Dispatchers.IO).launch {
             val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                 val downloadData = DownloadData()
@@ -107,11 +108,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             Log.d(TAG, "searchResultsFound = $searchResultsFound")
             if (searchResultsFound) {
                 Log.d(TAG, "YAY!! Search results found")
-                launchMapOnMainThread(lat, long, radius)
+                //launchMapOnMainThread(lat, long, radius)
             } else {
+                Log.d(TAG, "No Search results found")
                 showNoResultsDialogOnMainThread()
             }
-        }*/
+        }
 
     }
 
@@ -150,17 +152,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }*/
 
     private fun showNoResultsDialogOnMainThread() {
-        /*GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
             showNoResultsDialog()
-        }*/
+        }
     }
 
     private fun showNoResultsDialog() {
-        /*val alertBuilder = AlertDialog.Builder(this)
+        val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setMessage(R.string.noResultsDetails)
             ?.setTitle(R.string.noResults)
             ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
-        alertBuilder.show()*/
+        alertBuilder.show()
     }
 
 
