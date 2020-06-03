@@ -6,9 +6,13 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.findNavController
+import androidx.navigation.ui.AppBarConfiguration
+import androidx.navigation.ui.setupActionBarWithNavController
+import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
-import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
+import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.coroutines.*
 
 
@@ -32,7 +36,23 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
-        setContentView(R.layout.activity_main)
+        setContentView(R.layout.activity_main_nav)
+
+       /* val navController = this.findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(navController.graph)
+        findViewById<Toolbar>(R.id.toolbar)
+            .setupWithNavController(navController, appBarConfiguration)*/
+
+
+        //setSupportActionBar(toolbar)
+        //val appBarConfiguration = AppBarConfiguration(navController.graph)
+        //toolbar.setupWithNavController(navController, appBarConfiguration)
+
+        val navController = findNavController(R.id.nav_host_fragment)
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_info))
+
+        setupActionBarWithNavController(navController, appBarConfiguration)
+        bottom_nav_view.setupWithNavController(navController)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
