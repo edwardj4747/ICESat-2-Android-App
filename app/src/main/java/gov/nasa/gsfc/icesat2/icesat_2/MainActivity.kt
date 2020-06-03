@@ -36,7 +36,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        //created for the first time
+        /*//created for the first time
         if (savedInstanceState == null) {
             val fragmentTransaction = fragmentManger.beginTransaction()
             val searchFragment = SearchFragment()
@@ -53,7 +53,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             } else {
                 Log.d(TAG, "current frag is null so the listener could not be reattached")
             }
-        }
+        }*/
 
         /*val navView: BottomNavigationView = findViewById(R.id.nav_view)
         val navController = findNavController(R.id.nav_host_fragment)
@@ -66,15 +66,15 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
-        Log.d(TAG, "MainActivity: starting download from $serverLocation")
+        /*Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
         var searchResultsFound = false
 
-        /**
+        *//**
          * Determine if there are any results and store that in the searchFoundResults variable
          * Wait until that completes (jobDownloadData.join()) and if results found -> show them
          * otherwise display a dialog that no results were found
-         */
+         *//*
         CoroutineScope(Dispatchers.IO).launch {
             val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                 val downloadData = DownloadData()
@@ -91,45 +91,35 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             } else {
                 showNoResultsDialogOnMainThread()
             }
-        }
+        }*/
 
     }
 
     override fun useCurrentLocationButtonPressed() {
-        //testing adding a new Fragment over top
-        Log.d(TAG, "MainActivity: Replacing search fragment starts")
-        /*val newFrag = SearchFragment()
-        newFrag.addSearchFragmentCallbackListener(this)
-        val fragmentTransaction = fragmentManger.beginTransaction()
-        fragmentTransaction.apply {
-            replace(R.id.fragmentContainer, newFrag)
-            commit()
-        }*/
 
-        Log.d(TAG, "MainActivity: replacing searchFragment ends")
     }
 
     private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double) {
-        GlobalScope.launch(Dispatchers.Main) {
+        /*GlobalScope.launch(Dispatchers.Main) {
             showMap()
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
-        }
+        }*/
 
     }
 
     private fun showMap() {
-        val mapFragment = MapFragment()
+        /*val mapFragment = MapFragment()
         val fragmentTransaction = fragmentManger.beginTransaction()
         fragmentTransaction.apply {
             replace(R.id.fragmentContainer, mapFragment)
             addToBackStack(null)
             commit()
         }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)
+        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
     }
 
-    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+    /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
                 onBackPressed()
@@ -137,20 +127,20 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             }
         }
         return true
-    }
+    }*/
 
     private fun showNoResultsDialogOnMainThread() {
-        GlobalScope.launch(Dispatchers.Main) {
+        /*GlobalScope.launch(Dispatchers.Main) {
             showNoResultsDialog()
-        }
+        }*/
     }
 
     private fun showNoResultsDialog() {
-        val alertBuilder = AlertDialog.Builder(this)
+        /*val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setMessage(R.string.noResultsDetails)
             ?.setTitle(R.string.noResults)
             ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
-        alertBuilder.show()
+        alertBuilder.show()*/
     }
 
 
