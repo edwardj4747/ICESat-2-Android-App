@@ -6,6 +6,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.NavController
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -21,6 +22,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     private val fragmentManger = supportFragmentManager
+    private lateinit var navController: NavController
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -48,7 +50,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         //val appBarConfiguration = AppBarConfiguration(navController.graph)
         //toolbar.setupWithNavController(navController, appBarConfiguration)
 
-        val navController = findNavController(R.id.nav_host_fragment)
+        navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_info))
 
         setupActionBarWithNavController(navController, appBarConfiguration)
@@ -108,7 +110,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             Log.d(TAG, "searchResultsFound = $searchResultsFound")
             if (searchResultsFound) {
                 Log.d(TAG, "YAY!! Search results found")
-                //launchMapOnMainThread(lat, long, radius)
+                launchMapOnMainThread(lat, long, radius)
             } else {
                 Log.d(TAG, "No Search results found")
                 showNoResultsDialogOnMainThread()
@@ -122,23 +124,16 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double) {
-        /*GlobalScope.launch(Dispatchers.Main) {
+        GlobalScope.launch(Dispatchers.Main) {
             showMap()
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
-        }*/
+        }
 
     }
 
     private fun showMap() {
-        /*val mapFragment = MapFragment()
-        val fragmentTransaction = fragmentManger.beginTransaction()
-        fragmentTransaction.apply {
-            replace(R.id.fragmentContainer, mapFragment)
-            addToBackStack(null)
-            commit()
-        }
-        supportActionBar?.setDisplayHomeAsUpEnabled(true)*/
+        navController.navigate(R.id.action_navigation_home_to_mapFragment2)
     }
 
     /*override fun onOptionsItemSelected(item: MenuItem): Boolean {
