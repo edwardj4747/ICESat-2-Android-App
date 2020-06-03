@@ -81,7 +81,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                 showNoResultsDialogOnMainThread()
             }
         }
-
     }
 
     override fun useCurrentLocationButtonPressed() {
@@ -94,7 +93,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
         }
-
     }
 
     private fun showMap() {
@@ -114,6 +112,16 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             ?.setTitle(R.string.noResults)
             ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
         alertBuilder.show()
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            android.R.id.home -> {
+                //TODO: This feels like a very bad solution
+                onBackPressed()
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 
 
