@@ -30,7 +30,6 @@ private lateinit var navController:NavController
 class SearchFragment : Fragment() {
 
     private lateinit var listener: ISearchFragmentCallback
-    private var viewModel: MainViewModel? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -57,31 +56,6 @@ class SearchFragment : Fragment() {
         listener = requireActivity() as MainActivity
 
 
-        /*if (MainActivity.getMainViewModel() != null) {
-            Log.d(TAG, "********************")
-            Log.d(TAG, "SearchFragment assigning viewModel to MainActivity View Model")
-            viewModel = MainActivity.getMainViewModel()
-
-            viewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
-                Log.d(TAG, "SearchFragment value of allPoints is $it")
-                Log.d(TAG, "size of allPoints is ${it.size}")
-                try {
-                    updateTextView(it[0].toString())
-                } catch (e: Exception) {
-                    Log.d(TAG, "SearchFragment no values in all Points array")
-                }
-
-            })
-
-            viewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
-                *//*Log.d(TAG, "=======Split into Chains Array===========")
-                Log.d(TAG, "number of chains ${it.size}")
-                for (i in 0 until it.size) {
-                    Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
-                }*//*
-            })
-        }
-*/
         btnSearch.setOnClickListener {
             val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
             if (inputs != null) {
@@ -100,16 +74,14 @@ class SearchFragment : Fragment() {
             listener.useCurrentLocationButtonPressed()
         }
 
-
-
-
+        //set up the spinner
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         unitSpinner.adapter = adapter
 
     }
 
-    //return null if there is an error with one of the inputs. Otherwise return array of (lat, lng, radius
+    //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
     private fun allInputsValid(): DoubleArray? {
         //lat range -86, 86; lon range -180 180
         if (editTextLat.text.toString() == "") {
@@ -167,14 +139,5 @@ class SearchFragment : Fragment() {
                 .show()
         }
     }
-
-    private fun updateTextView(text: String) {
-        textViewSearch.text = text
-    }
-
-    fun addSearchFragmentCallbackListener(theListener: ISearchFragmentCallback) {
-        listener = theListener
-    }
-
 
 }
