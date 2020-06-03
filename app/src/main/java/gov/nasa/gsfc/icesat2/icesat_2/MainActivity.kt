@@ -3,15 +3,12 @@ package gov.nasa.gsfc.icesat2.icesat_2
 import android.app.AlertDialog
 import android.os.Bundle
 import android.util.Log
-import android.view.Menu
 import android.view.MenuItem
-import android.widget.Button
 import androidx.appcompat.app.AppCompatActivity
 import androidx.lifecycle.ViewModelProviders
 import com.google.android.gms.maps.model.LatLng
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
-import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
 
 
@@ -73,6 +70,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
         var searchResultsFound = false
 
+        /**
+         * Determine if there are any results and store that in the searchFoundResults variable
+         * Wait until that completes (jobDownloadData.join()) and if results found -> show them
+         * otherwise display a dialog that no results were found
+         */
         CoroutineScope(Dispatchers.IO).launch {
             val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                 val downloadData = DownloadData()
@@ -85,25 +87,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             Log.d(TAG, "searchResultsFound = $searchResultsFound")
             if (searchResultsFound) {
                 Log.d(TAG, "YAY!! Search results found")
-                changeThreadAndLaunchMap(lat, long, radius)
+                launchMapOnMainThread(lat, long, radius)
             } else {
                 showNoResultsDialogOnMainThread()
             }
         }
 
-
-
-
-
-
-
-
-
-
-
-        /*showMap()
-        mainViewModel.searchCenter.value = LatLng(lat, long)
-        mainViewModel.searchRadius.value = radius*/
     }
 
     override fun useCurrentLocationButtonPressed() {
@@ -120,7 +109,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "MainActivity: replacing searchFragment ends")
     }
 
-    private fun changeThreadAndLaunchMap(lat: Double, long: Double, radius: Double) {
+    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double) {
         GlobalScope.launch(Dispatchers.Main) {
             showMap()
             mainViewModel.searchCenter.value = LatLng(lat, long)
