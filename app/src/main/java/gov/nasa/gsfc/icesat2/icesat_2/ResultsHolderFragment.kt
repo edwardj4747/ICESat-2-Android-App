@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
+import android.util.Log
 import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +14,8 @@ import kotlinx.android.synthetic.main.fragment_results_holder.*
 /**
  * A simple [Fragment] subclass.
  */
+private const val TAG = "ResultsHolderFragment"
+
 class ResultsHolderFragment : Fragment() {
 
     override fun onCreateView(
@@ -24,7 +27,8 @@ class ResultsHolderFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val navController = view.findNavController()
+        val navController = activity?.findNavController(R.id.results_holder_host)
+        Log.d(TAG, "navController is ${navController}")
 
         tabLayout.addOnTabSelectedListener(object: TabLayout.OnTabSelectedListener {
             override fun onTabReselected(tab: TabLayout.Tab?) {

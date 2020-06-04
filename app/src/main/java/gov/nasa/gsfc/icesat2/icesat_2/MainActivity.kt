@@ -58,6 +58,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         btnResHolder.setOnClickListener {
             navController.navigate(R.id.action_navigation_search_to_resultsHolderFragment)
         }
+
+        Log.d(TAG, "main activity navcontroller is $navController")
     }
 
     override fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double) {
