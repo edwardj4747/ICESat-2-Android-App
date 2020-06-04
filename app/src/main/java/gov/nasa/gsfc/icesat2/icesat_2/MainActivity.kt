@@ -55,12 +55,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
-        btnResHolder.setOnClickListener {
-            navController.navigate(R.id.action_navigation_search_to_resultsHolderFragment)
-        }
-
-        Log.d(TAG, "main activity navcontroller is $navController")
-        Log.d(TAG, "main activity start destination ${navController.graph.startDestination}")
     }
 
     override fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double) {
