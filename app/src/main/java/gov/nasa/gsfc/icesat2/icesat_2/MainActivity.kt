@@ -25,6 +25,7 @@ private const val TAG = "MainActivity"
 class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     private lateinit var navController: NavController
+    private var currentlySearching = false //to make sure only one search is running at a time
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -47,7 +48,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         //toolbar.setupWithNavController(navController, appBarConfiguration)
 
         navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_info))
+        val appBarConfiguration = AppBarConfiguration(
+            setOf(
+                R.id.navigation_search,
+                R.id.navigation_favorites,
+                R.id.navigation_info
+            )
+        )
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav_view.setupWithNavController(navController)
@@ -55,7 +62,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
 
-    override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
+    override fun searchButtonPressed(
+        serverLocation: String,
+        lat: Double,
+        long: Double,
+        radius: Double
+    ) {
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
         Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
@@ -63,32 +75,44 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         var searchResultsFound = false
 
         /**
+         * If there is not a current search happening and we are connected to a network THEN
+         *
          * Determine if there are any results and store that in the searchFoundResults variable
          * Wait until that completes (jobDownloadData.join()) and if results found -> show them
          * otherwise display a dialog that no results were found
          */
-        if (isNetworkConnected()) {
-            CoroutineScope(Dispatchers.IO).launch {
-                val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                    val downloadData = DownloadData()
-                    val result: Deferred<Boolean> =
-                        async { downloadData.startDownload(serverLocation) }
-                    searchResultsFound = result.await()
-                }
+        if (!currentlySearching) {
+            if (isNetworkConnected()) {
+                currentlySearching = true
+                CoroutineScope(Dispatchers.IO).launch {
+                    val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
+                        val downloadData = DownloadData()
+                        val result: Deferred<Boolean> =
+                            async { downloadData.startDownload(serverLocation) }
+                        searchResultsFound = result.await()
+                    }
 
-                jobDownloadData.join()
+                    jobDownloadData.join()
 
-                Log.d(TAG, "searchResultsFound = $searchResultsFound")
-                if (searchResultsFound) {
-                    Log.d(TAG, "YAY!! Search results found")
-                    launchMapOnMainThread(lat, long, radius)
-                } else {
-                    Log.d(TAG, "No Search results found")
-                    showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+                    Log.d(TAG, "searchResultsFound = $searchResultsFound")
+                    if (searchResultsFound) {
+                        Log.d(TAG, "YAY!! Search results found")
+                        launchMapOnMainThread(lat, long, radius)
+                    } else {
+                        Log.d(TAG, "No Search results found")
+                        showDialogOnMainThread(
+                            R.string.noResults,
+                            R.string.noResultsDetails,
+                            R.string.backToSearch
+                        )
+                    }
+                    currentlySearching = false
                 }
+            } else {
+                showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
             }
         } else {
-            showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
+            Log.d(TAG, "*********search REJECTED*****************")
         }
     }
 
@@ -127,7 +151,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         val alertBuilder = AlertDialog.Builder(this)
         alertBuilder.setMessage(message)
             ?.setTitle(title)
-            ?.setPositiveButton(buttonMessage) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
+            ?.setPositiveButton(buttonMessage) { dialog, which ->
+                Log.d(
+                    TAG,
+                    "Dialog positive button clicked"
+                )
+            }
         alertBuilder.show()
     }
 
