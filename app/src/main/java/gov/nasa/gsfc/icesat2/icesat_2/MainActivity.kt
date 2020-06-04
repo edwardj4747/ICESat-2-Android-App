@@ -128,7 +128,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     private fun showMap() {
-        navController.navigate(R.id.action_navigation_home_to_mapFragment2)
+        //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
+        navController.navigate(R.id.action_navigation_search_to_resultsHolderFragment)
     }
 
 
