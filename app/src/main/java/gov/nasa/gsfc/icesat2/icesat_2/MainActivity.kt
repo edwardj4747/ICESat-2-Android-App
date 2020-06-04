@@ -60,6 +60,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         }
 
         Log.d(TAG, "main activity navcontroller is $navController")
+        Log.d(TAG, "main activity start destination ${navController.graph.startDestination}")
     }
 
     override fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double) {

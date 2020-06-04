@@ -40,6 +40,6 @@
     <fragment
         android:id="@+id/resultsHolderFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ResultsHolderFragment"
-        android:label="fragment_results_holder"
+        android:label="@string/searchResults"
         tools:layout="@layout/fragment_results_holder" />
 </navigation>

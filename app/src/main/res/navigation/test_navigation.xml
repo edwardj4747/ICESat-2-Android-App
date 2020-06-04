@@ -18,7 +18,7 @@
         android:label="fragment_list"
         tools:layout="@layout/fragment_list" >
         <action
-            android:id="@+id/action_listFragment_to_mapFragment"
+            android:id="@+id/action_list_fragment_to_map_fragment"
             app:destination="@id/mapFragment" />
     </fragment>
 </navigation>

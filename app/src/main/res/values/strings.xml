@@ -43,4 +43,5 @@
     <!--    ResultsHolderFragment-->
     <string name="map">Map</string>
     <string name="list">List</string>
+    <string name="searchResults">Search Results</string>
 </resources>
