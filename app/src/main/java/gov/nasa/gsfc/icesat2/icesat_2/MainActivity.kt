@@ -1,6 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.app.AlertDialog
+import android.content.Context
+import android.net.ConnectivityManager
+import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.MenuItem
@@ -55,6 +58,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     override fun searchButtonPressed(serverLocation: String, lat:Double, long: Double, radius:Double) {
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
+        Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
 
         var searchResultsFound = false
 
@@ -63,24 +67,37 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
          * Wait until that completes (jobDownloadData.join()) and if results found -> show them
          * otherwise display a dialog that no results were found
          */
-        CoroutineScope(Dispatchers.IO).launch {
-            val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                val downloadData = DownloadData()
-                val result: Deferred<Boolean> = async { downloadData.startDownload(serverLocation) }
-                searchResultsFound = result.await()
-            }
+        if (isNetworkConnected()) {
+            CoroutineScope(Dispatchers.IO).launch {
+                val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
+                    val downloadData = DownloadData()
+                    val result: Deferred<Boolean> =
+                        async { downloadData.startDownload(serverLocation) }
+                    searchResultsFound = result.await()
+                }
 
-            jobDownloadData.join()
+                jobDownloadData.join()
 
-            Log.d(TAG, "searchResultsFound = $searchResultsFound")
-            if (searchResultsFound) {
-                Log.d(TAG, "YAY!! Search results found")
-                launchMapOnMainThread(lat, long, radius)
-            } else {
-                Log.d(TAG, "No Search results found")
-                showNoResultsDialogOnMainThread()
+                Log.d(TAG, "searchResultsFound = $searchResultsFound")
+                if (searchResultsFound) {
+                    Log.d(TAG, "YAY!! Search results found")
+                    launchMapOnMainThread(lat, long, radius)
+                } else {
+                    Log.d(TAG, "No Search results found")
+                    showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+                }
             }
+        } else {
+            showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
         }
+    }
+
+    private fun isNetworkConnected(): Boolean {
+        val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
+            return cm.activeNetwork != null
+        }
+        return cm.activeNetworkInfo != null
     }
 
     override fun useCurrentLocationButtonPressed() {
@@ -100,17 +117,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
 
-    private fun showNoResultsDialogOnMainThread() {
+    private fun showDialogOnMainThread(title: Int, message: Int, buttonMessage: Int) {
         GlobalScope.launch(Dispatchers.Main) {
-            showNoResultsDialog()
+            showDialog(title, message, buttonMessage)
         }
     }
 
-    private fun showNoResultsDialog() {
+    private fun showDialog(title: Int, message: Int, buttonMessage: Int) {
         val alertBuilder = AlertDialog.Builder(this)
-        alertBuilder.setMessage(R.string.noResultsDetails)
-            ?.setTitle(R.string.noResults)
-            ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
+        alertBuilder.setMessage(message)
+            ?.setTitle(title)
+            ?.setPositiveButton(buttonMessage) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
         alertBuilder.show()
     }
 

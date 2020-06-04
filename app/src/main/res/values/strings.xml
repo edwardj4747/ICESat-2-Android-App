@@ -31,4 +31,9 @@
     <string name="noResultsDetails">There are currently no results for your search criteria.
     New cycle data will be available soon. Try searching in another location</string>
     <string name="backToSearch">Back to Search</string>
+
+<!--    No Network Connection Dialog-->
+    <string name="noNetworkTitle">No Network Connection</string>
+    <string name="noNetworkDescription">Please connect to a network and then try again</string>
+    <string name="ok">OK</string>
 </resources>
