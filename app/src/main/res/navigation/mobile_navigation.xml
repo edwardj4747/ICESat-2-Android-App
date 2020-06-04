@@ -17,6 +17,9 @@
             app:exitAnim="@anim/slide_out_left"
             app:popEnterAnim="@anim/slide_in_left"
             app:popExitAnim="@anim/slide_out_right"/>
+        <action
+            android:id="@+id/action_navigation_search_to_resultsHolderFragment"
+            app:destination="@id/resultsHolderFragment" />
     </fragment>
 
     <fragment
@@ -34,4 +37,9 @@
         android:id="@+id/mapFragment2"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.MapFragment"
         android:label="MapFragment" />
+    <fragment
+        android:id="@+id/resultsHolderFragment"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ResultsHolderFragment"
+        android:label="fragment_results_holder"
+        tools:layout="@layout/fragment_results_holder" />
 </navigation>

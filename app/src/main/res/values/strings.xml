@@ -26,14 +26,21 @@
     </string-array>
     <string name="title_activity_delete_me">Map</string>
 
-<!--    Map Fragment Dialog-->
+    <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>
     <string name="noResultsDetails">There are currently no results for your search criteria.
     New cycle data will be available soon. Try searching in another location</string>
     <string name="backToSearch">Back to Search</string>
 
-<!--    No Network Connection Dialog-->
+    <!--    No Network Connection Dialog-->
     <string name="noNetworkTitle">No Network Connection</string>
     <string name="noNetworkDescription">Please connect to a network and then try again</string>
     <string name="ok">OK</string>
+
+    <!-- TODO: Remove or change this placeholder text -->
+    <string name="hello_blank_fragment">Hello blank fragment</string>
+
+    <!--    ResultsHolderFragment-->
+    <string name="map">Map</string>
+    <string name="list">List</string>
 </resources>
