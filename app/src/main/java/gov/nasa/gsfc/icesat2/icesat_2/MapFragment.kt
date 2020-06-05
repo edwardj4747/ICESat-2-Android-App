@@ -161,15 +161,27 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        Log.d(TAG, "markerCliked $p0")
+        Log.d(TAG, "markerCliked. measured height ${infoConstraintLayout.height.toFloat()}")
+        //Log.d(TAG, "map click ${infoConstraintLayout.height.toFloat()}")
         infoConstraintLayout.visibility = View.VISIBLE
+        //ObjectAnimator.ofFloat(infoConstraintLayout, "translationY", -1 * infoConstraintLayout.measuredHeight.toFloat()).apply {
+        /*val path = Path()
+        ObjectAnimator.ofFloat(infoConstraintLayout, "translateX", "translateY", path.lineTo(50.0F,50.0F)).apply {
+            duration = 3000
+            start()
+        }
+
+*/
+        infoConstraintLayout.animate().translationY(-1 * infoConstraintLayout.height.toFloat()).start()
         textViewTime.text = p0?.title
         textViewDate.text = p0?.title
         return false
     }
 
     override fun onMapClick(p0: LatLng?) {
-        infoConstraintLayout.visibility = View.GONE
+        //infoConstraintLayout.visibility = View.GONE
+        Log.d(TAG, "map click ${infoConstraintLayout.height.toFloat()}")
+        infoConstraintLayout.animate().translationY(infoConstraintLayout.height.toFloat()).start()
     }
 
     /* private fun userLocation() {
