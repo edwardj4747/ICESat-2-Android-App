@@ -44,7 +44,8 @@
     <string name="map">Map</string>
     <string name="list">List</string>
     <string name="searchResults">Search Results</string>
-
+    <string name="star">Star</string>
+    <string name="close">Close</string>
 
 <!--    Info Fragment-->
 

@@ -13,10 +13,11 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.main.fragment_map.*
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
@@ -84,6 +85,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
         mMap.setOnMarkerClickListener(this)
+        mMap.setOnMapClickListener(this)
 
         if (this::pointChains.isInitialized) {
             Log.d(TAG, "Adding polyline from inside onMapReady")
@@ -160,7 +162,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onMarkerClick(p0: Marker?): Boolean {
         Log.d(TAG, "markerCliked $p0")
+        infoConstraintLayout.visibility = View.VISIBLE
+        textViewTime.text = p0?.title
+        textViewDate.text = p0?.title
         return false
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        infoConstraintLayout.visibility = View.GONE
     }
 
     /* private fun userLocation() {
