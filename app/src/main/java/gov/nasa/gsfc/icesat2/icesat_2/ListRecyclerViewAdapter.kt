@@ -1,11 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-import android.content.Context
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.TextView
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.RecyclerView
 
 //ViewHolder - storing references to the views involved to make this more efficient
@@ -23,7 +21,7 @@ class ListRecyclerViewAdapter(private val allPoints: ArrayList<Point>) : Recycle
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         holder.textViewDateTime.text = allPoints[position].dateString
-        holder.textViewLatLng.text = "${allPoints[position].latitude} N ${allPoints[position].longitude} E"
+        holder.textViewLatLng.text = "${allPoints[position].latitude}${0x00B0.toChar()}N ${allPoints[position].longitude}${0x00B0.toChar()}E"
     }
 
     override fun getItemCount(): Int {
