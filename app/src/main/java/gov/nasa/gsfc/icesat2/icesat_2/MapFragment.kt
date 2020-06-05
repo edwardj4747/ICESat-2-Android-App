@@ -16,7 +16,7 @@ import com.google.android.gms.maps.model.*
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
@@ -83,6 +83,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
+        mMap.setOnMarkerClickListener(this)
 
         if (this::pointChains.isInitialized) {
             Log.d(TAG, "Adding polyline from inside onMapReady")
@@ -96,12 +97,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "addChainPolyLine Starts")
         val polylineOptions = PolylineOptions()
 
+
         //test addign a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
         }
+
         mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
             color = (0xff32CD32.toInt())
@@ -155,29 +158,34 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return zoomLevel.toFloat()
     }
 
-   /* private fun userLocation() {
-        try {
-            val locationResult = fusedLocationClient.lastLocation
-            locationResult.addOnCompleteListener {
-                Log.d(TAG, "location result complete")
-                if (it.isSuccessful) {
-                    Log.d(TAG, "was successful: $it")
-                    val lastKnownLocation = it.result
-                    val lat = lastKnownLocation?.latitude
-                    val long = lastKnownLocation?.longitude
-                    Log.d(TAG, "lat $lat and long $long")
-                    if (lat != null && long != null) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), ZOOM_LEVEL))
-                        mMap.isMyLocationEnabled = true
-                    }
-                } else {
-                    Log.d(TAG, "location result listener failed ${it.exception}")
-                }
-            }
-        } catch (e: SecurityException) {
-            Log.d(TAG, "Security exception e: ${e.message}")
-        }
-    }*/
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        Log.d(TAG, "markerCliked $p0")
+        return false
+    }
+
+    /* private fun userLocation() {
+         try {
+             val locationResult = fusedLocationClient.lastLocation
+             locationResult.addOnCompleteListener {
+                 Log.d(TAG, "location result complete")
+                 if (it.isSuccessful) {
+                     Log.d(TAG, "was successful: $it")
+                     val lastKnownLocation = it.result
+                     val lat = lastKnownLocation?.latitude
+                     val long = lastKnownLocation?.longitude
+                     Log.d(TAG, "lat $lat and long $long")
+                     if (lat != null && long != null) {
+                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), ZOOM_LEVEL))
+                         mMap.isMyLocationEnabled = true
+                     }
+                 } else {
+                     Log.d(TAG, "location result listener failed ${it.exception}")
+                 }
+             }
+         } catch (e: SecurityException) {
+             Log.d(TAG, "Security exception e: ${e.message}")
+         }
+     }*/
 
 
 
