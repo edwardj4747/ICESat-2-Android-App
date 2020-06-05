@@ -1,7 +1,10 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.app.AlertDialog
+import android.content.Intent
+import android.location.Geocoder
 import android.os.Bundle
+import android.provider.CalendarContract
 import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
@@ -13,6 +16,8 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.main.fragment_map.*
+import java.util.*
 
 private const val TAG = "MapFragment"
 
@@ -78,6 +83,13 @@ class MapFragment : Fragment(), OnMapReadyCallback {
             Log.d(TAG, "MapFrag searchRadius observed to be $it")
             searchRadius = it
         })
+
+        btnAddEvent.setOnClickListener {
+            addToCalendar("ICESat-2 Flyover", pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
+            /*for (i in 0 until pointChains[0].size) {
+                geocodeLocation(pointChains[0][i].latitude, pointChains[0][i].longitude)
+            }*/
+        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -180,5 +192,31 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     }*/
 
 
+    private fun addToCalendar(title: String, startTime: Date, lat: Double, long: Double) {
+        val cityLocation = geocodeLocation(lat, long)
 
+        val intent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.Events.TITLE, title)
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.time)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime.time + 60 * 1000) //end time is one minute later
+            putExtra(CalendarContract.Events.EVENT_LOCATION, cityLocation)
+        }
+        if (intent.resolveActivity(requireContext().packageManager) != null) {
+            startActivity(intent)
+        }
+    }
+
+    fun geocodeLocation(lat: Double, long: Double) : String {
+        Log.d(TAG, "geocode location starts")
+        val geocoder = Geocoder(requireContext())
+        val address = geocoder.getFromLocation(lat, long, 1)
+        //Log.d(TAG, "adress is $address")
+        Log.d(TAG, "address line ${address[0].getAddressLine(0)}")
+       /* Log.d(TAG, "address line ${address[0].getAddressLine(1)}")
+        Log.d(TAG, "address line ${address[0].getAddressLine(2)}")
+        Log.d(TAG, "address line ${address[0].getAddressLine(3)}")*/
+        Log.d(TAG, "admin area is ${address[0].adminArea}")
+        return address[0].getAddressLine(0)
+    }
 }
