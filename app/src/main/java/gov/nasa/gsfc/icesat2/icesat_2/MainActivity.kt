@@ -2,11 +2,9 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.app.AlertDialog
 import android.content.Context
-import android.content.Intent
 import android.net.ConnectivityManager
 import android.os.Build
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity

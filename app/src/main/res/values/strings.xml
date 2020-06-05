@@ -45,6 +45,8 @@
     <string name="list">List</string>
     <string name="searchResults">Search Results</string>
 
+    <string name="icesatFlyover">ICESat-2 Flyover</string>
+
 
 <!--    Info Fragment-->
 
@@ -64,4 +66,9 @@ This app will enable you to see where ICESat-2 will pass over an area on the Ear
 Please leave us feedback on the app store. We are excited about the ICESat-2 mission and want to share its results with the community.
         <a href = "https://icesat-2.gsfc.nasa.gov/science/data-products">ICESat-2 Data Products</a>
         are available to the public from the <a href = "https://nsidc.org/">National Snow and Ice Data Center (NSIDC)</a>.</string>
+
+
+<!--    Main Menu-->
+    <string name="addToCalendar">Add to Calendar</string>
+
 </resources>

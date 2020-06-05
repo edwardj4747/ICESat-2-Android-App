@@ -6,9 +6,7 @@ import android.location.Geocoder
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -38,7 +36,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-
+        setHasOptionsMenu(true)
         Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -85,10 +83,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         })
 
         btnAddEvent.setOnClickListener {
-            addToCalendar("ICESat-2 Flyover", pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
-            /*for (i in 0 until pointChains[0].size) {
-                geocodeLocation(pointChains[0][i].latitude, pointChains[0][i].longitude)
-            }*/
+            addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
         }
     }
 
@@ -207,7 +202,7 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         }
     }
 
-    fun geocodeLocation(lat: Double, long: Double) : String {
+    private fun geocodeLocation(lat: Double, long: Double) : String {
         Log.d(TAG, "geocode location starts")
         val geocoder = Geocoder(requireContext())
         val address = geocoder.getFromLocation(lat, long, 1)
@@ -218,5 +213,18 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "address line ${address[0].getAddressLine(3)}")*/
         Log.d(TAG, "admin area is ${address[0].adminArea}")
         return address[0].getAddressLine(0)
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuAddToCalendar -> {
+                addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
+            }
+        }
+        return super.onOptionsItemSelected(item)
     }
 }
