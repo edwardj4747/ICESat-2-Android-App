@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.info
 
-import android.content.Intent
 import android.os.Bundle
 import android.provider.MediaStore.Video.Thumbnails.VIDEO_ID
 import android.text.method.LinkMovementMethod
@@ -8,6 +7,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import com.google.android.youtube.player.YouTubeStandalonePlayer
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_info.*
 
@@ -23,8 +23,6 @@ class InfoFragment : Fragment() {
             container: ViewGroup?,
             savedInstanceState: Bundle?
     ): View? {
-        /*notificationsViewModel =
-                ViewModelProviders.of(this).get(InfoViewModel::class.java)*/
         return inflater.inflate(R.layout.fragment_info, container, false)
     }
 
@@ -32,7 +30,8 @@ class InfoFragment : Fragment() {
         super.onActivityCreated(savedInstanceState)
 
         textViewWatchVideo.setOnClickListener {
-
+            val intent = YouTubeStandalonePlayer.createVideoIntent(requireActivity(), getString(R.string.google_maps_key), "ybt5Qy4XaNU", 0, true, false)
+            startActivity(intent)
         }
 
         //clicking on links takes you to the appropriate webpage
