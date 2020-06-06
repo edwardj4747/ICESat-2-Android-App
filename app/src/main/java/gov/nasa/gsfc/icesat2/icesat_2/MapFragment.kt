@@ -7,13 +7,13 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_map.*
 
 private const val TAG = "MapFragment"
 
@@ -23,6 +23,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
+    private lateinit var fm: FragmentManager
+    private lateinit var markerSelectedFragment: MarkerSelectedFragment
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -34,6 +36,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        fm = childFragmentManager
 
         Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
@@ -161,27 +164,23 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onMarkerClick(p0: Marker?): Boolean {
-        Log.d(TAG, "markerCliked. measured height ${infoConstraintLayout.height.toFloat()}")
-        //Log.d(TAG, "map click ${infoConstraintLayout.height.toFloat()}")
-        infoConstraintLayout.visibility = View.VISIBLE
-        //ObjectAnimator.ofFloat(infoConstraintLayout, "translationY", -1 * infoConstraintLayout.measuredHeight.toFloat()).apply {
-        /*val path = Path()
-        ObjectAnimator.ofFloat(infoConstraintLayout, "translateX", "translateY", path.lineTo(50.0F,50.0F)).apply {
-            duration = 3000
-            start()
+        val fragmentTransaction = fm.beginTransaction()
+        markerSelectedFragment = MarkerSelectedFragment.newInstance(p0!!.title, p0.title)
+        fragmentTransaction.apply {
+            setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+            replace(R.id.mapFragmentContainer, markerSelectedFragment)
+            commit()
         }
-
-*/
-        infoConstraintLayout.animate().translationY(-1 * infoConstraintLayout.height.toFloat()).start()
-        textViewTime.text = p0?.title
-        textViewDate.text = p0?.title
         return false
     }
 
     override fun onMapClick(p0: LatLng?) {
-        //infoConstraintLayout.visibility = View.GONE
-        Log.d(TAG, "map click ${infoConstraintLayout.height.toFloat()}")
-        infoConstraintLayout.animate().translationY(infoConstraintLayout.height.toFloat()).start()
+        if (this::markerSelectedFragment.isInitialized) {
+            fm.beginTransaction().apply {
+                remove(markerSelectedFragment)
+                commit()
+            }
+        }
     }
 
     /* private fun userLocation() {
