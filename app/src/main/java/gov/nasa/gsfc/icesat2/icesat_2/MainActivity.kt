@@ -58,7 +58,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     }
 
-    override fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double) {
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double) {
+
+        val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
         Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
