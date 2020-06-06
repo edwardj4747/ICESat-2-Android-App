@@ -46,7 +46,17 @@ class MarkerSelectedFragment : Fragment() {
         textViewTime.text = timeString
 
         btnFavorite.setOnClickListener {
-            Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
+            if (btnFavorite.tag == "favorite") {
+                //remove from favorites
+                btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
+                btnFavorite.tag = "notFavorite"
+                Toast.makeText(requireContext(), "Need to Remove From Favorites", Toast.LENGTH_SHORT).show()
+            } else {
+                btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
+                btnFavorite.tag = "favorite"
+                Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
+            }
+
         }
 
         btnClose.setOnClickListener {
