@@ -7,9 +7,12 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.SeekBar
 import androidx.fragment.app.Fragment
+import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.Circle
+import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 import kotlinx.android.synthetic.main.fragment_select_on_map.*
@@ -31,6 +34,8 @@ private const val TAG = "SelectOnMapFragment"
 class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var chosenLocation: LatLng
+    private lateinit var previousCircle: Circle
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -64,8 +69,16 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
         seekBar.isEnabled = false
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                val seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
+                var seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
+                //constraint required for searching
+                if (seekBarValue == 1.0) {
+                    seekBarValue = 1.1
+                }
                 Log.d(TAG, "progress changed. Progress is $seekBarValue")
+                val formattedString = String.format("%.1f miles\n%.1f kilometers", seekBarValue, seekBarValue * 1.60934)
+                textViewDropPin.text = formattedString
+
+                drawCircle(chosenLocation, seekBarValue)
             }
 
             override fun onStartTrackingTouch(seekBar: SeekBar?) {}
@@ -73,6 +86,10 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
             override fun onStopTrackingTouch(seekBar: SeekBar?) {}
 
         })
+
+        btnSearch.setOnClickListener {
+
+        }
     }
 
     companion object {
@@ -104,12 +121,28 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     override fun onMapLongClick(clickLocation: LatLng?) {
         Log.d(TAG, "Long clicked recorded @ $clickLocation")
         if (clickLocation != null) {
-            seekBar.isEnabled = true
+            chosenLocation = clickLocation
             val markerOptions = MarkerOptions()
             val stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
             val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
             mMap.addMarker(markerOptions.position(clickLocation).title(stringLocation).snippet(truncatedLatLng)).showInfoWindow()
+            seekBar.isEnabled = true
+            //the default value of the seekbar
+            drawCircle(chosenLocation, 12.5)
+            //zoom in towards the pointer
+            mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clickLocation, 9.25F))
         }
+    }
+
+    private fun drawCircle(center: LatLng, radius: Double) {
+        Log.d(TAG, "Drawing circle")
+        val MILES_TO_METERS = 1609.34
+        val circleOption = CircleOptions().center(center).radius(radius * MILES_TO_METERS)
+        if (this::previousCircle.isInitialized) {
+           previousCircle.remove()
+        }
+        previousCircle = mMap.addCircle(circleOption)
+        Log.d(TAG, "drawing circle completes")
     }
 
 }
