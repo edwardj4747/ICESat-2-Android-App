@@ -4,6 +4,7 @@ import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import kotlinx.android.synthetic.main.fragment_marker_selected.*
 
@@ -43,6 +44,15 @@ class MarkerSelectedFragment : Fragment() {
 
         textViewDate.text = dateString
         textViewTime.text = timeString
+
+        btnFavorite.setOnClickListener {
+            Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
+        }
+
+        btnClose.setOnClickListener {
+            val listener = requireParentFragment() as MapFragment
+            listener.closeButtonPressed()
+        }
     }
 
     companion object {

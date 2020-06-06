@@ -17,7 +17,7 @@ import com.google.android.gms.maps.model.*
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
@@ -181,6 +181,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 commit()
             }
         }
+    }
+
+    override fun closeButtonPressed() {
+        onMapClick(null)
     }
 
     /* private fun userLocation() {

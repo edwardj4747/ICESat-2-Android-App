@@ -18,7 +18,7 @@
         app:layout_constraintStart_toStartOf="parent">
 
         <ImageView
-            android:id="@+id/imageView6"
+            android:id="@+id/btnFavorite"
             android:layout_width="36dp"
             android:layout_height="36dp"
             android:layout_marginStart="24dp"
@@ -36,7 +36,7 @@
             android:layout_marginTop="8dp"
             android:textSize="24sp"
             android:textStyle="bold"
-            app:layout_constraintStart_toEndOf="@+id/imageView6"
+            app:layout_constraintStart_toEndOf="@+id/btnFavorite"
             app:layout_constraintTop_toTopOf="parent"
             tools:text="Jun 3, 2020" />
 
@@ -51,7 +51,7 @@
             tools:text="06:03:50 AM EDT" />
 
         <ImageView
-            android:id="@+id/imageView7"
+            android:id="@+id/btnClose"
             android:layout_width="wrap_content"
             android:layout_height="wrap_content"
             android:layout_marginEnd="24dp"
