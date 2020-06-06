@@ -63,4 +63,7 @@ dependencies {
     implementation "androidx.navigation:navigation-ui-ktx:$nav_version"
 
     implementation files('libs/YouTubeAndroidPlayerApi.jar')
+
+    //places
+    implementation 'com.google.android.libraries.places:places:2.3.0'
 }

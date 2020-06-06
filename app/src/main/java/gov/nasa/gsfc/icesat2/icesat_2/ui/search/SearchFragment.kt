@@ -1,7 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -9,10 +11,16 @@ import android.widget.ArrayAdapter
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
+import com.google.android.gms.common.api.Status
+import com.google.android.libraries.places.api.Places
+import com.google.android.libraries.places.api.model.Place
+import com.google.android.libraries.places.widget.AutocompleteSupportFragment
+import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
 import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
+import java.util.*
 
 
 private const val TAG = "SearchFragment"
@@ -74,6 +82,29 @@ class SearchFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         unitSpinner.adapter = adapter
 
+        //initialize dependencies and such to have an address searcher
+        Places.initialize(requireContext(), getString(R.string.google_maps_key))
+        val placesClient = Places.createClient(requireContext())
+
+        //TODO: Look into search billing
+        //searching
+        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
+
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME))
+        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
+            override fun onPlaceSelected(place: Place) {
+                Log.d(TAG, "Place: " + place.getName() + ", " + place.getId());
+            }
+
+            override fun onError(status: Status) {
+                Log.d(TAG, "An error occurred: " + status);
+            }
+        })
+
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
