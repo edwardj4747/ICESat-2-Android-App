@@ -120,6 +120,10 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun setAddressTextView(string: String?) {
+        textViewAdress.text = "Searching for: $string"
+    }
+
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
     //NOTE RADIUS can be entered in kilometers but will be converted immediately into miles to make for seamless use
     private fun allInputsValid(): DoubleArray? {
@@ -218,6 +222,7 @@ class SearchFragment : Fragment() {
                     Log.i(TAG, "Place: " + place.name)
                     val latLng = place.latLng
                     setLatLngTextViews(latLng)
+                    setAddressTextView(place.name)
                 } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                     // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data)

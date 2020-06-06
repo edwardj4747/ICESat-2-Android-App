@@ -8,15 +8,28 @@
     tools:context=".ui.search.SearchFragment">
 
     <TextView
-        android:id="@+id/textViewEnterLocation"
+        android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="16dp"
+        android:inputType="textMultiLine"
+        android:textAlignment="center"
+        android:textSize="20sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent"
+        tools:text="Honolulu" />
+
+    <TextView
+        android:id="@+id/textViewEnterLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="48dp"
         android:text="@string/enterLocation"
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="@id/textViewAdress" />
 
     <Button
         android:id="@+id/btnSelectOnMap"
