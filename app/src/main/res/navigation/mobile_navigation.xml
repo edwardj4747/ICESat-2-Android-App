@@ -52,6 +52,6 @@
     <fragment
         android:id="@+id/selectOnMapFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.SelectOnMapFragment"
-        android:label="fragment_select_on_map"
+        android:label="@string/selectLocationOnMap"
         tools:layout="@layout/fragment_select_on_map" />
 </navigation>

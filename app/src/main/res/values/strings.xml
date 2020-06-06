@@ -8,6 +8,7 @@
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
     <string name="info">Info</string>
+    <string name="chooseLocation">Select Location</string>
 
     <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>

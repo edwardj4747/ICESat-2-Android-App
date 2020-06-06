@@ -8,6 +8,9 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
+import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.LatLng
+import com.google.android.gms.maps.model.MarkerOptions
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -23,7 +26,7 @@ private const val TAG = "SelectOnMapFragment"
  * Use the [SelectOnMapFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SelectOnMapFragment : Fragment(), OnMapReadyCallback {
+class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var mMap: GoogleMap
 
@@ -37,6 +40,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback {
             param1 = it.getString(ARG_PARAM1)
             param2 = it.getString(ARG_PARAM2)
         }
+        Log.d(TAG, "select on map fragment created")
     }
 
     override fun onCreateView(
@@ -45,6 +49,14 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback {
     ): View? {
         // Inflate the layout for this fragment
         return inflater.inflate(R.layout.fragment_select_on_map, container, false)
+    }
+
+    override fun onActivityCreated(savedInstanceState: Bundle?) {
+        super.onActivityCreated(savedInstanceState)
+        // Obtain the SupportMapFragment and get notified when the map is ready to be used.
+        val mapFragment = childFragmentManager
+            .findFragmentById(R.id.mapSelector) as SupportMapFragment
+        mapFragment.getMapAsync(this)
     }
 
     companion object {
@@ -68,7 +80,17 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback {
     }
 
     override fun onMapReady(p0: GoogleMap) {
-        mMap = p0
         Log.d(TAG, "map ready")
+        mMap = p0
+        mMap.setOnMapLongClickListener(this)
     }
+
+    override fun onMapLongClick(clickLocation: LatLng?) {
+        Log.d(TAG, "Long clicked recorded @ $clickLocation")
+        if (clickLocation != null) {
+            val markerOptions = MarkerOptions()
+            mMap.addMarker(markerOptions.position(clickLocation).title("${clickLocation.latitude}, ${clickLocation.longitude}")).showInfoWindow()
+        }
+    }
+
 }
