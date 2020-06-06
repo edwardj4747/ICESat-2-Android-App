@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 
-import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -8,10 +7,12 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ArrayAdapter
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
 import com.google.android.gms.common.api.Status
+import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
 import com.google.android.libraries.places.widget.AutocompleteSupportFragment
@@ -90,10 +91,13 @@ class SearchFragment : Fragment() {
         //searching
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
 
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.ID, Place.Field.NAME))
+        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
             override fun onPlaceSelected(place: Place) {
-                Log.d(TAG, "Place: " + place.getName() + ", " + place.getId());
+                Log.d(TAG, "Place: " + place.getName());
+                Log.d(TAG, "Lat Lng is ${place.latLng}")
+                Log.d(TAG, "Address is ${place.address}")
+                setLatLngTextViews(place.latLng)
             }
 
             override fun onError(status: Status) {
@@ -103,8 +107,13 @@ class SearchFragment : Fragment() {
 
     }
 
-    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
-        super.onActivityResult(requestCode, resultCode, data)
+    private fun setLatLngTextViews(value: LatLng?) {
+        if (value != null) {
+            editTextLat.setText(value.latitude.toString())
+            editTextLon.setText(value.longitude.toString())
+        } else {
+            Toast.makeText(requireContext(), "Error Occured", Toast.LENGTH_LONG).show()
+        }
     }
 
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
