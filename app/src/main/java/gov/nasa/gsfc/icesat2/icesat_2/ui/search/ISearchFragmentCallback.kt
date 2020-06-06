@@ -4,4 +4,6 @@ interface ISearchFragmentCallback {
     fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double)
 
     fun useCurrentLocationButtonPressed()
+
+    fun selectOnMapButtonPressed()
 }

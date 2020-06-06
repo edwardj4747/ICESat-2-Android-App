@@ -56,7 +56,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
 
 
-
     }
 
     override fun searchButtonPressed(serverLocation: String, lat: Double, long: Double, radius: Double) {
@@ -113,6 +112,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun useCurrentLocationButtonPressed() {
 
+    }
+
+    override fun selectOnMapButtonPressed() {
+        navController.navigate(R.id.selectOnMapFragment)
     }
 
     private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double) {

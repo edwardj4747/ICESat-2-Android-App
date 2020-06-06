@@ -65,6 +65,10 @@ class SearchFragment : Fragment() {
             listener.useCurrentLocationButtonPressed()
         }
 
+        btnSelectOnMap.setOnClickListener {
+            listener.selectOnMapButtonPressed()
+        }
+
         //set up the spinner
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
