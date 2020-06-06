@@ -36,6 +36,7 @@ private lateinit var navController:NavController
 class SearchFragment : Fragment() {
 
     private lateinit var listener: ISearchFragmentCallback
+    private var address: String? = null
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -81,6 +82,27 @@ class SearchFragment : Fragment() {
             listener.selectOnMapButtonPressed()
         }
 
+
+
+        editTextLat.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                address = "custom"
+                setAddressTextView()
+            }
+        }
+
+        editTextLon.setOnFocusChangeListener { _, hasFocus ->
+            if (hasFocus) {
+                address = "custom"
+                setAddressTextView()
+            }
+        }
+
+
+
+        //will set the search location if appropriate
+        setAddressTextView()
+
         //set up the spinner
         val adapter = ArrayAdapter.createFromResource(requireContext(), R.array.unitSelector, android.R.layout.simple_spinner_dropdown_item)
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
@@ -120,8 +142,10 @@ class SearchFragment : Fragment() {
         }
     }
 
-    private fun setAddressTextView(string: String?) {
-        textViewAdress.text = "Searching for: $string"
+    private fun setAddressTextView() {
+        if (address != null) {
+            textViewAdress.text = "Searching for: $address"
+        }
     }
 
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
@@ -222,7 +246,9 @@ class SearchFragment : Fragment() {
                     Log.i(TAG, "Place: " + place.name)
                     val latLng = place.latLng
                     setLatLngTextViews(latLng)
-                    setAddressTextView(place.name)
+                    address = place.name
+                    setAddressTextView()
+                    editTextRadius.requestFocus()
                 } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
                     // TODO: Handle the error.
                     val status = Autocomplete.getStatusFromIntent(data)
