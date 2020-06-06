@@ -72,4 +72,8 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <!--    Main Menu-->
     <string name="addToCalendar">Add to Calendar</string>
 
+
+<!--    Select on Map-->
+    <string name="touchAndHold">Touch and hold to \nadd a location</string>
+
 </resources>
