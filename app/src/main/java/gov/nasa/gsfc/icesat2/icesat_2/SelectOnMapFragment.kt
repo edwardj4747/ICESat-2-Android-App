@@ -89,7 +89,8 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
         Log.d(TAG, "Long clicked recorded @ $clickLocation")
         if (clickLocation != null) {
             val markerOptions = MarkerOptions()
-            mMap.addMarker(markerOptions.position(clickLocation).title("${clickLocation.latitude}, ${clickLocation.longitude}")).showInfoWindow()
+            val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
+            mMap.addMarker(markerOptions.position(clickLocation).title(truncatedLatLng)).showInfoWindow()
         }
     }
 
