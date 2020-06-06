@@ -58,7 +58,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     }
 
-    override fun searchButtonPressed(lat: Double, long: Double, radius: Double) {
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
 
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
@@ -91,7 +91,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                     Log.d(TAG, "searchResultsFound = $searchResultsFound")
                     if (searchResultsFound) {
                         Log.d(TAG, "YAY!! Search results found")
-                        launchMapOnMainThread(lat, long, radius)
+                        if (calledFromSelectOnMap) {
+                            launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
+                        } else {
+                            launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                        }
                     } else {
                         Log.d(TAG, "No Search results found")
                         showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
@@ -120,17 +124,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navController.navigate(R.id.selectOnMapFragment)
     }
 
-    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double) {
+    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int) {
         GlobalScope.launch(Dispatchers.Main) {
-            showMap()
+            showMap(navigationActionID)
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
         }
     }
 
-    private fun showMap() {
+    private fun showMap(navigationActionID: Int) {
         //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
-        navController.navigate(R.id.action_navigation_search_to_resultsHolderFragment)
+        navController.navigate(navigationActionID)
     }
 
 

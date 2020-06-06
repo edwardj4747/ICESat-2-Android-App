@@ -15,6 +15,7 @@ import com.google.android.gms.maps.model.Circle
 import com.google.android.gms.maps.model.CircleOptions
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import kotlinx.android.synthetic.main.fragment_select_on_map.*
 
 
@@ -36,6 +37,8 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     private lateinit var mMap: GoogleMap
     private lateinit var chosenLocation: LatLng
     private lateinit var previousCircle: Circle
+    private lateinit var listener: ISearchFragmentCallback
+    private var seekBarValue = 12.5 //used to store the radius of the search
 
     // TODO: Rename and change types of parameters
     private var param1: String? = null
@@ -65,18 +68,20 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
             .findFragmentById(R.id.mapSelector) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        //set up callbacks to go to MainActivity
+        listener = requireActivity() as MainActivity
+
         //disable the seek bar until a marker is dropped
         seekBar.isEnabled = false
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
-                var seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
+                seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
                 //constraint required for searching
                 if (seekBarValue == 1.0) {
                     seekBarValue = 1.1
                 }
                 Log.d(TAG, "progress changed. Progress is $seekBarValue")
-                val formattedString = String.format("%.1f miles\n%.1f kilometers", seekBarValue, seekBarValue * 1.60934)
-                textViewDropPin.text = formattedString
+                displayRadius()
 
                 drawCircle(chosenLocation, seekBarValue)
             }
@@ -88,7 +93,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
         })
 
         btnSearch.setOnClickListener {
-
+            listener.searchButtonPressed(chosenLocation.latitude, chosenLocation.longitude, seekBarValue, true)
         }
     }
 
@@ -131,7 +136,15 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
             drawCircle(chosenLocation, 12.5)
             //zoom in towards the pointer
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clickLocation, 9.25F))
+
+            //set the text view
+            displayRadius()
         }
+    }
+
+    private fun displayRadius() {
+        val formattedString = String.format("%.1f miles\n%.1f kilometers", seekBarValue, seekBarValue * 1.60934)
+        textViewDropPin.text = formattedString
     }
 
     private fun drawCircle(center: LatLng, radius: Double) {

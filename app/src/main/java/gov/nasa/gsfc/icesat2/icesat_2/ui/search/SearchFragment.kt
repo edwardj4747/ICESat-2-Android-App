@@ -57,7 +57,7 @@ class SearchFragment : Fragment() {
             if (inputs != null) {
                 //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
                 //val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=miles"
-                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2])
+                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2], false)
             }
         }
 
