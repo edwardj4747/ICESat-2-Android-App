@@ -12,6 +12,7 @@
         android:layout_width="match_parent"
         android:layout_height="match_parent"
         android:tag="mapTag"
+        android:visibility="visible"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -20,7 +21,7 @@
     </androidx.fragment.app.FragmentContainerView>
 
     <TextView
-        android:id="@+id/textView"
+        android:id="@+id/textViewDropPin"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
@@ -34,8 +35,22 @@
         android:id="@+id/seekBar"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:max="240"
+        android:progress="120"
+        app:layout_constraintBottom_toTopOf="@+id/btnSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="1.0"
+        app:layout_constraintStart_toStartOf="parent" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
         android:layout_marginBottom="16dp"
-        app:layout_constraintBottom_toBottomOf="@+id/mapSelector"
+        android:text="@string/search"
+        app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>

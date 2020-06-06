@@ -5,12 +5,14 @@ import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import android.widget.SeekBar
 import androidx.fragment.app.Fragment
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
+import kotlinx.android.synthetic.main.fragment_select_on_map.*
 
 
 // TODO: Rename parameter arguments, choose names that match
@@ -57,6 +59,20 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.mapSelector) as SupportMapFragment
         mapFragment.getMapAsync(this)
+
+        //disable the seek bar until a marker is dropped
+        seekBar.isEnabled = false
+        seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
+            override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
+                val seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
+                Log.d(TAG, "progress changed. Progress is $seekBarValue")
+            }
+
+            override fun onStartTrackingTouch(seekBar: SeekBar?) {}
+
+            override fun onStopTrackingTouch(seekBar: SeekBar?) {}
+
+        })
     }
 
     companion object {
@@ -88,6 +104,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     override fun onMapLongClick(clickLocation: LatLng?) {
         Log.d(TAG, "Long clicked recorded @ $clickLocation")
         if (clickLocation != null) {
+            seekBar.isEnabled = true
             val markerOptions = MarkerOptions()
             val stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
             val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
