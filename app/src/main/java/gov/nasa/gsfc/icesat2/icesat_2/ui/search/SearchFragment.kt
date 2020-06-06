@@ -1,30 +1,31 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 
+import android.app.Activity.RESULT_CANCELED
+import android.app.Activity.RESULT_OK
+import android.content.Intent
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
-import com.google.android.gms.common.api.Status
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.libraries.places.api.Places
 import com.google.android.libraries.places.api.model.Place
-import com.google.android.libraries.places.widget.AutocompleteSupportFragment
-import com.google.android.libraries.places.widget.listener.PlaceSelectionListener
+import com.google.android.libraries.places.widget.Autocomplete
+import com.google.android.libraries.places.widget.AutocompleteActivity
+import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
-import java.util.*
 
 
 private const val TAG = "SearchFragment"
+private const val AUTOCOMPLETE_REQUEST_CODE = 1;
 private const val LAT_INPUT_ERROR = "Please Enter Latitude between -86.0 and 86.0 ${0x00B0.toChar()}N"
 private const val LONG_INPUT_ERROR = "Please Enter Longitude between -180.0 and 180.0 ${0x00B0.toChar()}E"
 private const val RADIUS_INPUT_ERROR_MILES = "Please Enter Radius between 1.1 and 25.0 Miles"
@@ -60,6 +61,8 @@ class SearchFragment : Fragment() {
         //register the listener to be the parent activity every time the fragment is created. Gives access to all the methods in [ISearchFragmentCallback]
         listener = requireActivity() as MainActivity
 
+        //will display a menu
+        setHasOptionsMenu(true)
 
         btnSearch.setOnClickListener {
             val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
@@ -87,7 +90,7 @@ class SearchFragment : Fragment() {
         Places.initialize(requireContext(), getString(R.string.google_maps_key))
         val placesClient = Places.createClient(requireContext())
 
-        //TODO: Look into search billing
+        /*//TODO: Look into search billing + remove this and UI component if not useful
         //searching
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
         autocompleteFragment.setHint(getString(R.string.searchForLocation))
@@ -104,7 +107,7 @@ class SearchFragment : Fragment() {
             override fun onError(status: Status) {
                 Log.d(TAG, "An error occurred: " + status);
             }
-        })
+        })*/
 
     }
 
@@ -181,6 +184,52 @@ class SearchFragment : Fragment() {
                 .setBackgroundTint(resources.getColor(R.color.snackbarColor))
                 .show()
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.search_frag_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuSearch -> {
+                Log.d(TAG, "Search menu button pressed")
+
+
+                // Set the fields to specify which types of place data to
+                // return after the user has made a selection.
+                val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+
+                // Start the autocomplete intent.
+                val intent = Autocomplete.IntentBuilder(
+                    AutocompleteActivityMode.FULLSCREEN, fields)
+                    .build(requireContext());
+                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+            }
+        }
+        return true
+    }
+
+    override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
+        if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
+            if (data != null) {
+                if (resultCode == RESULT_OK) {
+                    val place = Autocomplete.getPlaceFromIntent(data)
+                    Log.i(TAG, "Place: " + place.name)
+                    val latLng = place.latLng
+                    setLatLngTextViews(latLng)
+                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
+                    // TODO: Handle the error.
+                    val status = Autocomplete.getStatusFromIntent(data)
+                    Log.i(TAG, "${status.statusMessage}")
+                } else if (resultCode == RESULT_CANCELED) {
+                    // The user canceled the operation.
+                }
+            } else {
+                Log.d(TAG, "intent is equal to null")
+            }
+        }
+        super.onActivityResult(requestCode, resultCode, data)
     }
 
 }
