@@ -90,6 +90,7 @@ class SearchFragment : Fragment() {
         //TODO: Look into search billing
         //searching
         val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
+        autocompleteFragment.setHint(getString(R.string.searchForLocation))
 
         autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
         autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {

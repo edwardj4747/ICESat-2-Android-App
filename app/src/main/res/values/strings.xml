@@ -26,6 +26,7 @@
         <item>Kilometers</item>
     </string-array>
     <string name="title_activity_delete_me">Map</string>
+    <string name="searchForLocation">Search for a Location</string>
 
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>
@@ -75,5 +76,6 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
 
 <!--    Select on Map-->
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
+
 
 </resources>
