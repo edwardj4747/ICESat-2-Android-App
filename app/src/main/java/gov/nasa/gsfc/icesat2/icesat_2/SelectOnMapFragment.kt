@@ -11,10 +11,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
-import com.google.android.gms.maps.model.Circle
-import com.google.android.gms.maps.model.CircleOptions
-import com.google.android.gms.maps.model.LatLng
-import com.google.android.gms.maps.model.MarkerOptions
+import com.google.android.gms.maps.model.*
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import kotlinx.android.synthetic.main.fragment_select_on_map.*
 
@@ -37,6 +34,7 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     private lateinit var mMap: GoogleMap
     private lateinit var chosenLocation: LatLng
     private lateinit var previousCircle: Circle
+    private lateinit var marker: Marker
     private lateinit var listener: ISearchFragmentCallback
     private var seekBarValue = 12.5 //used to store the radius of the search
 
@@ -71,8 +69,15 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
         //set up callbacks to go to MainActivity
         listener = requireActivity() as MainActivity
 
-        //disable the seek bar until a marker is dropped
-        seekBar.isEnabled = false
+        //if there is a marker, set the text to display radius and modify radius of circle
+        if (this::marker.isInitialized) {
+            displayRadius()
+            drawCircle(chosenLocation, seekBarValue)
+        }
+
+        //if there is no marker disable the seekbar, but if there is a marker then enable it
+        seekBar.isEnabled = this::marker.isInitialized
+
         seekBar.setOnSeekBarChangeListener(object : SeekBar.OnSeekBarChangeListener {
             override fun onProgressChanged(seekBar: SeekBar?, progress: Int, fromUser: Boolean) {
                 seekBarValue = (progress + 10.0) / 10 //seekbar ranges from 0 to 240
@@ -126,14 +131,18 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     override fun onMapLongClick(clickLocation: LatLng?) {
         Log.d(TAG, "Long clicked recorded @ $clickLocation")
         if (clickLocation != null) {
+            if (this::marker.isInitialized) {
+                marker.remove()
+            }
             chosenLocation = clickLocation
             val markerOptions = MarkerOptions()
             val stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
             val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
-            mMap.addMarker(markerOptions.position(clickLocation).title(stringLocation).snippet(truncatedLatLng)).showInfoWindow()
+            marker = mMap.addMarker(markerOptions.position(clickLocation).title(stringLocation).snippet(truncatedLatLng))
+            marker.showInfoWindow()
             seekBar.isEnabled = true
-            //the default value of the seekbar
-            drawCircle(chosenLocation, 12.5)
+            //set the radius of the circle to be the radius of the seekbar
+            drawCircle(chosenLocation, seekBarValue)
             //zoom in towards the pointer
             mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(clickLocation, 9.25F))
 
