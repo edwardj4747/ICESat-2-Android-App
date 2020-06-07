@@ -7,6 +7,7 @@ import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
+import android.widget.Toast
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -28,6 +29,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private var searchRadius: Double = -1.0
     private lateinit var fm: FragmentManager
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
+    private var marker: Marker? = null //used to keep track of the selected marker
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -112,7 +114,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         val polylineOptions = PolylineOptions()
 
 
-        //test addign a marker at each point - maybe polygons are a better way to do this
+        //test adding a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
@@ -174,6 +176,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
     override fun onMarkerClick(p0: Marker?): Boolean {
+        marker = p0
         val fragmentTransaction = fm.beginTransaction()
         markerSelectedFragment = MarkerSelectedFragment.newInstance(p0!!.title, p0.title)
         fragmentTransaction.apply {
@@ -185,6 +188,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     override fun onMapClick(p0: LatLng?) {
+        marker = null
         if (this::markerSelectedFragment.isInitialized) {
             fm.beginTransaction().apply {
                 setCustomAnimations(R.anim.blank_animation, R.anim.slide_out_down)
@@ -258,7 +262,11 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuAddToCalendar -> {
-                addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
+                if (marker != null) {
+                    //addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
+                } else {
+                    Toast.makeText(requireContext(), getString(R.string.selectALocation), Toast.LENGTH_LONG).show()
+                }
             }
         }
         return super.onOptionsItemSelected(item)

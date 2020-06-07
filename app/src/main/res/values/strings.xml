@@ -48,6 +48,8 @@
     <string name="star">Star</string>
     <string name="close">Close</string>
 
+    <string name="selectALocation">Please Choose a Location to add to Calendar</string>
+
 
     <string name="icesatFlyover">ICESat-2 Flyover</string>
 
@@ -78,6 +80,7 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
 
 <!--    Select on Map-->
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
+
 
 
 </resources>
