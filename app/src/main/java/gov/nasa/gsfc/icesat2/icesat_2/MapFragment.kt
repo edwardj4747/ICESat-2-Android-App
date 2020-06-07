@@ -8,6 +8,7 @@ import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
 import androidx.fragment.app.Fragment
+import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
@@ -19,12 +20,14 @@ import java.util.*
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
+    private lateinit var fm: FragmentManager
+    private lateinit var markerSelectedFragment: MarkerSelectedFragment
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -36,7 +39,10 @@ class MapFragment : Fragment(), OnMapReadyCallback {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
         setHasOptionsMenu(true)
+        fm = childFragmentManager
+
         Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -90,6 +96,8 @@ class MapFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
+        mMap.setOnMarkerClickListener(this)
+        mMap.setOnMapClickListener(this)
 
         if (this::pointChains.isInitialized) {
             Log.d(TAG, "Adding polyline from inside onMapReady")
@@ -103,12 +111,14 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "addChainPolyLine Starts")
         val polylineOptions = PolylineOptions()
 
+
         //test addign a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
         }
+
         mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
             color = (0xff32CD32.toInt())
@@ -162,29 +172,55 @@ class MapFragment : Fragment(), OnMapReadyCallback {
         return zoomLevel.toFloat()
     }
 
-   /* private fun userLocation() {
-        try {
-            val locationResult = fusedLocationClient.lastLocation
-            locationResult.addOnCompleteListener {
-                Log.d(TAG, "location result complete")
-                if (it.isSuccessful) {
-                    Log.d(TAG, "was successful: $it")
-                    val lastKnownLocation = it.result
-                    val lat = lastKnownLocation?.latitude
-                    val long = lastKnownLocation?.longitude
-                    Log.d(TAG, "lat $lat and long $long")
-                    if (lat != null && long != null) {
-                        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), ZOOM_LEVEL))
-                        mMap.isMyLocationEnabled = true
-                    }
-                } else {
-                    Log.d(TAG, "location result listener failed ${it.exception}")
-                }
-            }
-        } catch (e: SecurityException) {
-            Log.d(TAG, "Security exception e: ${e.message}")
+    //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
+    override fun onMarkerClick(p0: Marker?): Boolean {
+        val fragmentTransaction = fm.beginTransaction()
+        markerSelectedFragment = MarkerSelectedFragment.newInstance(p0!!.title, p0.title)
+        fragmentTransaction.apply {
+            setCustomAnimations(R.anim.slide_in_down, R.anim.blank_animation)
+            replace(R.id.mapFragmentContainer, markerSelectedFragment)
+            commit()
         }
-    }*/
+        return false
+    }
+
+    override fun onMapClick(p0: LatLng?) {
+        if (this::markerSelectedFragment.isInitialized) {
+            fm.beginTransaction().apply {
+                setCustomAnimations(R.anim.blank_animation, R.anim.slide_out_down)
+                replace(R.id.mapFragmentContainer, DummyFragment())
+                commit()
+            }
+        }
+    }
+
+    override fun closeButtonPressed() {
+        onMapClick(null)
+    }
+
+    /* private fun userLocation() {
+         try {
+             val locationResult = fusedLocationClient.lastLocation
+             locationResult.addOnCompleteListener {
+                 Log.d(TAG, "location result complete")
+                 if (it.isSuccessful) {
+                     Log.d(TAG, "was successful: $it")
+                     val lastKnownLocation = it.result
+                     val lat = lastKnownLocation?.latitude
+                     val long = lastKnownLocation?.longitude
+                     Log.d(TAG, "lat $lat and long $long")
+                     if (lat != null && long != null) {
+                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), ZOOM_LEVEL))
+                         mMap.isMyLocationEnabled = true
+                     }
+                 } else {
+                     Log.d(TAG, "location result listener failed ${it.exception}")
+                 }
+             }
+         } catch (e: SecurityException) {
+             Log.d(TAG, "Security exception e: ${e.message}")
+         }
+     }*/
 
 
     private fun addToCalendar(title: String, startTime: Date, lat: Double, long: Double) {

@@ -45,9 +45,11 @@
     <string name="map">Map</string>
     <string name="list">List</string>
     <string name="searchResults">Search Results</string>
+    <string name="star">Star</string>
+    <string name="close">Close</string>
+
 
     <string name="icesatFlyover">ICESat-2 Flyover</string>
-
 
     <!--    Info Fragment-->
 
@@ -69,11 +71,13 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
         are available to the public from the <a href="https://nsidc.org/">National Snow and Ice Data Center (NSIDC)</a>.</string>
 
 
+
     <!--    Main Menu-->
     <string name="addToCalendar">Add to Calendar</string>
 
 
 <!--    Select on Map-->
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
+
 
 </resources>
