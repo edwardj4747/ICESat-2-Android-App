@@ -30,6 +30,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var fm: FragmentManager
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
     private var marker: Marker? = null //used to keep track of the selected marker
+    private var count = 0 //to access the point array based on the marker later
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -102,7 +103,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         })
 
         btnAddEvent.setOnClickListener {
-            addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
+            attemptToAddToCalendar()
         }
     }
 
@@ -138,7 +139,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 polylineOptions = PolylineOptions()
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
-            mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+            mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString)).tag = count
+            count++
         }
         drawPolyline(polylineOptions)
         addCircleRadius(searchRadius)
@@ -289,13 +291,24 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             R.id.menuAddToCalendar -> {
-                if (marker != null) {
-                    //addToCalendar(getString(R.string.icesatFlyover), pointChains[0][0].dateObject, pointChains[0][0].latitude, pointChains[0][0].longitude)
-                } else {
-                    Toast.makeText(requireContext(), getString(R.string.selectALocation), Toast.LENGTH_LONG).show()
-                }
+                attemptToAddToCalendar()
             }
         }
         return super.onOptionsItemSelected(item)
+    }
+
+    private fun attemptToAddToCalendar() {
+        if (marker != null) {
+            val markerTag = marker?.tag as Int
+            Log.d(TAG, "markerTag is $markerTag; Point is ${pointList[markerTag]}")
+            addToCalendar(
+                getString(R.string.icesatFlyover),
+                pointList[markerTag].dateObject,
+                pointList[markerTag].latitude,
+                pointList[markerTag].longitude
+            )
+        } else {
+            Toast.makeText(requireContext(), getString(R.string.selectALocation), Toast.LENGTH_LONG).show()
+        }
     }
 }
