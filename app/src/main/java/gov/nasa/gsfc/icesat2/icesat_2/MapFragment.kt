@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-import android.app.AlertDialog
 import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
@@ -24,6 +23,7 @@ private const val TAG = "MapFragment"
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback {
 
     private lateinit var mMap: GoogleMap
+    private lateinit var pointList: ArrayList<Point>
     private lateinit var pointChains: ArrayList<ArrayList<Point>>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
@@ -54,7 +54,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         val mainActivityViewModel = MainActivity.getMainViewModel()
 
-        mainActivityViewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
+        /*mainActivityViewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "=======Split into Chains Array===========")
             Log.d(TAG, "number of chains ${it.size}")
             for (i in 0 until it.size) {
@@ -77,6 +77,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 for (i in 0 until it.size) {
                     addChainPolyline(it[i])
                 }
+            }
+        })*/
+
+        //use allPointsList instead of allPointsChain
+        mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
+            //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
+            Log.d(TAG, "allPointsList is observed")
+            pointList = it
+            if (this::mMap.isInitialized) {
+                Log.d(TAG, "Adding polylines from inside observer")
+                addChainPolyline(it)
             }
         })
 
@@ -101,32 +112,48 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
 
-        if (this::pointChains.isInitialized) {
+        if (this::pointList.isInitialized) {
+            Log.d(TAG, "Adding polylines inside onMapReady")
+            addChainPolyline(pointList)
+        }
+
+        /*if (this::pointChains.isInitialized) {
             Log.d(TAG, "Adding polyline from inside onMapReady")
             for (i in 0 until pointChains.size) {
                 addChainPolyline(pointChains[i])
             }
-        }
+        }*/
     }
 
     private fun addChainPolyline(chain:ArrayList<Point>) {
         Log.d(TAG, "addChainPolyLine Starts")
-        val polylineOptions = PolylineOptions()
+        var polylineOptions = PolylineOptions()
 
-
-        //test adding a marker at each point - maybe polygons are a better way to do this
+        //adding a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
+            //check if the point is on the same chain as the previous point
+            if (i != 0 && !onSameChain(chain[i - 1], chain[i])) {
+                drawPolyline(polylineOptions)
+                polylineOptions = PolylineOptions()
+            }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
         }
+        drawPolyline(polylineOptions)
+        addCircleRadius(searchRadius)
+    }
 
+    private fun onSameChain(p1: Point, p2: Point) : Boolean {
+        val timingThreshold = 60
+        return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
+    }
+
+    private fun drawPolyline(polylineOptions: PolylineOptions) {
         mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
             color = (0xff32CD32.toInt())
         }
-
-        addCircleRadius(searchRadius)
     }
 
     private fun addCircleRadius(radius: Double) {
