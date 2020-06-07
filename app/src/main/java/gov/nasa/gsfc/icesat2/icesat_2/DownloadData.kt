@@ -4,12 +4,10 @@ import android.util.Log
 import kotlinx.coroutines.*
 import org.json.JSONObject
 import java.io.IOException
-import java.lang.IllegalArgumentException
 import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
-import kotlin.Comparator
 import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
@@ -72,14 +70,14 @@ class DownloadData {
                         }
                         sortPointArrayUnit.await()
 
-                        val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
+                       /* val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
                             splitPointsByDate(pointsArrayList)
-                        }
+                        }*/
 
                         if (mainActivityViewModel != null) {
                             //TODO: remove allPointsList in ViewModel?
                             mainActivityViewModel.allPointsList.postValue(pointsArrayList)
-                            mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
+                            //mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
                             resultsFound = true
                         }
                     } else {
