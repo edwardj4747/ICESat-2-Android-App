@@ -163,11 +163,12 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return zoomLevel.toFloat()
     }
 
+    //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
     override fun onMarkerClick(p0: Marker?): Boolean {
         val fragmentTransaction = fm.beginTransaction()
         markerSelectedFragment = MarkerSelectedFragment.newInstance(p0!!.title, p0.title)
         fragmentTransaction.apply {
-            setCustomAnimations(R.anim.slide_in_left, R.anim.slide_out_right, R.anim.slide_in_right, R.anim.slide_out_left);
+            setCustomAnimations(R.anim.slide_in_down, R.anim.blank_animation)
             replace(R.id.mapFragmentContainer, markerSelectedFragment)
             commit()
         }
@@ -177,7 +178,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMapClick(p0: LatLng?) {
         if (this::markerSelectedFragment.isInitialized) {
             fm.beginTransaction().apply {
-                remove(markerSelectedFragment)
+                setCustomAnimations(R.anim.blank_animation, R.anim.slide_out_down)
+                replace(R.id.mapFragmentContainer, DummyFragment())
                 commit()
             }
         }
