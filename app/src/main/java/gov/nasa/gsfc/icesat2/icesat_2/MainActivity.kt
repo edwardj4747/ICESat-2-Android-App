@@ -41,6 +41,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private lateinit var navController: NavController
     private var currentlySearching = false //to make sure only one search is running at a time
     private var navHostFragment: Fragment? = null
+    private var gpsEnabled = false
+    private lateinit var locationManager: LocationManager
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -139,7 +141,15 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             return
         }
 
-        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+
+        Log.d(TAG, "gps provider enabled ${locationManager.isProviderEnabled("gps")}")
+        //todo: maybe add internet or other providers to this
+        if (!locationManager.isProviderEnabled("gps")) {
+            showDialogOnMainThread(R.string.locationOffTitle, R.string.locationOffDescription, R.string.ok)
+            return
+        }
+
         locationManager.requestLocationUpdates("gps", 10000, 50F, object : LocationListener {
             override fun onLocationChanged(location: Location?) {
                 if (location != null) {
@@ -166,9 +176,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
             override fun onProviderDisabled(provider: String?) {
                 Log.d(TAG, "provider is disabled $provider")
-                showDialogOnMainThread(R.string.locationOffTitle, R.string.locationOffDescription, R.string.ok)
             }
-
         })
     }
 
