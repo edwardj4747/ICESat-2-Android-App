@@ -207,7 +207,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     override fun onMarkerClick(p0: Marker?): Boolean {
         marker = p0
         val fragmentTransaction = fm.beginTransaction()
-        markerSelectedFragment = MarkerSelectedFragment.newInstance(p0!!.title, p0.title)
+        val markerTag = marker?.tag as Int
+        markerSelectedFragment = MarkerSelectedFragment.newInstance(pointList[markerTag])
         fragmentTransaction.apply {
             setCustomAnimations(R.anim.slide_in_down, R.anim.blank_animation)
             replace(R.id.mapFragmentContainer, markerSelectedFragment)

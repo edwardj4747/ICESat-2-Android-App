@@ -11,10 +11,7 @@ import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import kotlinx.android.synthetic.main.fragment_marker_selected.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -24,15 +21,12 @@ private const val ARG_PARAM2 = "param2"
 class MarkerSelectedFragment : Fragment() {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
-    // TODO: Rename and change types of parameters
-    private var dateString: String = ""
-    private var timeString: String = ""
+    private lateinit var selectedPoint: Point
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            dateString = it.getString(ARG_PARAM1)!!
-            timeString = it.getString(ARG_PARAM2)!!
+            selectedPoint = it.getParcelable<Point>(ARG_PARAM3)!!
         }
     }
 
@@ -50,8 +44,8 @@ class MarkerSelectedFragment : Fragment() {
         favoritesViewModel =
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
 
-        textViewDate.text = dateString
-        textViewTime.text = timeString
+        textViewDate.text = selectedPoint.dateString
+        textViewTime.text = selectedPoint.dateString
 
         btnFavorite.setOnClickListener {
             if (btnFavorite.tag == "favorite") {
@@ -63,7 +57,7 @@ class MarkerSelectedFragment : Fragment() {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
                 Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
-                favoritesViewModel.insert(FavoritesEntry(dateString, 10.0, 56.1))
+                favoritesViewModel.insert(FavoritesEntry(selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))
             }
 
         }
@@ -75,21 +69,11 @@ class MarkerSelectedFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MarkerSelectedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param3: Point) =
             MarkerSelectedFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelable(ARG_PARAM3, param3)
                 }
             }
     }
