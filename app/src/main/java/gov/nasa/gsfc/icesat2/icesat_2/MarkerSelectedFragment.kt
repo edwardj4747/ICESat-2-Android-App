@@ -6,6 +6,9 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
+import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import kotlinx.android.synthetic.main.fragment_marker_selected.*
 
 // TODO: Rename parameter arguments, choose names that match
@@ -19,6 +22,8 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MarkerSelectedFragment : Fragment() {
+
+    private lateinit var favoritesViewModel: FavoritesViewModel
     // TODO: Rename and change types of parameters
     private var dateString: String = ""
     private var timeString: String = ""
@@ -42,6 +47,9 @@ class MarkerSelectedFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        favoritesViewModel =
+            ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
+
         textViewDate.text = dateString
         textViewTime.text = timeString
 
@@ -55,6 +63,7 @@ class MarkerSelectedFragment : Fragment() {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
                 Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
+                favoritesViewModel.insert(FavoritesEntry(dateString, 10.0, 56.1))
             }
 
         }

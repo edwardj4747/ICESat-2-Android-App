@@ -8,14 +8,18 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.LinearLayoutManager
+import gov.nasa.gsfc.icesat2.icesat_2.FavoritesAdapter
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
+import kotlinx.android.synthetic.main.fragment_favorite.*
 
 private const val TAG = "FavoritesFragment"
 
 class FavoritesFragment : Fragment() {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
+    private lateinit var favoritesList: List<FavoritesEntry>
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -28,17 +32,16 @@ class FavoritesFragment : Fragment() {
 
         favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "allFavorites $it")
+            favoritesList = it
+            initializeRecyclerView()
         })
 
         return root
     }
 
-    override fun onActivityCreated(savedInstanceState: Bundle?) {
-        super.onActivityCreated(savedInstanceState)
-
-        //testing adding a new favorite
-        val favoritesEntry = FavoritesEntry("Edward is Awesome Date", 40.9, 33.1)
-        favoritesViewModel.insert(favoritesEntry)
-
-    }
+   private fun initializeRecyclerView() {
+       val adapter = FavoritesAdapter(favoritesList)
+      favoriteRecyclerView.adapter = adapter
+       favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+   }
 }
