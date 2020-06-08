@@ -32,7 +32,7 @@
     <fragment
         android:id="@+id/navigation_favorites"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesFragment"
-        android:label="@string/title_dashboard"
+        android:label="@string/favorites"
         tools:layout="@layout/fragment_favorite" />
 
     <fragment
