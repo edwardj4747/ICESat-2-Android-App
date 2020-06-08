@@ -2,10 +2,10 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
 import android.util.Log
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_list.*
@@ -29,15 +29,25 @@ class ListFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        val allPointsOneList = ArrayList<Point>()
+        /*val allPointsOneList = ArrayList<Point>()
         MainActivity.getMainViewModel()?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
             for (i in 0 until it.size) {
                 allPointsOneList.addAll(it[i])
             }
             Log.d(TAG, "allPointsoneList is $allPointsOneList")
-        })
+        })*/
 
-        val listRecyclerViewAdapter = ListRecyclerViewAdapter(allPointsOneList)
+        var allPointsOneList = ArrayList<Point>()
+        MainActivity.getMainViewModel()?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
+            allPointsOneList = it
+            Log.d(TAG, "allPointsList observer called \n $allPointsOneList")
+            setUpRecyclerView(allPointsOneList)
+        })
+    }
+
+    private fun setUpRecyclerView(allPointsOneList: ArrayList<Point>?) {
+        Log.d(TAG, "setting up recycler view")
+        val listRecyclerViewAdapter = ListRecyclerViewAdapter(allPointsOneList!!)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = listRecyclerViewAdapter
     }
