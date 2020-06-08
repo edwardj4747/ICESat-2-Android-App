@@ -17,6 +17,7 @@ import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
 import androidx.core.app.ActivityCompat
+import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -26,7 +27,9 @@ import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
+import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main_nav.*
+import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
 
 
@@ -37,6 +40,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     private lateinit var navController: NavController
     private var currentlySearching = false //to make sure only one search is running at a time
+    private var navHostFragment: Fragment? = null
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -64,9 +68,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav_view.setupWithNavController(navController)
 
+        navHostFragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
+
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-
     }
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
@@ -140,6 +144,15 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             override fun onLocationChanged(location: Location?) {
                 if (location != null) {
                     Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
+                    updateEditTextWithLocation(location.latitude.toString(), location.longitude.toString())
+
+
+                    val frag = navHostFragment?.childFragmentManager?.fragments?.get(0)
+                    Log.d(TAG, "frag is $frag")
+                    if (frag is SearchFragment) {
+                        Log.d(TAG, "YAY! Frag is Search Frag")
+                        frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
+                    }
                 } else {
                     Log.d(TAG, "onLocationCHanged but location is null")
                 }
@@ -201,6 +214,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                 }
             }
             .show()
+    }
+
+    private fun updateEditTextWithLocation(lat: String, long: String) {
+        editTextLat.setText(lat)
+        editTextLon.setText(long)
     }
 
     override fun selectOnMapButtonPressed() {

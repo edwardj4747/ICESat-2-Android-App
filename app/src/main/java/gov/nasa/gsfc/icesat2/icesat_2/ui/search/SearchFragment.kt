@@ -133,10 +133,16 @@ class SearchFragment : Fragment() {
 
     }
 
+    fun setLatLngTextViews(lat: String, long: String) {
+        editTextLat.setText(lat)
+        editTextLon.setText(long)
+    }
+
     private fun setLatLngTextViews(value: LatLng?) {
         if (value != null) {
-            editTextLat.setText(value.latitude.toString())
-            editTextLon.setText(value.longitude.toString())
+            setLatLngTextViews(value.latitude.toString(), value.longitude.toString())
+            /*editTextLat.setText(value.latitude.toString())
+            editTextLon.setText(value.longitude.toString())*/
         } else {
             Toast.makeText(requireContext(), "Error Occured", Toast.LENGTH_LONG).show()
         }
