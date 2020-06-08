@@ -1,13 +1,22 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
+import android.content.Intent
+import android.content.pm.PackageManager
+import android.location.Location
+import android.location.LocationListener
+import android.location.LocationManager
 import android.net.ConnectivityManager
+import android.net.Uri
 import android.os.Build
 import android.os.Bundle
+import android.provider.Settings
 import android.util.Log
 import android.view.MenuItem
 import androidx.appcompat.app.AppCompatActivity
+import androidx.core.app.ActivityCompat
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.findNavController
@@ -15,12 +24,14 @@ import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
+import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.coroutines.*
 
 
 private const val TAG = "MainActivity"
+private const val LOCATION_REQUEST_CODE = 6
 
 class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
@@ -117,7 +128,79 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     override fun useCurrentLocationButtonPressed() {
+        if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
+            && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
+            requestLocationPermissionDialog()
+            return
+        }
+
+        val locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
+        locationManager.requestLocationUpdates("gps", 10000, 50F, object : LocationListener {
+            override fun onLocationChanged(location: Location?) {
+                if (location != null) {
+                    Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
+                } else {
+                    Log.d(TAG, "onLocationCHanged but location is null")
+                }
+            }
+
+            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+
+            override fun onProviderEnabled(provider: String?) {
+                Log.d(TAG, "onProvider enabled with $provider")
+            }
+
+            override fun onProviderDisabled(provider: String?) {
+                Log.d(TAG, "provider is disabled $provider")
+                showDialogOnMainThread(R.string.locationOffTitle, R.string.locationOffDescription, R.string.ok)
+            }
+
+        })
+    }
+
+    override fun onRequestPermissionsResult(
+        requestCode: Int,
+        permissions: Array<out String>,
+        grantResults: IntArray
+    ) {
+        Log.d(TAG, "onRequestPermission Callback")
+        if (grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == LOCATION_REQUEST_CODE) {
+            //clicked accept
+            Log.d(TAG, "permission accepted")
+        } else {
+            //clicked deny
+            Log.d(TAG, "Permission Denied in Callback")
+            grantAccessSnackbar()
+        }
+    }
+
+    private fun requestLocationPermissionDialog() {
+        ActivityCompat.requestPermissions(
+            this,
+            arrayOf(
+                android.Manifest.permission.ACCESS_FINE_LOCATION,
+                android.Manifest.permission.ACCESS_COARSE_LOCATION
+            ),
+            LOCATION_REQUEST_CODE
+        )
+    }
+
+    private fun grantAccessSnackbar() {
+        Snackbar.make(findViewById(R.id.constraintLayout), R.string.locationSnackbar, Snackbar.LENGTH_INDEFINITE)
+            .setAction(R.string.grantAccess) {
+                if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
+                    Log.d(TAG, "should show request true")
+                    requestLocationPermissionDialog()
+                } else {
+                    Log.d(TAG, "should show request false")
+                    val intent = Intent()
+                    intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
+                    intent.data = Uri.fromParts("package", this.packageName, null)
+                    startActivity(intent)
+                }
+            }
+            .show()
     }
 
     override fun selectOnMapButtonPressed() {

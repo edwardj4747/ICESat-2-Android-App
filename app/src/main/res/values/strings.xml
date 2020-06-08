@@ -39,6 +39,10 @@
     <string name="noNetworkDescription">Please connect to a network and then try again</string>
     <string name="ok">OK</string>
 
+<!--    Location turned off dialog-->
+    <string name="locationOffTitle">Location is Turned Off</string>
+    <string name="locationOffDescription">Please turn on you location</string>
+
     <!-- TODO: Remove or change this placeholder text -->
     <string name="hello_blank_fragment">Hello blank fragment</string>
 
@@ -81,7 +85,8 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
 
 <!--    Select on Map-->
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
-
+    <string name="locationSnackbar">Location Needs to be Enabled to use this Feature</string>
+    <string name="grantAccess">Grant Access</string>
 
 
 </resources>
