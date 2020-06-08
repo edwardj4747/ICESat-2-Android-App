@@ -208,7 +208,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     private fun grantAccessSnackbar() {
-        Snackbar.make(findViewById(R.id.constraintLayout), R.string.locationSnackbar, Snackbar.LENGTH_INDEFINITE)
+        Snackbar.make(findViewById(R.id.constraintLayout), R.string.locationSnackbar, Snackbar.LENGTH_LONG)
             .setAction(R.string.grantAccess) {
                 if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
                     Log.d(TAG, "should show request true")
