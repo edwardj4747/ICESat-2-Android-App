@@ -103,7 +103,7 @@ class MarkerSelectedFragment : Fragment() {
             favoritesViewModel.insert(favoritesEntryToAdd!!)
         } else if (favoritesEntryToRemove != null) {
             Log.d(TAG, "Entry was previously entered in favorites. Now removing it")
-            favoritesViewModel.delete(favoritesEntryToRemove!!)
+            favoritesViewModel.delete(favoritesEntryToRemove!!.dateObjectTime)
         }
 
     }

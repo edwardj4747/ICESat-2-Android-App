@@ -59,7 +59,7 @@ class FavoritesFragment : Fragment() {
 
            override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
-               favoritesViewModel.delete(deletedFavorite)
+               favoritesViewModel.delete(deletedFavorite.dateObjectTime)
                Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
                    .setAction(R.string.undo) {
                        favoritesViewModel.insert(deletedFavorite)

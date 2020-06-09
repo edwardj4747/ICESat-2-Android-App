@@ -24,8 +24,8 @@ class FavoritesViewModel(@NonNull application: Application) : AndroidViewModel(a
         return repository.contains(timeEntry)
     }
 
-    fun delete(favoritesEntry: FavoritesEntry) {
-        repository.delete(favoritesEntry)
+    fun delete(timeEntry: Long) {
+        repository.delete(timeEntry)
     }
 
     fun deleteAll() {
