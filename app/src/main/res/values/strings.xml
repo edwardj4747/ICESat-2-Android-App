@@ -95,5 +95,7 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="deleteAllDescription">Are you sure you want to delete all of your favorites. This action cannot be undone</string>
     <string name="yes">Yes, Delete</string>
     <string name="cancel">Cancel</string>
+    <string name="itemDeleted">Item Deleted</string>
+    <string name="undo">Undo</string>
 
 </resources>

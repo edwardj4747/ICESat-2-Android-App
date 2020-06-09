@@ -7,7 +7,10 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
+import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.FavoritesAdapter
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
@@ -41,8 +44,29 @@ class FavoritesFragment : Fragment() {
 
    private fun initializeRecyclerView() {
        val adapter = FavoritesAdapter(favoritesList)
-      favoriteRecyclerView.adapter = adapter
+       favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+
+       //delete swiping
+       ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+           override fun onMove(
+               recyclerView: RecyclerView,
+               viewHolder: RecyclerView.ViewHolder,
+               target: RecyclerView.ViewHolder
+           ): Boolean {
+               return false
+           }
+
+           override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+               val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
+               favoritesViewModel.delete(deletedFavorite)
+               Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                   .setAction(R.string.undo) {
+                       favoritesViewModel.insert(deletedFavorite)
+                   }
+                   .show()
+           }
+       }).attachToRecyclerView(favoriteRecyclerView)
    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {

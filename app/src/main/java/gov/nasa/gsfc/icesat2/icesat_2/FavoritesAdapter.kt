@@ -29,4 +29,8 @@ class FavoritesAdapter(private val allFavorites: List<FavoritesEntry>) : Recycle
     override fun getItemCount(): Int {
         return allFavorites.size
     }
+
+    fun getFavoriteAt(index: Int): FavoritesEntry {
+        return allFavorites[index]
+    }
 }

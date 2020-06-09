@@ -22,6 +22,7 @@ class MarkerSelectedFragment : Fragment() {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var selectedPoint: Point
+    private lateinit var favoritesEntry: FavoritesEntry //what can be added or deleted from the favorites list
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -46,6 +47,7 @@ class MarkerSelectedFragment : Fragment() {
 
         textViewDate.text = selectedPoint.dateString
         textViewTime.text = selectedPoint.dateString
+        favoritesEntry = FavoritesEntry(selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
 
         btnFavorite.setOnClickListener {
             if (btnFavorite.tag == "favorite") {
@@ -53,11 +55,13 @@ class MarkerSelectedFragment : Fragment() {
                 btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 btnFavorite.tag = "notFavorite"
                 Toast.makeText(requireContext(), "Need to Remove From Favorites", Toast.LENGTH_SHORT).show()
+                //TODO: get this to work
+                favoritesViewModel.delete(favoritesEntry)
             } else {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
-                Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
-                favoritesViewModel.insert(FavoritesEntry(selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))
+                Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT).show()
+                favoritesViewModel.insert(favoritesEntry)
             }
 
         }
