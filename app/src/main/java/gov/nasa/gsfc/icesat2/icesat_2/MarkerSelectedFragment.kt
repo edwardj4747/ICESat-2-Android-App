@@ -24,7 +24,9 @@ class MarkerSelectedFragment : Fragment() {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var selectedPoint: Point
-    private var favoritesEntry: FavoritesEntry? = null //null if no new favorite to add
+    //one of these two will always be null because this is for one favorite entry and cannot both add and remove it
+    private var favoritesEntryToAdd: FavoritesEntry? = null //null if no new favorite to add
+    private var favoritesEntryToRemove: FavoritesEntry? = null //null if no favorite to remove
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,18 +53,25 @@ class MarkerSelectedFragment : Fragment() {
         textViewTime.text = selectedPoint.dateString
 
 
+        if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
+            btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
+            btnFavorite.tag = "favorite"
+        }
+
         btnFavorite.setOnClickListener {
             if (btnFavorite.tag == "favorite") {
                 //remove from favorites
                 btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 btnFavorite.tag = "notFavorite"
                 Toast.makeText(requireContext(), "Removed From Favorites", Toast.LENGTH_SHORT).show()
-                favoritesEntry = null
+                favoritesEntryToAdd = null
+                favoritesEntryToRemove = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
             } else {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
                 Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT).show()
-                favoritesEntry = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
+                favoritesEntryToAdd = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
+                favoritesEntryToRemove = null
             }
 
         }
@@ -88,14 +97,18 @@ class MarkerSelectedFragment : Fragment() {
      */
     override fun onStop() {
         super.onStop()
-        if (favoritesEntry != null) {
-            //no favorite is in the database with this timestamp
-            if (!favoritesViewModel.contains(favoritesEntry!!.dateObjectTime)) {
-                Log.d(TAG, "entry is NOT in favorites")
-                favoritesViewModel.insert(favoritesEntry!!)
-            } else {
-                Log.d(TAG, "entry IS in favorites")
-            }
+
+        if (favoritesEntryToAdd != null && !entryInDatabase(favoritesEntryToAdd!!)) {
+            Log.d(TAG, "entry is NOT in favorites. Adding it")
+            favoritesViewModel.insert(favoritesEntryToAdd!!)
+        } else if (favoritesEntryToRemove != null) {
+            Log.d(TAG, "Entry was previously entered in favorites. Now removing it")
+            favoritesViewModel.delete(favoritesEntryToRemove!!)
         }
+
+    }
+
+    private fun entryInDatabase(favEntry: FavoritesEntry) : Boolean {
+            return favoritesViewModel.contains(favEntry.dateObjectTime)
     }
 }

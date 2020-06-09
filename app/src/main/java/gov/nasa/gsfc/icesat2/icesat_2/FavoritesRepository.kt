@@ -34,9 +34,10 @@ class FavoritesRepository(application: Application) {
         favoritesDao.contains(timeKey).isNotEmpty()
     }
 
+    //todo: only send the time
     fun delete(favoritesEntry: FavoritesEntry) {
         CoroutineScope(Dispatchers.IO).launch {
-            favoritesDao.delete(favoritesEntry)
+            favoritesDao.delete(favoritesEntry.dateObjectTime)
         }
     }
 
