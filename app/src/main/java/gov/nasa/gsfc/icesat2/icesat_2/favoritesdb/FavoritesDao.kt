@@ -11,6 +11,9 @@ interface FavoritesDao {
     @Insert
     fun insert(favoritesEntry: FavoritesEntry)
 
+    @Query("SELECT * FROM favorites_table WHERE dateObjectTime = :timeKey")
+    fun contains(timeKey: Long): Array<FavoritesEntry>
+
     @Delete
     fun delete(favoritesEntry: FavoritesEntry)
 

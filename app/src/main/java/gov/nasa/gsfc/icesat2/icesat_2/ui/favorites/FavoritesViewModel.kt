@@ -20,6 +20,10 @@ class FavoritesViewModel(@NonNull application: Application) : AndroidViewModel(a
         repository.insert(favoritesEntry)
     }
 
+    fun contains(timeEntry: Long): Boolean {
+        return repository.contains(timeEntry)
+    }
+
     fun delete(favoritesEntry: FavoritesEntry) {
         repository.delete(favoritesEntry)
     }

@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -61,7 +62,7 @@ class MarkerSelectedFragment : Fragment() {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
                 Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT).show()
-                favoritesEntry = FavoritesEntry(selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
+                favoritesEntry = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
             }
 
         }
@@ -88,7 +89,13 @@ class MarkerSelectedFragment : Fragment() {
     override fun onStop() {
         super.onStop()
         if (favoritesEntry != null) {
-            favoritesViewModel.insert(favoritesEntry!!)
+            //no favorite is in the database with this timestamp
+            if (!favoritesViewModel.contains(favoritesEntry!!.dateObjectTime)) {
+                Log.d(TAG, "entry is NOT in favorites")
+                favoritesViewModel.insert(favoritesEntry!!)
+            } else {
+                Log.d(TAG, "entry IS in favorites")
+            }
         }
     }
 }
