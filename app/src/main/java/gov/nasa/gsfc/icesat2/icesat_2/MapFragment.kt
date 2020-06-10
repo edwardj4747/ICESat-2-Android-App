@@ -18,6 +18,7 @@ import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import java.util.*
 
+
 private const val TAG = "MapFragment"
 
 class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback {
@@ -292,6 +293,17 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         when (item.itemId) {
             R.id.menuAddToCalendar -> {
                 attemptToAddToCalendar()
+            }
+            R.id.menuShare -> {
+                Log.d(TAG, "share button clicked")
+                val sendIntent: Intent = Intent().apply {
+                    action = Intent.ACTION_SEND
+                    putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
+                    type = "text/plain"
+                }
+
+                val shareIntent = Intent.createChooser(sendIntent, null)
+                startActivity(shareIntent)
             }
         }
         return super.onOptionsItemSelected(item)
