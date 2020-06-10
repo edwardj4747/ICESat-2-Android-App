@@ -23,6 +23,6 @@ interface FavoritesDao {
     @Query("DELETE FROM favorites_table")
     fun deleteAllFavorites()
 
-    @Query("SELECT * FROM favorites_table") //potentially order
+    @Query("SELECT * FROM favorites_table ORDER BY dateObjectTime") //potentially order
     fun getAllFavorites(): LiveData<List<FavoritesEntry>>
 }
