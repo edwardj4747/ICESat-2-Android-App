@@ -91,4 +91,13 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="grantAccess">Grant Access</string>
 
 
+<!--    Favorites Fragment-->
+    <string name="delete">Delete</string>
+    <string name="deleteAllTitle">Delete All Favorites?</string>
+    <string name="deleteAllDescription">Are you sure you want to delete all of your favorites. This action cannot be undone</string>
+    <string name="yes">Yes, Delete</string>
+    <string name="cancel">Cancel</string>
+    <string name="itemDeleted">Item Deleted</string>
+    <string name="undo">Undo</string>
+
 </resources>

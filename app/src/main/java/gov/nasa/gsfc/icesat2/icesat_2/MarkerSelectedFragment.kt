@@ -1,17 +1,19 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.Toast
 import androidx.fragment.app.Fragment
+import androidx.lifecycle.ViewModelProviders
+import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
+import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import kotlinx.android.synthetic.main.fragment_marker_selected.*
 
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val TAG = "MarkerSelectedFragment"
+private const val ARG_PARAM3 = "param3"
 
 /**
  * A simple [Fragment] subclass.
@@ -19,15 +21,17 @@ private const val ARG_PARAM2 = "param2"
  * create an instance of this fragment.
  */
 class MarkerSelectedFragment : Fragment() {
-    // TODO: Rename and change types of parameters
-    private var dateString: String = ""
-    private var timeString: String = ""
+
+    private lateinit var favoritesViewModel: FavoritesViewModel
+    private lateinit var selectedPoint: Point
+    //one of these two will always be null because this is for one favorite entry and cannot both add and remove it
+    private var favoritesEntryToAdd: FavoritesEntry? = null //null if no new favorite to add
+    private var favoritesEntryToRemove: FavoritesEntry? = null //null if no favorite to remove
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            dateString = it.getString(ARG_PARAM1)!!
-            timeString = it.getString(ARG_PARAM2)!!
+            selectedPoint = it.getParcelable<Point>(ARG_PARAM3)!!
         }
     }
 
@@ -42,19 +46,32 @@ class MarkerSelectedFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        textViewDate.text = dateString
-        textViewTime.text = timeString
+        favoritesViewModel =
+            ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
+
+        textViewDate.text = selectedPoint.dateString
+        textViewTime.text = selectedPoint.dateString
+
+
+        if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
+            btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
+            btnFavorite.tag = "favorite"
+        }
 
         btnFavorite.setOnClickListener {
             if (btnFavorite.tag == "favorite") {
                 //remove from favorites
                 btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
                 btnFavorite.tag = "notFavorite"
-                Toast.makeText(requireContext(), "Need to Remove From Favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Removed From Favorites", Toast.LENGTH_SHORT).show()
+                favoritesEntryToAdd = null
+                favoritesEntryToRemove = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
             } else {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
-                Toast.makeText(requireContext(), "Need to Add to Favorites", Toast.LENGTH_SHORT).show()
+                Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT).show()
+                favoritesEntryToAdd = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
+                favoritesEntryToRemove = null
             }
 
         }
@@ -66,22 +83,32 @@ class MarkerSelectedFragment : Fragment() {
     }
 
     companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment MarkerSelectedFragment.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param3: Point) =
             MarkerSelectedFragment().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putParcelable(ARG_PARAM3, param3)
                 }
             }
+    }
+
+    /**
+     * If the users starred a location, add it to favorites when this fragment gets closed
+     */
+    override fun onStop() {
+        super.onStop()
+
+        if (favoritesEntryToAdd != null && !entryInDatabase(favoritesEntryToAdd!!)) {
+            Log.d(TAG, "entry is NOT in favorites. Adding it")
+            favoritesViewModel.insert(favoritesEntryToAdd!!)
+        } else if (favoritesEntryToRemove != null) {
+            Log.d(TAG, "Entry was previously entered in favorites. Now removing it")
+            favoritesViewModel.delete(favoritesEntryToRemove!!.dateObjectTime)
+        }
+
+    }
+
+    private fun entryInDatabase(favEntry: FavoritesEntry) : Boolean {
+            return favoritesViewModel.contains(favEntry.dateObjectTime)
     }
 }

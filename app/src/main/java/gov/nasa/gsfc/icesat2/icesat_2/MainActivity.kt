@@ -26,6 +26,8 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
+import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
+import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main_nav.*
@@ -73,6 +75,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navHostFragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+
+
     }
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
