@@ -76,6 +76,7 @@ class GalleryDisplay : Fragment(), GalleryDisplayCallback {
         imageViewDisplay.setImageResource(images[index])
         textViewDescription.text = descriptions[index]
         galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context, this) {})
+        textViewProgress.text = "${index + 1}/${titles.size}"
     }
 
     companion object {
