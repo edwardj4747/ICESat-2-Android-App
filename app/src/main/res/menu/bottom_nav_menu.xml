@@ -12,6 +12,10 @@
         android:title="@string/favorites" />
 
     <item
+        android:id="@+id/navigation_gallery"
+        android:icon="@drawable/ic_baseline_photo_24"
+        android:title="@string/gallery" />
+    <item
         android:id="@+id/navigation_info"
         android:icon="@drawable/ic_info"
         android:title="@string/info" />
