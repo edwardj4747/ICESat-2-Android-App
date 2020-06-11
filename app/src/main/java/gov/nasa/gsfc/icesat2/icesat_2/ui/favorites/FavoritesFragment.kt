@@ -43,6 +43,9 @@ class FavoritesFragment : Fragment() {
     }
 
    private fun initializeRecyclerView() {
+       if (favoritesList.isEmpty()) {
+           textViewNoFavorites.visibility = View.VISIBLE
+       }
        val adapter = FavoritesAdapter(favoritesList)
        favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())

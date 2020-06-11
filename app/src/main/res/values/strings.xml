@@ -99,5 +99,6 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="cancel">Cancel</string>
     <string name="itemDeleted">Item Deleted</string>
     <string name="undo">Undo</string>
+    <string name="noFavoritesYet">No Favorites Yet</string>
 
 </resources>
