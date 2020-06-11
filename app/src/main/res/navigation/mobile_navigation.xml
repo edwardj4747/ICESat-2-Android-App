@@ -73,18 +73,6 @@
         android:label="@string/gallery"
         tools:layout="@layout/fragment_gallery_display">
         <argument
-            android:name="title"
-            android:defaultValue='""'
-            app:argType="string" />
-        <argument
-            android:name="image"
-            android:defaultValue="-1"
-            app:argType="integer" />
-        <argument
-            android:name="description"
-            android:defaultValue='""'
-            app:argType="string" />
-        <argument
             android:name="index"
             app:argType="integer"
             android:defaultValue="0" />
