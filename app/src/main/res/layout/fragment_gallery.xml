@@ -31,7 +31,7 @@
                     android:id="@+id/imageView1"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -40,10 +40,10 @@
                     android:id="@+id/imageView2"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
             </LinearLayout>
 
             <LinearLayout
@@ -55,16 +55,16 @@
                     android:id="@+id/imageView3"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
 
                 <ImageView
                     android:id="@+id/imageView4"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -79,7 +79,7 @@
                     android:id="@+id/imageView5"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -88,10 +88,10 @@
                     android:id="@+id/imageView6"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
             </LinearLayout>
 
             <LinearLayout
@@ -103,16 +103,16 @@
                     android:id="@+id/imageView7"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
 
                 <ImageView
                     android:id="@+id/imageView8"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -127,7 +127,7 @@
                     android:id="@+id/imageView9"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -136,10 +136,10 @@
                     android:id="@+id/imageView10"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
             </LinearLayout>
 
             <LinearLayout
@@ -151,16 +151,16 @@
                     android:id="@+id/imageView11"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
 
                 <ImageView
                     android:id="@+id/imageView12"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -175,7 +175,7 @@
                     android:id="@+id/imageView13"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />
@@ -184,10 +184,10 @@
                     android:id="@+id/imageView14"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
             </LinearLayout>
 
             <LinearLayout
@@ -199,17 +199,17 @@
                     android:id="@+id/imageView15"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:scrollbars="vertical"
-                    android:src="@drawable/image_two_c" />
+                    android:src="@drawable/img_two_c" />
 
                 <ImageView
                     android:id="@+id/imageView16"
                     android:layout_width="match_parent"
                     android:layout_height="wrap_content"
-                    android:layout_marginBottom="0dp"
+                    android:layout_margin="1dp"
                     android:layout_weight="1"
                     android:adjustViewBounds="true"
                     android:src="@drawable/icesatc" />

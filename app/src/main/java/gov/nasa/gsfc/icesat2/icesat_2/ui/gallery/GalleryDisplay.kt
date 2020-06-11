@@ -44,10 +44,10 @@ class GalleryDisplay : Fragment(), GalleryDisplayCallback {
         "Title 9", "Title 10", "Title 11", "Title 12", "Title 13", "Title 14", "Title 15", "Title 16")
     private val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4", "Description 5", "Description 6", "Description 7", "Description 8",
         "Description 9", "Description 10", "Description 11", "Description 12", "Description 13", "Description 14", "Description 15", "Description 16")
-    private val images = arrayOf(R.drawable.icesatc, R.drawable.image_two_c, R.drawable.image_two_c, R.drawable.icesatc,
-        R.drawable.icesatc, R.drawable.image_two_c, R.drawable.image_two_c, R.drawable.icesatc,
-        R.drawable.icesatc, R.drawable.image_two_c, R.drawable.image_two_c, R.drawable.icesatc,
-        R.drawable.icesatc, R.drawable.image_two_c, R.drawable.image_two_c, R.drawable.icesatc)
+    private val images = arrayOf(R.drawable.icesatc, R.drawable.img_two_c, R.drawable.img_two_c, R.drawable.icesatc,
+        R.drawable.icesatc, R.drawable.img_two_c, R.drawable.img_two_c, R.drawable.icesatc,
+        R.drawable.icesatc, R.drawable.img_two_c, R.drawable.img_two_c, R.drawable.icesatc,
+        R.drawable.icesatc, R.drawable.img_two_c, R.drawable.img_two_c, R.drawable.icesatc)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
