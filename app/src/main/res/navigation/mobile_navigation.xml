@@ -58,4 +58,9 @@
             android:id="@+id/action_selectOnMapFragment_to_resultsHolderFragment"
             app:destination="@id/resultsHolderFragment" />
     </fragment>
+    <fragment
+        android:id="@+id/navigation_gallery"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.gallery.GalleryFragment"
+        android:label="@string/gallery"
+        tools:layout="@layout/fragment_gallery" />
 </navigation>

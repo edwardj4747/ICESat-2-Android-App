@@ -9,6 +9,7 @@
     <string name="favorites">Favorites</string>
     <string name="info">Info</string>
     <string name="chooseLocation">Select Location</string>
+    <string name="gallery">Gallery</string>
 
     <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>
@@ -39,7 +40,7 @@
     <string name="noNetworkDescription">Please connect to a network and then try again</string>
     <string name="ok">OK</string>
 
-<!--    Location turned off dialog-->
+    <!--    Location turned off dialog-->
     <string name="locationOffTitle">Location is Turned Off</string>
     <string name="locationOffDescription">Please turn on you location</string>
 
@@ -78,20 +79,19 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
         are available to the public from the <a href="https://nsidc.org/">National Snow and Ice Data Center (NSIDC)</a>.</string>
 
 
-
     <!--    Main Menu-->
     <string name="addToCalendar">Add to Calendar</string>
     <string name="share">Share</string>
     <string name="icesatShare">Check this out! NASA\'s ICESat-2 satellite will be flying over our area.</string>
 
 
-<!--    Select on Map-->
+    <!--    Select on Map-->
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
     <string name="locationSnackbar">Location Needs to be Enabled to use this Feature</string>
     <string name="grantAccess">Grant Access</string>
 
 
-<!--    Favorites Fragment-->
+    <!--    Favorites Fragment-->
     <string name="delete">Delete</string>
     <string name="deleteAllTitle">Delete All Favorites?</string>
     <string name="deleteAllDescription">Are you sure you want to delete all of your favorites. This action cannot be undone</string>
