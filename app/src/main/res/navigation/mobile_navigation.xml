@@ -70,19 +70,19 @@
     <fragment
         android:id="@+id/galleryDisplay"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.gallery.GalleryDisplay"
-        android:label="fragment_gallery_display"
-        tools:layout="@layout/fragment_gallery_display" >
+        android:label="@string/gallery"
+        tools:layout="@layout/fragment_gallery_display">
         <argument
             android:name="title"
-            app:argType="string"
-            android:defaultValue='""' />
+            android:defaultValue='""'
+            app:argType="string" />
         <argument
             android:name="image"
-            app:argType="integer"
-            android:defaultValue="-1" />
+            android:defaultValue="-1"
+            app:argType="integer" />
         <argument
             android:name="description"
-            app:argType="string"
-            android:defaultValue='""' />
+            android:defaultValue='""'
+            app:argType="string" />
     </fragment>
 </navigation>

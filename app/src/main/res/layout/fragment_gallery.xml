@@ -36,7 +36,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/icesatc" />
+                android:src="@drawable/image_two_c" />
 
             <ImageView
                 android:id="@+id/imageView3"
@@ -52,7 +52,7 @@
                 android:layout_height="wrap_content"
                 android:layout_marginBottom="2dp"
                 android:adjustViewBounds="true"
-                android:src="@drawable/icesatc" />
+                android:src="@drawable/image_two_c" />
         </LinearLayout>
     </ScrollView>
 </androidx.constraintlayout.widget.ConstraintLayout>

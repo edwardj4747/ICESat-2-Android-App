@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.gallery
 
 import android.os.Bundle
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -26,6 +25,10 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
+
+    val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
+    val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4")
+    val images = arrayOf(R.drawable.icesatc, R.drawable.image_two_c, R.drawable.icesatc, R.drawable.image_two_c)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -74,22 +77,14 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     }
 
     override fun onClick(v: View?) {
+        var index = 0
         when (v?.id) {
-            R.id.imageView1 -> {
-                Log.d(TAG, "imageView one clicked")
-                val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay("Title 1", R.drawable.icesatc, "Description 1")
-                findNavController().navigate(params)
-
-            }
-            R.id.imageView2 -> {
-
-            }
-            R.id.imageView3 -> {
-
-            }
-            R.id.imageView4 -> {
-
-            }
+            R.id.imageView1 -> index = 0
+            R.id.imageView2 -> index = 1
+            R.id.imageView3 -> index = 2
+            R.id.imageView4 -> index = 3
         }
+        val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(titles[index], images[index], descriptions[index])
+        findNavController().navigate(params)
     }
 }
