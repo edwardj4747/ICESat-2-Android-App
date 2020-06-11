@@ -13,6 +13,14 @@ import kotlinx.android.synthetic.main.fragment_gallery_display.*
 import kotlin.math.abs
 
 
+/**
+ * Interface to provide methods to be executed in GalleryDisplay fragment that can be called from [OnSwipeTouchListener]
+ */
+interface GalleryDisplayCallback {
+    fun nextPhoto()
+    fun previousPhoto()
+}
+
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
@@ -25,12 +33,16 @@ private const val TAG = "GalleryDisplay"
  * Use the [GalleryDisplay.newInstance] factory method to
  * create an instance of this fragment.
  */
-class GalleryDisplay : Fragment() {
+class GalleryDisplay : Fragment(), GalleryDisplayCallback {
     // TODO: Rename and change types of parameters
     private var param1: String? = null
     private var param2: String? = null
 
     private val args: GalleryDisplayArgs by navArgs()
+    private var index: Int = 1
+    private val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
+    private val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4")
+    private val images = arrayOf(R.drawable.icesatc, R.drawable.image_two_c, R.drawable.icesatc, R.drawable.image_two_c)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -50,15 +62,20 @@ class GalleryDisplay : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        textViewTitle.text = args.title
-        imageViewDisplay.setImageResource(args.image)
-        textViewDescription.text = args.description
+        index = args.index
+        setUpViews()
+    }
 
-        galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {})
-
+    private fun setUpViews() {
+        textViewTitle.text = titles[index]
+        imageViewDisplay.setImageResource(images[index])
+        textViewDescription.text = descriptions[index]
+        galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context, this) {})
     }
 
     companion object {
+
+
         /**
          * Use this factory method to create a new instance of
          * this fragment using the provided parameters.
@@ -77,23 +94,38 @@ class GalleryDisplay : Fragment() {
                 }
             }
 
-        fun nextPhoto() {
-            Log.d(TAG, "going to next photo")
+
+    }
+
+    override fun nextPhoto() {
+        if (index + 1 < titles.size) {
+            index += 1
+            Log.d(TAG, "going to next photo from callback; new index is $index")
+            setUpViews()
+        }
+    }
+
+    override fun previousPhoto() {
+        if (index > 0) {
+            index -= 1
+            Log.d(TAG, "going to previous photo from callback. new index is $index")
+            setUpViews()
         }
     }
 }
 
-open class OnSwipeTouchListener(context: Context?) : OnTouchListener {
+open class OnSwipeTouchListener(context: Context?, private val listener: GalleryDisplayCallback) : OnTouchListener {
     val SWIPE_THRESHOLD = 100
     val SWIPE_VELOCITY_THRESHOLD = 100
 
     private val gestureDetector: GestureDetector
     fun onSwipeLeft() {
         Log.d(TAG, "onSwipeLeft")
-        GalleryDisplay.nextPhoto()
+        listener.nextPhoto()
     }
     fun onSwipeRight() {
         Log.d(TAG, "onSwipeRight")
+        listener.previousPhoto()
     }
     override fun onTouch(v: View?, event: MotionEvent?): Boolean {
         return gestureDetector.onTouchEvent(event)

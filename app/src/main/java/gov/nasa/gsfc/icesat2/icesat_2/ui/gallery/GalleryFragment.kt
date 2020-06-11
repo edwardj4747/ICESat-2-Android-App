@@ -26,9 +26,9 @@ class GalleryFragment : Fragment(), View.OnClickListener {
     private var param1: String? = null
     private var param2: String? = null
 
-    val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
-    val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4")
-    val images = arrayOf(R.drawable.icesatc, R.drawable.image_two_c, R.drawable.icesatc, R.drawable.image_two_c)
+    private val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4")
+    private val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4")
+    private val images = arrayOf(R.drawable.icesatc, R.drawable.image_two_c, R.drawable.icesatc, R.drawable.image_two_c)
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -84,7 +84,8 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             R.id.imageView3 -> index = 2
             R.id.imageView4 -> index = 3
         }
-        val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(titles[index], images[index], descriptions[index])
+        //val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(titles[index], images[index], descriptions[index], index)
+        val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(titles[index], images[index], descriptions[index], index)
         findNavController().navigate(params)
     }
 }

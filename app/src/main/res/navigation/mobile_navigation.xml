@@ -84,5 +84,9 @@
             android:name="description"
             android:defaultValue='""'
             app:argType="string" />
+        <argument
+            android:name="index"
+            app:argType="integer"
+            android:defaultValue="0" />
     </fragment>
 </navigation>
