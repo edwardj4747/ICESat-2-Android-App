@@ -1,18 +1,24 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.gallery
 
+import android.content.Context
 import android.os.Bundle
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.util.Log
+import android.view.*
+import android.view.GestureDetector.SimpleOnGestureListener
+import android.view.View.OnTouchListener
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_gallery_display.*
+import kotlin.math.abs
+
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
 private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
+
+private const val TAG = "GalleryDisplay"
 
 /**
  * A simple [Fragment] subclass.
@@ -47,6 +53,9 @@ class GalleryDisplay : Fragment() {
         textViewTitle.text = args.title
         imageViewDisplay.setImageResource(args.image)
         textViewDescription.text = args.description
+
+        galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context) {})
+
     }
 
     companion object {
@@ -67,5 +76,47 @@ class GalleryDisplay : Fragment() {
                     putString(ARG_PARAM2, param2)
                 }
             }
+
+        fun nextPhoto() {
+            Log.d(TAG, "going to next photo")
+        }
+    }
+}
+
+open class OnSwipeTouchListener(context: Context?) : OnTouchListener {
+    val SWIPE_THRESHOLD = 100
+    val SWIPE_VELOCITY_THRESHOLD = 100
+
+    private val gestureDetector: GestureDetector
+    fun onSwipeLeft() {
+        Log.d(TAG, "onSwipeLeft")
+        GalleryDisplay.nextPhoto()
+    }
+    fun onSwipeRight() {
+        Log.d(TAG, "onSwipeRight")
+    }
+    override fun onTouch(v: View?, event: MotionEvent?): Boolean {
+        return gestureDetector.onTouchEvent(event)
+    }
+
+    private inner class GestureListener : SimpleOnGestureListener() {
+        override fun onDown(e: MotionEvent): Boolean {
+            return true
+        }
+
+        override fun onFling(e1: MotionEvent, e2: MotionEvent, velocityX: Float, velocityY: Float): Boolean {
+            val distanceX = e2.x - e1.x
+            val distanceY = e2.y - e1.y
+            if (abs(distanceX) > abs(distanceY) && abs(distanceX) > SWIPE_THRESHOLD
+                && abs(velocityX) > SWIPE_VELOCITY_THRESHOLD) {
+                if (distanceX > 0) onSwipeRight() else onSwipeLeft()
+                return true
+            }
+            return false
+        }
+    }
+
+    init {
+        gestureDetector = GestureDetector(context, GestureListener())
     }
 }
