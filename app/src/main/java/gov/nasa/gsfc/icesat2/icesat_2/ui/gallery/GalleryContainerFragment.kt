@@ -8,6 +8,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.fragment.app.FragmentStatePagerAdapter
+import androidx.navigation.fragment.navArgs
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_gallery_container.*
 
@@ -62,6 +63,9 @@ class GalleryContainerFragment : Fragment() {
     private var param1: String? = null
     private var param2: String? = null
 
+    private val args by navArgs<GalleryContainerFragmentArgs>()
+    private var index = 0
+
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
@@ -80,8 +84,12 @@ class GalleryContainerFragment : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        index = args.index
+
         val galleryPagerAdapter = GalleryPagerAdapter(requireContext(), childFragmentManager)
         galleryViewPager.adapter = galleryPagerAdapter
+        galleryViewPager.setCurrentItem(index, true)
     }
 
     companion object {

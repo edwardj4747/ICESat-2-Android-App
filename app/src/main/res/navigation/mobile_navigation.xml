@@ -84,5 +84,10 @@
         android:id="@+id/galleryContainerFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.gallery.GalleryContainerFragment"
         android:label="@string/gallery"
-        tools:layout="@layout/fragment_gallery_container" />
+        tools:layout="@layout/fragment_gallery_container" >
+        <argument
+            android:name="index"
+            app:argType="integer"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>
