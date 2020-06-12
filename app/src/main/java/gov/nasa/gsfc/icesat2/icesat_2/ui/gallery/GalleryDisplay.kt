@@ -5,30 +5,22 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.navigation.fragment.navArgs
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_gallery_display.*
 
-
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
+//for passing and retrieving values
 private const val Index_Param = "param1"
-
-
 private const val TAG = "GalleryDisplay"
 
 /**
- * A simple [Fragment] subclass.
- * Use the [GalleryDisplay.newInstance] factory method to
- * create an instance of this fragment.
+ * Shows the appropriate Title, Image, and Description for each photo in the Gallery
+ * Index is passed in through [GalleryDisplay.newInstance] method and that index is used to get
+ * appropriate values from the titles, description, and image arrays that are stored in this class
  */
 class GalleryDisplay : Fragment() {
-    // TODO: Rename and change types of parameters
     private var index: Int = 0
 
-    private val args: GalleryDisplayArgs by navArgs()
-    //private var index: Int = 1
+    //value arrays for titles, images, and, descriptions
     private val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8",
         "Title 9", "Title 10", "Title 11", "Title 12", "Title 13", "Title 14", "Title 15", "Title 16")
     private val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4", "Description 5", "Description 6", "Description 7", "Description 8",
@@ -55,7 +47,6 @@ class GalleryDisplay : Fragment() {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        //index = args.index
         setUpViews()
     }
 
@@ -74,7 +65,5 @@ class GalleryDisplay : Fragment() {
                     putInt(Index_Param, param1)
                 }
             }
-
-
     }
 }
