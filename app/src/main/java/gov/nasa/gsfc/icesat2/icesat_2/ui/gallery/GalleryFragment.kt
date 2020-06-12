@@ -105,7 +105,11 @@ class GalleryFragment : Fragment(), View.OnClickListener {
             R.id.imageView16 -> index = 15
         }
         //val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(titles[index], images[index], descriptions[index], index)
-        val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(index)
-        findNavController().navigate(params)
+
+
+        /*val params = GalleryFragmentDirections.actionNavigationGalleryToGalleryDisplay(index)
+        findNavController().navigate(params)*/
+
+        findNavController().navigate(R.id.action_navigation_gallery_to_galleryContainerFragment2)
     }
 }

@@ -66,6 +66,9 @@
         <action
             android:id="@+id/action_navigation_gallery_to_galleryDisplay"
             app:destination="@id/galleryDisplay" />
+        <action
+            android:id="@+id/action_navigation_gallery_to_galleryContainerFragment2"
+            app:destination="@id/galleryContainerFragment" />
     </fragment>
     <fragment
         android:id="@+id/galleryDisplay"
@@ -77,4 +80,9 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/galleryContainerFragment"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.gallery.GalleryContainerFragment"
+        android:label="@string/gallery"
+        tools:layout="@layout/fragment_gallery_container" />
 </navigation>

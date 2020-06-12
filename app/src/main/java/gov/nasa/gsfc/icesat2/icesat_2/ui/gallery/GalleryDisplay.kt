@@ -23,8 +23,8 @@ interface GalleryDisplayCallback {
 
 // TODO: Rename parameter arguments, choose names that match
 // the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
+private const val Index_Param = "param1"
+
 
 private const val TAG = "GalleryDisplay"
 
@@ -35,11 +35,10 @@ private const val TAG = "GalleryDisplay"
  */
 class GalleryDisplay : Fragment(), GalleryDisplayCallback {
     // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
+    private var index: Int = 0
 
     private val args: GalleryDisplayArgs by navArgs()
-    private var index: Int = 1
+    //private var index: Int = 1
     private val titles = arrayOf("Title 1", "Title 2", "Title 3", "Title 4", "Title 5", "Title 6", "Title 7", "Title 8",
         "Title 9", "Title 10", "Title 11", "Title 12", "Title 13", "Title 14", "Title 15", "Title 16")
     private val descriptions = arrayOf("Description 1", "Description 2", "Description 3", "Description 4", "Description 5", "Description 6", "Description 7", "Description 8",
@@ -52,8 +51,7 @@ class GalleryDisplay : Fragment(), GalleryDisplayCallback {
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
+            index = it.getInt(Index_Param)
         }
     }
 
@@ -67,7 +65,7 @@ class GalleryDisplay : Fragment(), GalleryDisplayCallback {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
-        index = args.index
+        //index = args.index
         setUpViews()
     }
 
@@ -75,28 +73,16 @@ class GalleryDisplay : Fragment(), GalleryDisplayCallback {
         textViewTitle.text = titles[index]
         imageViewDisplay.setImageResource(images[index])
         textViewDescription.text = descriptions[index]
-        galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context, this) {})
         textViewProgress.text = "${index + 1}/${titles.size}"
+        //galleryDisplayConstraintLayout.setOnTouchListener(object : OnSwipeTouchListener(context, this) {})
     }
 
     companion object {
-
-
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment GalleryDisplay.
-         */
-        // TODO: Rename and change types and number of parameters
         @JvmStatic
-        fun newInstance(param1: String, param2: String) =
+        fun newInstance(param1: Int) =
             GalleryDisplay().apply {
                 arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
+                    putInt(Index_Param, param1)
                 }
             }
 
