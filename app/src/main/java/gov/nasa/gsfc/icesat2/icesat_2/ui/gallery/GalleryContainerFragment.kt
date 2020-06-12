@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.gallery
 
-import android.content.Context
 import android.os.Bundle
 import android.view.LayoutInflater
 import android.view.View
@@ -18,36 +17,15 @@ private const val ARG_PARAM1 = "param1"
 private const val ARG_PARAM2 = "param2"
 
 
-class GalleryPagerAdapter(private val context: Context, fm: FragmentManager)
+class GalleryPagerAdapter(fm: FragmentManager)
     : FragmentStatePagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
         // getItem is called to instantiate the fragment for the given page.
-        /*var index = 0
-        when (position) {
-            0 -> index = 0
-            1 -> index = 1
-            2 -> index = 2
-            3 -> index = 3
-            4 -> index = 4
-            5 -> index = 5
-            6 -> index = 6
-            7 -> index = 7
-            8 -> index = 8
-            9 -> index = 9
-            10 -> index = 10
-            11 -> index = 11
-            12 -> index = 12
-            13 -> index = 13
-            14 -> index = 14
-            15 -> index = 15
-        }*/
         return GalleryDisplay.newInstance(position)
     }
 
-
     override fun getCount(): Int {
-        // Show 2 total pages.
         return 16
     }
 }
@@ -87,7 +65,7 @@ class GalleryContainerFragment : Fragment() {
 
         index = args.index
 
-        val galleryPagerAdapter = GalleryPagerAdapter(requireContext(), childFragmentManager)
+        val galleryPagerAdapter = GalleryPagerAdapter(childFragmentManager)
         galleryViewPager.adapter = galleryPagerAdapter
         galleryViewPager.setCurrentItem(index, true)
     }
