@@ -12,6 +12,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
+//Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
 
 class DownloadData {
@@ -46,8 +47,6 @@ class DownloadData {
                 if (state == "true") {
                     val pointsArrayList = ArrayList<Point>()
                     val queryResult = jsonObject.getJSONArray("result")
-                    //TODO: Change this back
-                    //for (i in 0 until queryResult.length()) {
                     for (i in 0 until queryResult.length()) {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
