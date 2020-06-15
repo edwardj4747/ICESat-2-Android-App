@@ -12,6 +12,7 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
+private const val DATE_DIVISOR = 1000
 
 class DownloadData {
 
@@ -20,7 +21,9 @@ class DownloadData {
     private val comparator = object : Comparator<Point> {
         override fun compare(o1: Point?, o2: Point?): Int {
             if (o1 != null && o2 != null) {
-                return (o1.dateObject.time - o2.dateObject.time).toInt()
+                Log.d(TAG, "o1 is $o1; o2 is $o2. Comparator returns ${((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()}")
+                return ((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()
+                //return ((o1.dateObject.time - twoToTheTenth) - (o2.dateObject.time - twoToTheTenth)).toInt()
             } else {
                 Log.d(TAG, "Error in comparator method")
                 throw IllegalArgumentException("Passed a null date into the comparator")
@@ -43,6 +46,8 @@ class DownloadData {
                 if (state == "true") {
                     val pointsArrayList = ArrayList<Point>()
                     val queryResult = jsonObject.getJSONArray("result")
+                    //TODO: Change this back
+                    //for (i in 0 until queryResult.length()) {
                     for (i in 0 until queryResult.length()) {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
@@ -64,11 +69,14 @@ class DownloadData {
 
                     //if there are any results from the search. Sort them and split them accordingly
                     if (pointsArrayList.size > 0) {
+                        Log.d(TAG, "prior to sorting $pointsArrayList")
                         //sort the pointsArrayList based on date with earlier dates coming at the beginning
                         val sortPointArrayUnit: Deferred<Unit> = async {
                             Collections.sort(pointsArrayList, comparator)
                         }
                         sortPointArrayUnit.await()
+
+                        Log.d(TAG, "AFter sorting $pointsArrayList")
 
                        /* val allPointChains: Deferred<ArrayList<ArrayList<Point>>> = async {
                             splitPointsByDate(pointsArrayList)
@@ -76,6 +84,7 @@ class DownloadData {
 
                         if (mainActivityViewModel != null) {
                             //TODO: remove allPointsList in ViewModel?
+                            Log.d(TAG, "Posting all points list to viewmodel")
                             mainActivityViewModel.allPointsList.postValue(pointsArrayList)
                             //mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
                             resultsFound = true
