@@ -59,6 +59,11 @@
 
     <string name="icesatFlyover">ICESat-2 Flyover</string>
 
+
+<!--    MarkerSelectedFragment-->
+    <string name="dateDisplay">%1$s, %2$s, %3$s</string>
+    <string name="timeDisplay">%1$s %2$s %3$s</string>
+
     <!--    Info Fragment-->
 
     <string name="watchVideo">Watch Video</string>

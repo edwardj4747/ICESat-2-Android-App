@@ -49,10 +49,11 @@ class MarkerSelectedFragment : Fragment() {
         favoritesViewModel =
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
 
-        //textViewDate.text = selectedPoint.dateString
-        //textViewTime.text = selectedPoint.dateString
-        textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
-        textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
+        //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
+        //textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
+        //todo: not sure this is going to work in other localities
+        textViewDate.text = getString(R.string.dateDisplay, selectedPoint.dayOfWeek, selectedPoint.date, selectedPoint.year)
+        textViewTime.text = getString(R.string.timeDisplay, selectedPoint.time, selectedPoint.ampm, selectedPoint.timezone)
 
 
         if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
