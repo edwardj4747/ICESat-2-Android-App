@@ -47,13 +47,16 @@ class DownloadData {
                 if (state == "true") {
                     val pointsArrayList = ArrayList<Point>()
                     val queryResult = jsonObject.getJSONArray("result")
-                    for (i in 0 until queryResult.length()) {
+                    //for (i in 0 until queryResult.length()) {
+                    for (i in 0 until 1) {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
                         val time = individualPoint.getString("time")
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
 
+
+                        //TODO: refactor according to new properties specified in convertDateTimeMethod
                         //convert date + time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
                         val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
                             convertDateTime(date, time)
@@ -112,6 +115,13 @@ class DownloadData {
         return resultsFound
     }
 
+    /**
+     * Converts the downloaded time/data from UTC to users time zone.
+     * @param dateString downloaded date of form 22-7-2020 (ie: July 22, 2020)
+     * @param timeString time of the satellite flyover in UTC
+     * If the date has already passed, will return arrayOf(DATE_ALREADY_PASSED, null) otherwise
+     * @return arrayOf(convertedDateString, dayOfWeek, date, year, timeString, AM/PM, timezone, dateTimeToConvert)
+     */
     private fun convertDateTime(dateString: String, timeString: String): Array<Any?> {
         val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
@@ -120,10 +130,19 @@ class DownloadData {
         if (dateTimeToConvert.before(currentTime)) {
             return arrayOf(DATE_ALREADY_PASSED, null)
         }
-        val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy hh:mm:ss aaa", Locale.getDefault())
+        val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy, hh:mm:ss, aaa, z", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getDefault()
         val convertedDateString = outputFormat.format(dateTimeToConvert)
-        return arrayOf(convertedDateString, dateTimeToConvert)
+        Log.d(TAG, "converted date string $convertedDateString")
+
+        //split up the date string
+        val convertedDateStringSplit = convertedDateString.split(",")
+
+        return arrayOf(convertedDateString, convertedDateStringSplit[0], convertedDateStringSplit[1],
+            convertedDateStringSplit[2], convertedDateStringSplit[3], convertedDateStringSplit[4],
+            convertedDateStringSplit[5], dateTimeToConvert)
+
+        //return arrayOf(convertedDateString, dateTimeToConvert)
     }
 
     private fun splitPointsByDate(allPointsList: ArrayList<Point>): ArrayList<ArrayList<Point>> {
