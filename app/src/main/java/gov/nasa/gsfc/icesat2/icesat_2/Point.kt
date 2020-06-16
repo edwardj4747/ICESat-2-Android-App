@@ -5,7 +5,7 @@ import kotlinx.android.parcel.Parcelize
 import java.util.*
 
 @Parcelize
-class Point (val date: String, val time: String, val longitude: Double, val latitude: Double, val dateString: String, val dateObject: Date) :
+/*class Point (val date: String, val time: String, val longitude: Double, val latitude: Double, val dateString: String, val dateObject: Date) :
     Parcelable {
 
     override fun toString(): String {
@@ -15,4 +15,15 @@ class Point (val date: String, val time: String, val longitude: Double, val lati
         return "$dateString, "
     }
 
+}*/
+
+class Point(val dateString: String, val dayOfWeek: String, val date: String, val year: String,
+            val time: String, val ampm: String, val timezone: String, val longitude: Double, val latitude: Double, val dateObject: Date) :
+    Parcelable {
+
+    override fun toString(): String {
+        return """
+            $dayOfWeek $date $year $time $ampm $timezone 
+        """.trimIndent()
+    }
 }

@@ -22,7 +22,6 @@ class DownloadData {
     private val comparator = object : Comparator<Point> {
         override fun compare(o1: Point?, o2: Point?): Int {
             if (o1 != null && o2 != null) {
-                Log.d(TAG, "o1 is $o1; o2 is $o2. Comparator returns ${((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()}")
                 return ((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()
                 //return ((o1.dateObject.time - twoToTheTenth) - (o2.dateObject.time - twoToTheTenth)).toInt()
             } else {
@@ -47,8 +46,7 @@ class DownloadData {
                 if (state == "true") {
                     val pointsArrayList = ArrayList<Point>()
                     val queryResult = jsonObject.getJSONArray("result")
-                    //for (i in 0 until queryResult.length()) {
-                    for (i in 0 until 1) {
+                    for (i in 0 until queryResult.length()) {
                         val individualPoint = queryResult.getJSONObject(i)
                         val date = individualPoint.getString("date")
                         val time = individualPoint.getString("time")
@@ -61,9 +59,14 @@ class DownloadData {
                         val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
                             convertDateTime(date, time)
                         }
+
                         //Wait until conversion is completed. Add the point only if it is in future
                         if (convertedDateTime.await()[0] != DATE_ALREADY_PASSED) {
-                            val newPoint = Point(date, time, lon, lat, convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as Date)
+                            //val newPoint = Point(date, time, lon, lat, convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as Date)
+                            //TODO: build in a second constructor in case this one fails
+                            val newPoint = Point(convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as String,
+                                convertedDateTime.await()[2] as String, convertedDateTime.await()[3] as String, convertedDateTime.await()[4] as String,
+                            convertedDateTime.await()[5] as String, convertedDateTime.await()[6] as String, lon, lat, convertedDateTime.await()[7] as Date)
                             pointsArrayList.add(newPoint)
                         }
                     }
@@ -133,14 +136,13 @@ class DownloadData {
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy, hh:mm:ss, aaa, z", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getDefault()
         val convertedDateString = outputFormat.format(dateTimeToConvert)
-        Log.d(TAG, "converted date string $convertedDateString")
 
         //split up the date string
         val convertedDateStringSplit = convertedDateString.split(",")
 
-        return arrayOf(convertedDateString, convertedDateStringSplit[0], convertedDateStringSplit[1],
-            convertedDateStringSplit[2], convertedDateStringSplit[3], convertedDateStringSplit[4],
-            convertedDateStringSplit[5], dateTimeToConvert)
+        return arrayOf(convertedDateString, convertedDateStringSplit[0], convertedDateStringSplit[1].trimStart(),
+            convertedDateStringSplit[2].trimStart(), convertedDateStringSplit[3].trimStart(), convertedDateStringSplit[4].trimStart(),
+            convertedDateStringSplit[5].trimStart(), dateTimeToConvert)
 
         //return arrayOf(convertedDateString, dateTimeToConvert)
     }
