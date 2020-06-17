@@ -15,7 +15,9 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
+import kotlinx.android.synthetic.main.fragment_map.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "MapFragment"
@@ -31,6 +33,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
     private var marker: Marker? = null //used to keep track of the selected marker
     private var count = 0 //to access the point array based on the marker later
+    private val markerList = ArrayList<Marker>()
+    private val polylineList = ArrayList<Polyline>()
 
 
     override fun onCreateView(
@@ -103,6 +107,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             searchRadius = it
         })
 
+        checkBoxMarker.setOnClickListener {
+            if (checkBoxMarker.isChecked) {
+                Log.d(TAG, "marker is checked")
+            } else {
+                markerList.forEach {
+                    it.remove()
+                }
+            }
+        }
+
+        checkBoxPath.setOnClickListener {
+            if (checkBoxPath.isChecked) {
+                Log.d(TAG, "path is checked")
+            }
+        }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -137,7 +157,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
                 polylineOptions = PolylineOptions()
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
-            mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString)).tag = count
+            //add marker to map and markerList
+            val markerAdded = mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+            markerAdded.tag = count
+            markerList.add(markerAdded)
             count++
         }
         drawPolyline(polylineOptions)
