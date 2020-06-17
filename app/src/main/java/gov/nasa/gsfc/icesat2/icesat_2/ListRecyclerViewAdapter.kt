@@ -59,7 +59,8 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val item = allPoints[position - determineOffset(position)]
         if (headerLocations.contains(position)) {
-            holder.textViewDateTime.text = "${item.date}, ${item.year}"
+            //holder.textViewDateTime.text = "${item.date}, ${item.year}"
+            holder.textViewDateTime.text = context.getString(R.string.dateYearString, item.date, item.year)
             holder.textViewDateTime.typeface = Typeface.DEFAULT_BOLD
             holder.textViewDateTime.setPadding(dpAsPixels, dpAsPixels / 2, dpAsPixels, dpAsPixels / 10)
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.header_font))
@@ -72,7 +73,9 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.list_item_font))
             holder.textViewLatLng.visibility = View.VISIBLE
             holder.imageView.visibility = View.VISIBLE
-            holder.textViewLatLng.text = "${item.latitude}${0x00B0.toChar()}N ${item.longitude}${0x00B0.toChar()}E"
+            //holder.textViewLatLng.text = "${item.latitude}${0x00B0.toChar()}N ${item.longitude}${0x00B0.toChar()}E"
+            holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString,
+                item.latitude.toString(), 0x00B0.toChar(), item.longitude.toString(), 0x00B0.toChar())
         }
     }
 
