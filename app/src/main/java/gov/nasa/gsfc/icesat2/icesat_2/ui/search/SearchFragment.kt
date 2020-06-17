@@ -188,6 +188,12 @@ class SearchFragment : Fragment() {
         editTextLon.setText(long)
     }
 
+    fun clearLatLngTextViews() {
+        editTextLat.setText("")
+        editTextLon.setText("")
+        editTextRadius.setText("")
+    }
+
     private fun setLatLngTextViews(value: LatLng?) {
         if (value != null) {
             setLatLngTextViews(value.latitude.toString(), value.longitude.toString())
@@ -199,8 +205,10 @@ class SearchFragment : Fragment() {
     }
 
     private fun setAddressTextView() {
-        if (address != null) {
+        if (address != null && address != "") {
             textViewAdress.text = "Searching for: $address"
+        } else {
+            textViewAdress.text = ""
         }
     }
 
@@ -276,6 +284,12 @@ class SearchFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menuClearSearch -> {
+                address = ""
+                setAddressTextView()
+                clearLatLngTextViews()
+            }
+
             R.id.menuSearch -> {
                 Log.d(TAG, "Search menu button pressed")
 
