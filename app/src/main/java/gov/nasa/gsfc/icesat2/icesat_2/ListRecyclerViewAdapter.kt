@@ -3,6 +3,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 import android.content.Context
 import android.graphics.Typeface
 import android.util.Log
+import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -62,18 +63,20 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-
+        val item = allPoints[position - determineOffset(position)]
         if (headerLocations.contains(position)) {
-                holder.textViewDateTime.text = "HEADER!!"
+                holder.textViewDateTime.text = "${item.date}, ${item.year}"
                 holder.textViewDateTime.typeface = Typeface.DEFAULT_BOLD
                 holder.textViewDateTime.setPadding(dpAsPixels, dpAsPixels / 2, dpAsPixels, dpAsPixels / 10)
+            holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.header_font))
                 holder.textViewLatLng.visibility = View.GONE
                 holder.imageView.visibility = View.GONE
             } else {
-                val item = allPoints[position - determineOffset(position)]
+
                 holder.textViewDateTime.text = item.dateString
                 holder.textViewDateTime.typeface = Typeface.DEFAULT
                 holder.textViewDateTime.setPadding(0, 0, 0, 0)
+            holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.list_item_font))
                 holder.textViewLatLng.visibility = View.VISIBLE
                 holder.imageView.visibility = View.VISIBLE
 
