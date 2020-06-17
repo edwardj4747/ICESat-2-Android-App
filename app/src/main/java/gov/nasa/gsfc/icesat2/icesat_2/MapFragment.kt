@@ -126,7 +126,14 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         checkBoxPath.setOnClickListener {
             if (checkBoxPath.isChecked) {
-                Log.d(TAG, "path is checked")
+                Log.d(TAG, "path is checked polyLineList is $polylineList")
+                polylineList.forEach {
+                    it.isVisible = true
+                }
+            } else {
+                polylineList.forEach {
+                    it.isVisible = false
+                }
             }
         }
 
@@ -180,10 +187,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     }
 
     private fun drawPolyline(polylineOptions: PolylineOptions) {
-        mMap.addPolyline(polylineOptions).apply {
+        polylineList.add(mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
             color = (0xff32CD32.toInt())
-        }
+        })
     }
 
     private fun addCircleRadius(radius: Double) {
