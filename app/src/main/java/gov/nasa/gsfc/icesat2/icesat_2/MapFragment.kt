@@ -17,6 +17,7 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
 import java.util.*
+import kotlin.collections.ArrayList
 
 
 private const val TAG = "MapFragment"
@@ -32,6 +33,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
     private var marker: Marker? = null //used to keep track of the selected marker
     private var count = 0 //to access the point array based on the marker later
+
+
+    companion object {
+        private var startOfChains = ArrayList<Int>() //the index that the chains start at - used for List frag, recycler view
+        fun getStartOfChains(): ArrayList<Int> = startOfChains
+    }
+
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -131,11 +139,16 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         Log.d(TAG, "addChainPolyLine Starts")
         var polylineOptions = PolylineOptions()
 
+        //chain MUST start at zero so add that
+        startOfChains.add(0)
+
         //adding a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             //check if the point is on the same chain as the previous point
             if (i != 0 && !onSameChain(chain[i - 1], chain[i])) {
+                //beginning of a new chain so add it
+                startOfChains.add(i)
                 drawPolyline(polylineOptions)
                 polylineOptions = PolylineOptions()
             }
