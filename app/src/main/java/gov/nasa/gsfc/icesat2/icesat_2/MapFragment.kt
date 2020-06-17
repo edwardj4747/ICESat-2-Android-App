@@ -112,14 +112,9 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         checkBoxMarker.setOnClickListener {
             if (checkBoxMarker.isChecked) {
                 Log.d(TAG, "marker is checked. markerList is $markerList")
-                val tempMarkerList = ArrayList<Marker>()
-                markerList.forEach {
-                    tempMarkerList.add(mMap.addMarker(MarkerOptions().position(it.position).title(it.title)))
+                markerList.forEachIndexed { i: Int, it: Marker ->
+                    markerList[i] = mMap.addMarker(MarkerOptions().position(it.position).title(it.title))
                 }
-                markerList.clear()
-                Log.d(TAG, "temp marker list is $tempMarkerList")
-                markerList = ArrayList(tempMarkerList)
-                tempMarkerList.clear()
                 Log.d(TAG, "end is checked. MarkerList is $markerList")
             } else {
                 Log.d(TAG, "else before marker list is $markerList")
