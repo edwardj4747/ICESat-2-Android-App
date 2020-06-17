@@ -33,7 +33,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
     private var marker: Marker? = null //used to keep track of the selected marker
     private var count = 0 //to access the point array based on the marker later
-    private lateinit var markerList: ArrayList<Marker>
+    private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
 
 
@@ -51,7 +51,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         setHasOptionsMenu(true)
         fm = childFragmentManager
 
-        markerList = ArrayList()
 
         Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
