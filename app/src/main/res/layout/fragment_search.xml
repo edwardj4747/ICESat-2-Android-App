@@ -166,6 +166,7 @@
         android:id="@+id/imageView18"
         android:layout_width="wrap_content"
         android:layout_height="80dp"
+        android:layout_marginTop="8dp"
         android:background="@color/indigo_50"
         android:padding="2dp"
         android:src="@drawable/white_logo"
