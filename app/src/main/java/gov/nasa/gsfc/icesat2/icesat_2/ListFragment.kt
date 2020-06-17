@@ -47,7 +47,7 @@ class ListFragment : Fragment() {
 
     private fun setUpRecyclerView(allPointsOneList: ArrayList<Point>?) {
         Log.d(TAG, "setting up recycler view")
-        val listRecyclerViewAdapter = ListRecyclerViewAdapter(allPointsOneList!!)
+        val listRecyclerViewAdapter = ListRecyclerViewAdapter(requireContext(), allPointsOneList!!)
         recyclerView.layoutManager = LinearLayoutManager(requireContext())
         recyclerView.adapter = listRecyclerViewAdapter
     }
