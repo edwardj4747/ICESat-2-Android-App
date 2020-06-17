@@ -32,7 +32,7 @@ import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
 
-
+const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
 private const val LOCATION_REQUEST_CODE = 6
 
@@ -168,7 +168,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
                         //automatically start searching if simpleSearch
                         if (simpleSearch) {
-                            searchButtonPressed(location.latitude, location.longitude, 25.0, false)
+                            searchButtonPressed(location.latitude, location.longitude, DEFAULT_SEARCH_RADIUS, false)
                         }
                         locationManager.removeUpdates(this)
                     }

@@ -19,6 +19,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
+import gov.nasa.gsfc.icesat2.icesat_2.DEFAULT_SEARCH_RADIUS
 import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -294,20 +295,28 @@ class SearchFragment : Fragment() {
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (data != null) {
-                if (resultCode == RESULT_OK) {
-                    val place = Autocomplete.getPlaceFromIntent(data)
-                    Log.i(TAG, "Place: " + place.name)
-                    val latLng = place.latLng
-                    setLatLngTextViews(latLng)
-                    address = place.name
-                    setAddressTextView()
-                    editTextRadius.requestFocus()
-                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                    // TODO: Handle the error.
-                    val status = Autocomplete.getStatusFromIntent(data)
-                    Log.i(TAG, "${status.statusMessage}")
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
+                when (resultCode) {
+                    RESULT_OK -> {
+                        val place = Autocomplete.getPlaceFromIntent(data)
+                        Log.i(TAG, "Place: " + place.name)
+                        val latLng = place.latLng
+                        setLatLngTextViews(latLng)
+                        address = place.name
+                        setAddressTextView()
+                        if (place.latLng != null && simpleSearch) {
+                            listener.searchButtonPressed(place.latLng!!.latitude, place.latLng!!.longitude, DEFAULT_SEARCH_RADIUS, false)
+                        } else {
+                            editTextRadius.requestFocus()
+                        }
+                    }
+                    AutocompleteActivity.RESULT_ERROR -> {
+                        // TODO: Handle the error.
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        Log.i(TAG, "${status.statusMessage}")
+                    }
+                    RESULT_CANCELED -> {
+                        // The user canceled the operation.
+                    }
                 }
             } else {
                 Log.d(TAG, "intent is equal to null")
