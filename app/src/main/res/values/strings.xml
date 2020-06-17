@@ -31,6 +31,9 @@
     <string name="advancedSearch"><u><b>Advanced Search</b></u></string>
     <string name="simpleSearch"><u><b>Simple Search</b></u></string>
 
+    <string name="useMap">Use Map</string>
+    <string name="useLocation">Use Loc</string>
+
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>
     <string name="noResultsDetails">There are currently no results for your search criteria.
