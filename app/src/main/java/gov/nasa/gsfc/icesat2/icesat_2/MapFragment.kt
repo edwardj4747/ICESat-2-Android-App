@@ -33,7 +33,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
     private lateinit var markerSelectedFragment: MarkerSelectedFragment
     private var marker: Marker? = null //used to keep track of the selected marker
     private var count = 0 //to access the point array based on the marker later
-    private val markerList = ArrayList<Marker>()
+    private lateinit var markerList: ArrayList<Marker>
     private val polylineList = ArrayList<Polyline>()
 
 
@@ -50,6 +50,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         setHasOptionsMenu(true)
         fm = childFragmentManager
+
+        markerList = ArrayList()
 
         Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
@@ -109,11 +111,22 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         checkBoxMarker.setOnClickListener {
             if (checkBoxMarker.isChecked) {
-                Log.d(TAG, "marker is checked")
+                Log.d(TAG, "marker is checked. markerList is $markerList")
+                val tempMarkerList = ArrayList<Marker>()
+                markerList.forEach {
+                    tempMarkerList.add(mMap.addMarker(MarkerOptions().position(it.position).title(it.title)))
+                }
+                markerList.clear()
+                Log.d(TAG, "temp marker list is $tempMarkerList")
+                markerList = ArrayList(tempMarkerList)
+                tempMarkerList.clear()
+                Log.d(TAG, "end is checked. MarkerList is $markerList")
             } else {
+                Log.d(TAG, "else before marker list is $markerList")
                 markerList.forEach {
                     it.remove()
                 }
+                Log.d(TAG, "else after marker list is $markerList")
             }
         }
 
