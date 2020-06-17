@@ -37,6 +37,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var listener: ISearchFragmentCallback
     private var address: String? = null
+    private var simpleSearch = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,7 +76,7 @@ class SearchFragment : Fragment() {
         }
 
         btnUseCurrentLoc.setOnClickListener {
-            listener.useCurrentLocationButtonPressed()
+            listener.useCurrentLocationButtonPressed(simpleSearch)
         }
 
         btnSelectOnMap.setOnClickListener {
@@ -102,6 +103,7 @@ class SearchFragment : Fragment() {
             }*/
 
             //hide advanced search text + show advanced search fields
+            simpleSearch = false
             textViewAdvancedSearch.visibility = View.GONE
             btnSearch2.visibility = View.GONE
 
@@ -115,6 +117,7 @@ class SearchFragment : Fragment() {
         }
 
         textViewSimpleSearch.setOnClickListener {
+            simpleSearch = true
             textViewAdvancedSearch.visibility = View.VISIBLE
             btnSearch2.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
