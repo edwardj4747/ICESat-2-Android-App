@@ -15,7 +15,6 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-import kotlinx.android.synthetic.main.fragment_map.*
 import java.util.*
 
 
@@ -104,9 +103,6 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             searchRadius = it
         })
 
-        btnAddEvent.setOnClickListener {
-            attemptToAddToCalendar()
-        }
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
