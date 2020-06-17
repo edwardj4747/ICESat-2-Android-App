@@ -206,9 +206,13 @@ class SearchFragment : Fragment() {
 
     private fun setAddressTextView() {
         if (address != null && address != "") {
+            textViewEnterLocation.visibility = View.INVISIBLE
+            textViewAdress.visibility = View.VISIBLE
             textViewAdress.text = "Searching for: $address"
         } else {
             textViewAdress.text = ""
+            textViewEnterLocation.visibility = View.VISIBLE
+            textViewAdress.visibility = View.INVISIBLE
         }
     }
 
