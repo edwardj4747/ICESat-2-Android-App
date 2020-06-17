@@ -35,6 +35,7 @@
     <string name="useLocation">Use Loc</string>
 
     <string name="yourLocation">Your Location</string>
+    <string name="clearSearch">Clear Search</string>
 
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>
