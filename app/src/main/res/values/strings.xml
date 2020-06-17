@@ -34,6 +34,8 @@
     <string name="useMap">Use Map</string>
     <string name="useLocation">Use Loc</string>
 
+    <string name="yourLocation">Your Location</string>
+
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>
     <string name="noResultsDetails">There are currently no results for your search criteria.

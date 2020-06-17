@@ -77,6 +77,8 @@ class SearchFragment : Fragment() {
         }
 
         btnUseCurrentLoc.setOnClickListener {
+            address = getString(R.string.yourLocation)
+            setAddressTextView()
             listener.useCurrentLocationButtonPressed(simpleSearch)
         }
 
@@ -106,7 +108,7 @@ class SearchFragment : Fragment() {
             //hide advanced search text + show advanced search fields
             simpleSearch = false
             textViewAdvancedSearch.visibility = View.GONE
-            btnSearch2.visibility = View.GONE
+            //btnSearch2.visibility = View.GONE
 
             textViewSimpleSearch.visibility = View.VISIBLE
             editTextLat.visibility = View.VISIBLE
@@ -120,7 +122,7 @@ class SearchFragment : Fragment() {
         textViewSimpleSearch.setOnClickListener {
             simpleSearch = true
             textViewAdvancedSearch.visibility = View.VISIBLE
-            btnSearch2.visibility = View.VISIBLE
+            //btnSearch2.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
 
             editTextLat.visibility = View.GONE
