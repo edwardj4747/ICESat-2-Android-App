@@ -110,23 +110,18 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
         checkBoxMarker.setOnClickListener {
             if (checkBoxMarker.isChecked) {
-                Log.d(TAG, "marker is checked. markerList is $markerList")
-                markerList.forEachIndexed { i: Int, it: Marker ->
-                    markerList[i] = mMap.addMarker(MarkerOptions().position(it.position).title(it.title))
-                }
-                Log.d(TAG, "end is checked. MarkerList is $markerList")
-            } else {
-                Log.d(TAG, "else before marker list is $markerList")
                 markerList.forEach {
-                    it.remove()
+                    it.isVisible = true
                 }
-                Log.d(TAG, "else after marker list is $markerList")
+            } else {
+                markerList.forEach {
+                    it.isVisible = false
+                }
             }
         }
 
         checkBoxPath.setOnClickListener {
             if (checkBoxPath.isChecked) {
-                Log.d(TAG, "path is checked polyLineList is $polylineList")
                 polylineList.forEach {
                     it.isVisible = true
                 }
