@@ -54,7 +54,7 @@
     <string name="star">Star</string>
     <string name="close">Close</string>
     <string name="markers">Markers</string>
-    <string name="paths">Paths</string>
+    <string name="tracks">Tracks</string>
 
     <string name="selectALocation">Please Choose a Location to add to Calendar</string>
 
