@@ -103,23 +103,28 @@ class SearchFragment : Fragment() {
 
             //hide advanced search text + show advanced search fields
             textViewAdvancedSearch.visibility = View.GONE
+            btnSearch2.visibility = View.GONE
+
             textViewSimpleSearch.visibility = View.VISIBLE
             editTextLat.visibility = View.VISIBLE
             editTextLon.visibility = View.VISIBLE
-            textViewEnterLatLng.visibility = View.VISIBLE
+            //textViewEnterLatLng.visibility = View.VISIBLE
             unitSpinner.visibility = View.VISIBLE
             editTextRadius.visibility = View.VISIBLE
+            btnSearch.visibility = View.VISIBLE
         }
 
         textViewSimpleSearch.setOnClickListener {
             textViewAdvancedSearch.visibility = View.VISIBLE
+            btnSearch2.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
 
             editTextLat.visibility = View.GONE
             editTextLon.visibility = View.GONE
-            textViewEnterLatLng.visibility = View.GONE
+            //textViewEnterLatLng.visibility = View.GONE
             unitSpinner.visibility = View.GONE
             editTextRadius.visibility = View.GONE
+            btnSearch.visibility = View.GONE
         }
 
 

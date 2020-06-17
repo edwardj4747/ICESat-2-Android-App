@@ -13,8 +13,8 @@
 
     <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>
-    <string name="latHint">Lat</string>
-    <string name="longHint">Long</string>
+    <string name="latHint">Latitude</string>
+    <string name="longHint">Longitude</string>
     <string name="enterSearchRadius">Enter Search Radius</string>
     <string name="useCurrentLocation">Use Current Location</string>
     <string name="selectLocationOnMap">Select Location On Map</string>
