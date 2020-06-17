@@ -27,4 +27,22 @@
 
     </FrameLayout>
 
+    <CheckBox
+        android:id="@+id/checkBoxMarker"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/markers"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/map" />
+
+    <CheckBox
+        android:id="@+id/checkBoxPath"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:checked="true"
+        android:text="@string/paths"
+        app:layout_constraintStart_toStartOf="@+id/checkBoxMarker"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxMarker" />
+
 </androidx.constraintlayout.widget.ConstraintLayout>
