@@ -28,6 +28,8 @@
     </string-array>
     <string name="title_activity_delete_me">Map</string>
     <string name="searchForLocation">Search for a Location</string>
+    <string name="advancedSearch"><u><b>Advanced Search</b></u></string>
+    <string name="simpleSearch"><u><b>Simple Search</b></u></string>
 
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>

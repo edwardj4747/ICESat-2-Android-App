@@ -82,6 +82,25 @@ class SearchFragment : Fragment() {
             listener.selectOnMapButtonPressed()
         }
 
+        textViewAdvancedSearch.setOnClickListener {
+            if (editTextLat.visibility == View.GONE) {
+                textViewAdvancedSearch.text = getString(R.string.simpleSearch)
+
+                editTextLat.visibility = View.VISIBLE
+                editTextLon.visibility = View.VISIBLE
+                textViewEnterLatLng.visibility = View.VISIBLE
+                unitSpinner.visibility = View.VISIBLE
+                editTextRadius.visibility = View.VISIBLE
+            } else {
+                textViewAdvancedSearch.text = getString(R.string.advancedSearch)
+
+                editTextLat.visibility = View.GONE
+                editTextLon.visibility = View.GONE
+                textViewEnterLatLng.visibility = View.GONE
+                unitSpinner.visibility = View.GONE
+                editTextRadius.visibility = View.GONE
+            }
+        }
 
 
         editTextLat.setOnFocusChangeListener { _, hasFocus ->
