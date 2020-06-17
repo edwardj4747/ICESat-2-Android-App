@@ -2,7 +2,6 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.content.Context
 import android.graphics.Typeface
-import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -21,26 +20,21 @@ class ListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
 }
 
 class ListRecyclerViewAdapter(val context: Context, private val allPoints: ArrayList<Point>) : RecyclerView.Adapter<ListViewHolder>(){
-
-   /* companion object {
-        fun receiveHeaderLocations(headerLocations: ArrayList<Int>) {
-            Log.d(TAG, "receive header Locations \n $headerLocations")
-        }
-    }
-
-    private var headerLocations = MapFragment.getStartOfChains()*/
-
+    //the indices that the headers start at
+    private var headerLocations = ArrayList<Int>()
+    //variables for setting the padding programmatically for the headers
     private val headerPadding = 30
     private val scale: Float = context.resources.displayMetrics.density
     private val dpAsPixels = (headerPadding * scale + 0.5f).toInt()
 
-    private var headerLocations = ArrayList<Int>()
-
     init {
         headerLocations = calculateHeaderLocations(allPoints)
-        Log.d(TAG, "init, headerLocations calculated as $headerLocations")
     }
 
+    /**
+     * find the indices where the headers should be inserted (ie: the indices at the begging of all
+     * of the new dates)
+     */
     private fun calculateHeaderLocations(chain: ArrayList<Point>) : ArrayList<Int> {
         val arr = ArrayList<Int>()
         arr.add(0)
@@ -65,25 +59,21 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
         val item = allPoints[position - determineOffset(position)]
         if (headerLocations.contains(position)) {
-                holder.textViewDateTime.text = "${item.date}, ${item.year}"
-                holder.textViewDateTime.typeface = Typeface.DEFAULT_BOLD
-                holder.textViewDateTime.setPadding(dpAsPixels, dpAsPixels / 2, dpAsPixels, dpAsPixels / 10)
+            holder.textViewDateTime.text = "${item.date}, ${item.year}"
+            holder.textViewDateTime.typeface = Typeface.DEFAULT_BOLD
+            holder.textViewDateTime.setPadding(dpAsPixels, dpAsPixels / 2, dpAsPixels, dpAsPixels / 10)
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.header_font))
-                holder.textViewLatLng.visibility = View.GONE
-                holder.imageView.visibility = View.GONE
-            } else {
-
-                holder.textViewDateTime.text = item.dateString
-                holder.textViewDateTime.typeface = Typeface.DEFAULT
-                holder.textViewDateTime.setPadding(0, 0, 0, 0)
+            holder.textViewLatLng.visibility = View.GONE
+            holder.imageView.visibility = View.GONE
+        } else {
+            holder.textViewDateTime.text = item.dateString
+            holder.textViewDateTime.typeface = Typeface.DEFAULT
+            holder.textViewDateTime.setPadding(0, 0, 0, 0)
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.list_item_font))
-                holder.textViewLatLng.visibility = View.VISIBLE
-                holder.imageView.visibility = View.VISIBLE
-
-                holder.textViewLatLng.text = "${item.latitude}${0x00B0.toChar()}N ${item.longitude}${0x00B0.toChar()}E"
-            }
-
-
+            holder.textViewLatLng.visibility = View.VISIBLE
+            holder.imageView.visibility = View.VISIBLE
+            holder.textViewLatLng.text = "${item.latitude}${0x00B0.toChar()}N ${item.longitude}${0x00B0.toChar()}E"
+        }
     }
 
     override fun getItemCount(): Int {
