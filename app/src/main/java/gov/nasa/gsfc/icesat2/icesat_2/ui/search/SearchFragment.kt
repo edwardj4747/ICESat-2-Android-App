@@ -83,7 +83,7 @@ class SearchFragment : Fragment() {
         }
 
         textViewAdvancedSearch.setOnClickListener {
-            if (editTextLat.visibility == View.GONE) {
+            /*if (editTextLat.visibility == View.GONE) {
                 textViewAdvancedSearch.text = getString(R.string.simpleSearch)
 
                 editTextLat.visibility = View.VISIBLE
@@ -99,7 +99,27 @@ class SearchFragment : Fragment() {
                 textViewEnterLatLng.visibility = View.GONE
                 unitSpinner.visibility = View.GONE
                 editTextRadius.visibility = View.GONE
-            }
+            }*/
+
+            //hide advanced search text + show advanced search fields
+            textViewAdvancedSearch.visibility = View.GONE
+            textViewSimpleSearch.visibility = View.VISIBLE
+            editTextLat.visibility = View.VISIBLE
+            editTextLon.visibility = View.VISIBLE
+            textViewEnterLatLng.visibility = View.VISIBLE
+            unitSpinner.visibility = View.VISIBLE
+            editTextRadius.visibility = View.VISIBLE
+        }
+
+        textViewSimpleSearch.setOnClickListener {
+            textViewAdvancedSearch.visibility = View.VISIBLE
+            textViewSimpleSearch.visibility = View.GONE
+
+            editTextLat.visibility = View.GONE
+            editTextLon.visibility = View.GONE
+            textViewEnterLatLng.visibility = View.GONE
+            unitSpinner.visibility = View.GONE
+            editTextRadius.visibility = View.GONE
         }
 
 
