@@ -43,6 +43,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private var navHostFragment: Fragment? = null
     private var gpsEnabled = false
     private lateinit var locationManager: LocationManager
+    private var simpleSearch = true
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -136,6 +137,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     override fun useCurrentLocationButtonPressed(simpleSearch: Boolean) {
+        this.simpleSearch = simpleSearch
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -152,7 +154,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             return
         }
 
-        locationManager.requestLocationUpdates("gps", 1000, 50F, object : LocationListener {
+        locationManager.requestLocationUpdates("gps", 100, 50F, object : LocationListener {
             override fun onLocationChanged(location: Location?) {
                 if (location != null) {
                     Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
@@ -197,7 +199,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "onRequestPermission Callback")
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == LOCATION_REQUEST_CODE) {
             //clicked accept
-            Log.d(TAG, "permission accepted")
+            //todo: need to store value for simple search somehow
+            useCurrentLocationButtonPressed(simpleSearch)
         } else {
             //clicked deny
             Log.d(TAG, "Permission Denied in Callback")
