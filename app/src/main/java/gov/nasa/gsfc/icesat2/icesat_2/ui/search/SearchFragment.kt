@@ -86,6 +86,10 @@ class SearchFragment : Fragment() {
             listener.selectOnMapButtonPressed()
         }
 
+        btnUseSearchBar.setOnClickListener {
+            useSearchBar()
+        }
+
         textViewAdvancedSearch.setOnClickListener {
             /*if (editTextLat.visibility == View.GONE) {
                 textViewAdvancedSearch.text = getString(R.string.simpleSearch)
@@ -296,22 +300,23 @@ class SearchFragment : Fragment() {
 
             R.id.menuSearch -> {
                 Log.d(TAG, "Search menu button pressed")
-
-
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
-
-                // Start the autocomplete intent.
-                val intent = Autocomplete.IntentBuilder(
-                    AutocompleteActivityMode.FULLSCREEN, fields)
-                    .build(requireContext());
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                useSearchBar()
             }
         }
         return true
     }
 
+    private fun useSearchBar() {
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields)
+            .build(requireContext());
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (data != null) {

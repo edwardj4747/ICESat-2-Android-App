@@ -51,6 +51,16 @@
         app:layout_constraintTop_toBottomOf="@+id/textViewEnterLocation" />
 
     <Button
+        android:id="@+id/btnTrack"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/ic_baseline_map_24"
+        android:text="@string/track"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
+        app:layout_constraintEnd_toStartOf="@+id/guideline" />
+
+    <Button
         android:id="@+id/btnUseCurrentLoc"
         style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
@@ -61,6 +71,18 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/btnSelectOnMap"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
+    <Button
+        android:id="@+id/btnUseSearchBar"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="8dp"
+        android:drawableStart="@drawable/ic_baseline_search_60"
+        android:text="@string/search"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
+
     <TextView
         android:id="@+id/textViewAdvancedSearch"
         android:layout_width="wrap_content"
@@ -69,7 +91,7 @@
         android:text="@string/advancedSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
     <TextView
         android:id="@+id/textViewEnterLatLng"
@@ -98,7 +120,7 @@
         android:nextFocusDown="@id/editTextLon"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEnterLatLng" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
     <EditText
         android:id="@+id/editTextLon"
