@@ -27,21 +27,8 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
     override fun onBindViewHolder(holder: FavoritesHolder, position: Int) {
         val favorite = allFavorites[position]
         holder.textViewDateTime.text = favorite.dateString
-        val locArray = Geocoding.getGeographicInfo(Geocoder(context), favorite.lat, favorite.lng)
 
-        //returns {locality, 'state', country}
-        var locationString = ""
-        for (i in locArray.indices) {
-            if (!locArray[i].isNullOrEmpty()) {
-                locationString += "${locArray[i]}, "
-            }
-        }
-        locationString.trimEnd(',')
-        if (locationString == "") {
-            locationString = "Unknown Location, "
-        }
-
-
+        val locationString = Geocoding.getGeographicInfo(Geocoder(context), favorite.lat, favorite.lng)
         holder.textViewLatLng.text = context.getString(R.string.geoLatLng, locationString,
             favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
     }

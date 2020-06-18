@@ -13,13 +13,28 @@ class Geocoding() {
             return address[0].getAddressLine(0)
         }
 
-        fun getGeographicInfo(geocoder: Geocoder, lat: Double, long: Double): Array<String?> {
+        fun getGeographicInfo(geocoder: Geocoder, lat: Double, long: Double): String {
             val address = geocoder.getFromLocation(lat, long, 1)
-            return if (address.size > 0) {
-                arrayOf(address[0].locality, address[0].adminArea, address[0].countryName)
-            } else {
-                arrayOf(null)
+
+            //returns {locality, 'state', country}
+            var locationString = ""
+
+
+            if (!address[0].locality.isNullOrEmpty()) {
+                locationString += "${address[0].locality}, "
             }
+            if (!address[0].adminArea.isNullOrEmpty()) {
+                locationString += "${address[0].adminArea}, "
+            }
+            if (!address[0].countryName.isNullOrEmpty()) {
+                locationString += "${address[0].countryName}; "
+            }
+
+            if (locationString == "") {
+                locationString = "Unknown Location, "
+            }
+
+            return locationString
         }
     }
 
