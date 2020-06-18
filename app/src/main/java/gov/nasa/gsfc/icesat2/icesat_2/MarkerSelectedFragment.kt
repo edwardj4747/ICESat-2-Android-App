@@ -1,5 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
 import android.view.LayoutInflater
@@ -105,7 +106,8 @@ class MarkerSelectedFragment : Fragment() {
         super.onStop()
 
         if (favoritesEntryToAdd != null) {
-            val addingFavorite = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude)
+            val geocodedString = Geocoding.getGeographicInfo(Geocoder(context), selectedPoint.latitude, selectedPoint.longitude)
+            val addingFavorite = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude, geocodedString)
             if (!entryInDatabase(addingFavorite)) {
                 Log.d(TAG, "entry is NOT in favorites. Adding it")
                 favoritesViewModel.insert(addingFavorite)

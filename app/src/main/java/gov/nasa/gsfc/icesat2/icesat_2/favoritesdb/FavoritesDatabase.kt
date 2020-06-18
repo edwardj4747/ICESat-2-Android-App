@@ -10,7 +10,7 @@ import java.util.concurrent.Executors
 
 private const val TAG = "FavoritesDatabase"
 
-@Database(version = 1, entities = [FavoritesEntry::class], exportSchema = false)
+@Database(version = 2, entities = [FavoritesEntry::class], exportSchema = false)
 abstract class FavoritesDatabase : RoomDatabase() {
 
     abstract fun favoritesDao(): FavoritesDao //all necessary code for this method generated at runtime

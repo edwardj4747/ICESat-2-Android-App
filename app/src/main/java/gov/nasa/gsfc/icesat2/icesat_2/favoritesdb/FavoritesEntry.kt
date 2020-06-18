@@ -6,7 +6,7 @@ import androidx.room.PrimaryKey
 
 @Entity(tableName = "favorites_table")
 class FavoritesEntry(@ColumnInfo(name = "dateObjectTime") val dateObjectTime: Long, val dateString: String, val lat: Double,
-                     val lng: Double) {
+                     val lng: Double, val geocodedLocation: String) {
     @PrimaryKey(autoGenerate = true)
     var id = 0
 }
