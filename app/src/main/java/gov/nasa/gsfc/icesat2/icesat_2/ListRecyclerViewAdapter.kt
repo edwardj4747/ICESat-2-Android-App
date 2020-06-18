@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.content.Context
 import android.graphics.Typeface
+import android.util.Log
 import android.util.TypedValue
 import android.view.LayoutInflater
 import android.view.View
@@ -26,9 +27,16 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     private val headerPadding = 30
     private val scale: Float = context.resources.displayMetrics.density
     private val dpAsPixels = (headerPadding * scale + 0.5f).toInt()
+    private var listWithHeaders: ArrayList<Point?>
 
     init {
         headerLocations = calculateHeaderLocations(allPoints)
+        Log.d(TAG, "headerLocations $headerLocations")
+        listWithHeaders = ArrayList<Point?>(allPoints)
+        for (i in 0 until headerLocations.size) {
+            listWithHeaders.add(headerLocations[i], null)
+        }
+        Log.d(TAG, "list with headers is $listWithHeaders")
     }
 
     /**
@@ -57,10 +65,10 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     }
 
     override fun onBindViewHolder(holder: ListViewHolder, position: Int) {
-        val item = allPoints[position - determineOffset(position)]
-        if (headerLocations.contains(position)) {
-            //holder.textViewDateTime.text = "${item.date}, ${item.year}"
-            holder.textViewDateTime.text = context.getString(R.string.dateYearString, item.date, item.year)
+                val item = listWithHeaders[position]
+        if (item == null) {
+            val nextItem = listWithHeaders[position + 1]
+            holder.textViewDateTime.text = context.getString(R.string.dateYearString, nextItem!!.date, nextItem!!.year)
             holder.textViewDateTime.typeface = Typeface.DEFAULT_BOLD
             holder.textViewDateTime.setPadding(dpAsPixels, dpAsPixels / 2, dpAsPixels, dpAsPixels / 10)
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.header_font))
@@ -73,9 +81,7 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
             holder.textViewDateTime.setTextSize(TypedValue.COMPLEX_UNIT_PX, context.resources.getDimension(R.dimen.list_item_font))
             holder.textViewLatLng.visibility = View.VISIBLE
             holder.imageView.visibility = View.VISIBLE
-            //holder.textViewLatLng.text = "${item.latitude}${0x00B0.toChar()}N ${item.longitude}${0x00B0.toChar()}E"
-            holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString,
-                item.latitude.toString(), 0x00B0.toChar(), item.longitude.toString(), 0x00B0.toChar())
+            holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString, item.latitude.toString(), 0x00B0.toChar(), item.longitude.toString(), 0x00B0.toChar())
         }
     }
 
@@ -83,12 +89,5 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
        return allPoints.size + headerLocations.size
     }
 
-    private fun determineOffset(position: Int): Int {
-        var index = 0
-        while (index < headerLocations.size && position > headerLocations[index]) {
-            index++
-        }
-        return index
-    }
 
 }
