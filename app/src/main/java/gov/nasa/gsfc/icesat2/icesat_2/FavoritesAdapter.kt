@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.content.Context
 import android.location.Geocoder
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -14,6 +15,7 @@ private const val TAG = "FavoritesAdapter"
 class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
 
     private val geocoder = Geocoder(context)
+    private val displayLocations = allFavorites.size < 10
 
     inner class FavoritesHolder(private val view: View) : RecyclerView.ViewHolder(view){
         var textViewDateTime: TextView = view.findViewById(R.id.textViewDateTime)
@@ -27,12 +29,23 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
 
 
     override fun onBindViewHolder(holder: FavoritesHolder, position: Int) {
+        Log.d(TAG, "allFavorites size ${allFavorites.size}")
+
         val favorite = allFavorites[position]
         holder.textViewDateTime.text = favorite.dateString
 
-        val locationString = Geocoding.getGeographicInfo(geocoder, favorite.lat, favorite.lng)
-        holder.textViewLatLng.text = context.getString(R.string.geoLatLng, locationString,
-            favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
+
+        if (displayLocations) {
+            val locationString = Geocoding.getGeographicInfo(geocoder, favorite.lat, favorite.lng)
+            holder.textViewLatLng.text = context.getString(
+                R.string.geoLatLng, locationString,
+                favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar()
+            )
+        } else {
+            holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString, favorite.lat.toString(),
+                0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
+        }
+
     }
 
     override fun getItemCount(): Int {
