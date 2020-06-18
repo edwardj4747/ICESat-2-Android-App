@@ -35,16 +35,10 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
         holder.textViewDateTime.text = favorite.dateString
 
 
-        if (displayLocations) {
-            val locationString = Geocoding.getGeographicInfo(geocoder, favorite.lat, favorite.lng)
-            holder.textViewLatLng.text = context.getString(
-                R.string.geoLatLng, locationString,
-                favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar()
-            )
-        } else {
-            holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString, favorite.lat.toString(),
-                0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
-        }
+
+        holder.textViewLatLng.text = context.getString(
+            R.string.geoLatLng, favorite.geocodedLocation,
+            favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
 
     }
 

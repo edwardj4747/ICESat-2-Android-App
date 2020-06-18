@@ -30,6 +30,7 @@ class MarkerSelectedFragment : Fragment() {
     private var favoritesEntryToRemove: FavoritesEntry? = null //null if no favorite to remove*/
     private var favoritesEntryToAdd: Point? = null
     private var favoritesEntryToRemove: Point? = null
+    private lateinit var geocoder: Geocoder
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -51,6 +52,8 @@ class MarkerSelectedFragment : Fragment() {
 
         favoritesViewModel =
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
+
+        geocoder = Geocoder(context)
 
         //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
         //textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
@@ -106,7 +109,7 @@ class MarkerSelectedFragment : Fragment() {
         super.onStop()
 
         if (favoritesEntryToAdd != null) {
-            val geocodedString = Geocoding.getGeographicInfo(Geocoder(context), selectedPoint.latitude, selectedPoint.longitude)
+            val geocodedString = Geocoding.getGeographicInfo(geocoder, selectedPoint.latitude, selectedPoint.longitude)
             val addingFavorite = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude, geocodedString)
             if (!entryInDatabase(addingFavorite)) {
                 Log.d(TAG, "entry is NOT in favorites. Adding it")
