@@ -13,6 +13,8 @@ private const val TAG = "FavoritesAdapter"
 
 class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
 
+    private val geocoder = Geocoder(context)
+
     inner class FavoritesHolder(private val view: View) : RecyclerView.ViewHolder(view){
         var textViewDateTime: TextView = view.findViewById(R.id.textViewDateTime)
         var textViewLatLng: TextView = view.findViewById(R.id.textViewLatLng)
@@ -28,7 +30,7 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
         val favorite = allFavorites[position]
         holder.textViewDateTime.text = favorite.dateString
 
-        val locationString = Geocoding.getGeographicInfo(Geocoder(context), favorite.lat, favorite.lng)
+        val locationString = Geocoding.getGeographicInfo(geocoder, favorite.lat, favorite.lng)
         holder.textViewLatLng.text = context.getString(R.string.geoLatLng, locationString,
             favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
     }
