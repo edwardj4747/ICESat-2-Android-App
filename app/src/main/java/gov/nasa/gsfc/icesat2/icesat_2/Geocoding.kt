@@ -1,9 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-
-
 import android.content.Context
 import android.location.Geocoder
+
+private const val TAG = "Geocoding"
 
 class Geocoding() {
     companion object {
@@ -13,10 +13,13 @@ class Geocoding() {
             return address[0].getAddressLine(0)
         }
 
-        fun getAdminCountry(context: Context, lat: Double, long: Double): Array<String?> {
-            val geocoder = Geocoder(context)
+        fun getAdminCountry(geocoder: Geocoder, lat: Double, long: Double): Array<String?> {
             val address = geocoder.getFromLocation(lat, long, 1)
-            return arrayOf(address[0].adminArea, address[0].countryName)
+            return if (address.size > 0) {
+                arrayOf(address[0].locality, address[0].adminArea, address[0].countryName)
+            } else {
+                arrayOf(null)
+            }
         }
     }
 
