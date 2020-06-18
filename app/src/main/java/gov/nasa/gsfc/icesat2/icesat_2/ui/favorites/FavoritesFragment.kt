@@ -22,6 +22,7 @@ class FavoritesFragment : Fragment() {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var favoritesList: List<FavoritesEntry>
+    private var swipeListenerAttached = false
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -43,7 +44,6 @@ class FavoritesFragment : Fragment() {
     }
 
    private fun initializeRecyclerView() {
-       Log.d(TAG, "initiliaze recycler view called")
        if (favoritesList.isEmpty()) {
            textViewNoFavorites.visibility = View.VISIBLE
        } else {
@@ -53,26 +53,38 @@ class FavoritesFragment : Fragment() {
        favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-       //delete swiping
-       ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-           override fun onMove(
-               recyclerView: RecyclerView,
-               viewHolder: RecyclerView.ViewHolder,
-               target: RecyclerView.ViewHolder
-           ): Boolean {
-               return false
-           }
+       if (!swipeListenerAttached) {
+           Log.d(TAG, "Attaching swipe listener")
+           swipeListenerAttached = true
+           //delete swiping
+           ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+               override fun onMove(
+                   recyclerView: RecyclerView,
+                   viewHolder: RecyclerView.ViewHolder,
+                   target: RecyclerView.ViewHolder
+               ): Boolean {
+                   return false
+               }
 
-           override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
-               val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
-               favoritesViewModel.delete(deletedFavorite.dateObjectTime)
-               Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
-                   .setAction(R.string.undo) {
-                       favoritesViewModel.insert(deletedFavorite)
+               override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                   try {
+                       val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
+                       favoritesViewModel.delete(deletedFavorite.dateObjectTime)
+                       Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                           .setAction(R.string.undo) {
+                               favoritesViewModel.insert(deletedFavorite)
+                           }
+                           .show()
+                       adapter.notifyItemRemoved(viewHolder.adapterPosition)
+                   } catch (e: Exception) {
+                       Log.d(TAG, "error in onswiped ${e.message}")
+                       Log.d(TAG, "${e.stackTrace}")
                    }
-                   .show()
-           }
-       }).attachToRecyclerView(favoriteRecyclerView)
+
+               }
+           }).attachToRecyclerView(favoriteRecyclerView)
+       }
+
    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
