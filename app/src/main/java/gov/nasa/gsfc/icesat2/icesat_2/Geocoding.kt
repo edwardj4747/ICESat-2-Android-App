@@ -13,7 +13,7 @@ class Geocoding() {
             return address[0].getAddressLine(0)
         }
 
-        fun getAdminCountry(geocoder: Geocoder, lat: Double, long: Double): Array<String?> {
+        fun getGeographicInfo(geocoder: Geocoder, lat: Double, long: Double): Array<String?> {
             val address = geocoder.getFromLocation(lat, long, 1)
             return if (address.size > 0) {
                 arrayOf(address[0].locality, address[0].adminArea, address[0].countryName)
