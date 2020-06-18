@@ -154,6 +154,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             return
         }
 
+        val frag = navHostFragment?.childFragmentManager?.fragments?.get(0)
+        if (frag is SearchFragment) {
+            frag.setAddressValue(getString(R.string.yourLocation))
+        }
+
         locationManager.requestLocationUpdates("gps", 100, 50F, object : LocationListener {
             override fun onLocationChanged(location: Location?) {
                 if (location != null) {
@@ -161,12 +166,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                     updateEditTextWithLocation(location.latitude.toString(), location.longitude.toString())
 
 
-                    val frag = navHostFragment?.childFragmentManager?.fragments?.get(0)
                     Log.d(TAG, "frag is $frag")
                     if (frag is SearchFragment) {
                         Log.d(TAG, "YAY! Frag is Search Frag")
                         frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
-
 
                         //automatically start searching if simpleSearch
                         if (simpleSearch) {

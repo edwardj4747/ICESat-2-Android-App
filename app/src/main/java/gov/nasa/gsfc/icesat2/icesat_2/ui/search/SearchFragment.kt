@@ -77,8 +77,6 @@ class SearchFragment : Fragment() {
         }
 
         btnUseCurrentLoc.setOnClickListener {
-            address = getString(R.string.yourLocation)
-            setAddressTextView()
             listener.useCurrentLocationButtonPressed(simpleSearch)
         }
 
@@ -218,6 +216,11 @@ class SearchFragment : Fragment() {
             textViewEnterLocation.visibility = View.VISIBLE
             textViewAdress.visibility = View.INVISIBLE
         }
+    }
+
+    fun setAddressValue(newValue: String) {
+        address = newValue
+        setAddressTextView()
     }
 
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
