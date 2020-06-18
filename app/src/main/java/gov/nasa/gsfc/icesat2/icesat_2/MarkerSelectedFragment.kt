@@ -58,7 +58,8 @@ class MarkerSelectedFragment : Fragment() {
         textViewTime.text = getString(R.string.timeDisplay, selectedPoint.time, selectedPoint.ampm, selectedPoint.timezone)
 
 
-        if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
+        //if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
+        if (entryInDatabase(selectedPoint.dateObject.time)) {
             btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
             btnFavorite.tag = "favorite"
         }
@@ -120,5 +121,9 @@ class MarkerSelectedFragment : Fragment() {
 
     private fun entryInDatabase(favEntry: FavoritesEntry) : Boolean {
             return favoritesViewModel.contains(favEntry.dateObjectTime)
+    }
+
+    private fun entryInDatabase(dateTime: Long) : Boolean {
+        return favoritesViewModel.contains(dateTime)
     }
 }
