@@ -12,6 +12,12 @@ class Geocoding() {
             val address = geocoder.getFromLocation(lat, long, 1)
             return address[0].getAddressLine(0)
         }
+
+        fun getAdminCountry(context: Context, lat: Double, long: Double): Array<String?> {
+            val geocoder = Geocoder(context)
+            val address = geocoder.getFromLocation(lat, long, 1)
+            return arrayOf(address[0].adminArea, address[0].countryName)
+        }
     }
 
 }

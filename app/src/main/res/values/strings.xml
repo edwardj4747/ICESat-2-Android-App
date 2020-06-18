@@ -120,5 +120,6 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="itemDeleted">Item Deleted</string>
     <string name="undo">Undo</string>
     <string name="noFavoritesYet">No Favorites Yet</string>
+    <string name="geoLatLng"><i>%1$s</i>; %2$s%3$cN %4$s%5$cE</string>
 
 </resources>
