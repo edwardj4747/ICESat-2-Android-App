@@ -13,8 +13,8 @@
 
     <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>
-    <string name="latHint">Lat</string>
-    <string name="longHint">Long</string>
+    <string name="latHint">Latitude</string>
+    <string name="longHint">Longitude</string>
     <string name="enterSearchRadius">Enter Search Radius</string>
     <string name="useCurrentLocation">Use Current Location</string>
     <string name="selectLocationOnMap">Select Location On Map</string>
@@ -28,6 +28,15 @@
     </string-array>
     <string name="title_activity_delete_me">Map</string>
     <string name="searchForLocation">Search for a Location</string>
+    <string name="advancedSearch"><u><b>Advanced Search</b></u></string>
+    <string name="simpleSearch"><u><b>Simple Search</b></u></string>
+
+    <string name="useMap">Use Map</string>
+    <string name="useLocation">Use Loc</string>
+    <string name="track">"ICESat-2"</string>
+
+    <string name="yourLocation">Your Location</string>
+    <string name="clearSearch">Clear Search</string>
 
     <!--    Map Fragment Dialog-->
     <string name="noResults">No Results</string>

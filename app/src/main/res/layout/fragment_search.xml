@@ -5,87 +5,107 @@
     android:id="@+id/searchFragment"
     android:layout_width="match_parent"
     android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
     tools:context=".ui.search.SearchFragment">
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
 
     <TextView
         android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
+        android:layout_marginTop="32dp"
         android:inputType="textMultiLine"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/imageView18"
         tools:text="Honolulu" />
 
     <TextView
         android:id="@+id/textViewEnterLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="48dp"
+        android:layout_marginTop="32dp"
         android:text="@string/enterLocation"
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@id/textViewAdress" />
+        app:layout_constraintTop_toBottomOf="@+id/imageView18" />
 
     <Button
         android:id="@+id/btnSelectOnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/selectLocationOnMap"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        android:layout_marginTop="24dp"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/ic_baseline_map_24"
+        android:text="@string/useMap"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textViewEnterLocation" />
 
-    <TextView
-        android:id="@+id/textViewOr"
-        android:layout_width="wrap_content"
+    <Button
+        android:id="@+id/btnTrack"
+        android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/or"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textSize="20sp"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSelectOnMap" />
+        android:drawableStart="@drawable/ic_baseline_map_24"
+        android:text="@string/track"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
+        app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
+        app:layout_constraintStart_toStartOf="@+id/btnSelectOnMap" />
 
     <Button
         android:id="@+id/btnUseCurrentLoc"
+        style="@style/Widget.AppCompat.Button"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawableStart="@drawable/ic_baseline_my_location_24"
+        android:text="@string/useLocation"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnSelectOnMap"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <Button
+        android:id="@+id/btnUseSearchBar"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/useCurrentLocation"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOr" />
+        android:drawableStart="@drawable/ic_baseline_search_60"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="@+id/btnUseCurrentLoc"
+        app:layout_constraintStart_toStartOf="@+id/btnUseCurrentLoc"
+        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
 
     <TextView
-        android:id="@+id/textViewOr2"
+        android:id="@+id/textViewAdvancedSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-        android:text="@string/or"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textSize="20sp"
+        android:text="@string/advancedSearch"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
     <TextView
         android:id="@+id/textViewEnterLatLng"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="16dp"
         android:text="@string/enterLatLong"
         android:textColor="@color/design_default_color_on_secondary"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintHorizontal_bias="0.497"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewOr2" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
 
     <EditText
         android:id="@+id/editTextLat"
@@ -98,8 +118,9 @@
         android:hint="@string/latHint"
         android:inputType="numberDecimal|numberSigned"
         android:nextFocusDown="@id/editTextLon"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textViewEnterLatLng" />
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
     <EditText
         android:id="@+id/editTextLon"
@@ -111,6 +132,7 @@
         android:hint="@string/longHint"
         android:inputType="numberDecimal|numberSigned"
         android:nextFocusDown="@id/editTextRadius"
+        android:visibility="gone"
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextLat"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -122,35 +144,10 @@
         android:text="@string/enterSearchRadius"
         android:textColor="@color/design_default_color_on_secondary"
         android:textSize="20sp"
+        android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/editTextLat" />
-
-    <Spinner
-        android:id="@+id/unitSpinner"
-        android:layout_width="150dp"
-        android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
-        android:entries="@array/unitSelector"
-        app:layout_constraintBaseline_toBaselineOf="@id/editTextRadius"
-        app:layout_constraintStart_toEndOf="@+id/editTextRadius" />
-
-    <Button
-        android:id="@+id/btnSearch"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/search"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextRadius" />
-
-    <androidx.constraintlayout.widget.Guideline
-        android:id="@+id/guideline"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:orientation="vertical"
-        app:layout_constraintGuide_percent="0.5" />
 
     <EditText
         android:id="@+id/editTextRadius"
@@ -162,22 +159,53 @@
         android:ems="10"
         android:hint="@string/radius"
         android:inputType="number|numberDecimal"
+        android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textView4" />
 
-    <androidx.cardview.widget.CardView
-        android:layout_width="match_parent"
+    <Spinner
+        android:id="@+id/unitSpinner"
+        android:layout_width="150dp"
         android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:entries="@array/unitSelector"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@id/editTextRadius"
+        app:layout_constraintStart_toEndOf="@+id/editTextRadius" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:text="@string/search"
         android:visibility="gone"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent">
+        app:layout_constraintTop_toBottomOf="@+id/unitSpinner" />
 
-        <fragment
-            android:id="@+id/autocomplete_fragment"
-            android:name="com.google.android.libraries.places.widget.AutocompleteSupportFragment"
-            android:layout_width="match_parent"
-            android:layout_height="wrap_content" />
-    </androidx.cardview.widget.CardView>
+    <ImageView
+        android:id="@+id/imageView18"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/indigo_50"
+        android:padding="2dp"
+        android:src="@drawable/white_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewSimpleSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/simpleSearch"
+        android:visibility="gone"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
+
 
 </androidx.constraintlayout.widget.ConstraintLayout>

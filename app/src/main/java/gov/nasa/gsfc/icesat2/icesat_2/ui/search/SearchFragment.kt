@@ -19,6 +19,7 @@ import com.google.android.libraries.places.widget.Autocomplete
 import com.google.android.libraries.places.widget.AutocompleteActivity
 import com.google.android.libraries.places.widget.model.AutocompleteActivityMode
 import com.google.android.material.snackbar.Snackbar
+import gov.nasa.gsfc.icesat2.icesat_2.DEFAULT_SEARCH_RADIUS
 import gov.nasa.gsfc.icesat2.icesat_2.MainActivity
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import kotlinx.android.synthetic.main.fragment_search.*
@@ -37,6 +38,7 @@ class SearchFragment : Fragment() {
 
     private lateinit var listener: ISearchFragmentCallback
     private var address: String? = null
+    private var simpleSearch = true
 
     override fun onCreateView(
         inflater: LayoutInflater,
@@ -75,13 +77,65 @@ class SearchFragment : Fragment() {
         }
 
         btnUseCurrentLoc.setOnClickListener {
-            listener.useCurrentLocationButtonPressed()
+            address = getString(R.string.yourLocation)
+            setAddressTextView()
+            listener.useCurrentLocationButtonPressed(simpleSearch)
         }
 
         btnSelectOnMap.setOnClickListener {
             listener.selectOnMapButtonPressed()
         }
 
+        btnUseSearchBar.setOnClickListener {
+            useSearchBar()
+        }
+
+        textViewAdvancedSearch.setOnClickListener {
+            /*if (editTextLat.visibility == View.GONE) {
+                textViewAdvancedSearch.text = getString(R.string.simpleSearch)
+
+                editTextLat.visibility = View.VISIBLE
+                editTextLon.visibility = View.VISIBLE
+                textViewEnterLatLng.visibility = View.VISIBLE
+                unitSpinner.visibility = View.VISIBLE
+                editTextRadius.visibility = View.VISIBLE
+            } else {
+                textViewAdvancedSearch.text = getString(R.string.advancedSearch)
+
+                editTextLat.visibility = View.GONE
+                editTextLon.visibility = View.GONE
+                textViewEnterLatLng.visibility = View.GONE
+                unitSpinner.visibility = View.GONE
+                editTextRadius.visibility = View.GONE
+            }*/
+
+            //hide advanced search text + show advanced search fields
+            simpleSearch = false
+            textViewAdvancedSearch.visibility = View.GONE
+            //btnSearch2.visibility = View.GONE
+
+            textViewSimpleSearch.visibility = View.VISIBLE
+            editTextLat.visibility = View.VISIBLE
+            editTextLon.visibility = View.VISIBLE
+            //textViewEnterLatLng.visibility = View.VISIBLE
+            unitSpinner.visibility = View.VISIBLE
+            editTextRadius.visibility = View.VISIBLE
+            btnSearch.visibility = View.VISIBLE
+        }
+
+        textViewSimpleSearch.setOnClickListener {
+            simpleSearch = true
+            textViewAdvancedSearch.visibility = View.VISIBLE
+            //btnSearch2.visibility = View.VISIBLE
+            textViewSimpleSearch.visibility = View.GONE
+
+            editTextLat.visibility = View.GONE
+            editTextLon.visibility = View.GONE
+            //textViewEnterLatLng.visibility = View.GONE
+            unitSpinner.visibility = View.GONE
+            editTextRadius.visibility = View.GONE
+            btnSearch.visibility = View.GONE
+        }
 
 
         editTextLat.setOnFocusChangeListener { _, hasFocus ->
@@ -138,6 +192,12 @@ class SearchFragment : Fragment() {
         editTextLon.setText(long)
     }
 
+    fun clearLatLngTextViews() {
+        editTextLat.setText("")
+        editTextLon.setText("")
+        editTextRadius.setText("")
+    }
+
     private fun setLatLngTextViews(value: LatLng?) {
         if (value != null) {
             setLatLngTextViews(value.latitude.toString(), value.longitude.toString())
@@ -149,8 +209,14 @@ class SearchFragment : Fragment() {
     }
 
     private fun setAddressTextView() {
-        if (address != null) {
+        if (address != null && address != "") {
+            textViewEnterLocation.visibility = View.INVISIBLE
+            textViewAdress.visibility = View.VISIBLE
             textViewAdress.text = "Searching for: $address"
+        } else {
+            textViewAdress.text = ""
+            textViewEnterLocation.visibility = View.VISIBLE
+            textViewAdress.visibility = View.INVISIBLE
         }
     }
 
@@ -226,41 +292,56 @@ class SearchFragment : Fragment() {
 
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
+            R.id.menuClearSearch -> {
+                address = ""
+                setAddressTextView()
+                clearLatLngTextViews()
+            }
+
             R.id.menuSearch -> {
                 Log.d(TAG, "Search menu button pressed")
-
-
-                // Set the fields to specify which types of place data to
-                // return after the user has made a selection.
-                val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
-
-                // Start the autocomplete intent.
-                val intent = Autocomplete.IntentBuilder(
-                    AutocompleteActivityMode.FULLSCREEN, fields)
-                    .build(requireContext());
-                startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+                useSearchBar()
             }
         }
         return true
     }
 
+    private fun useSearchBar() {
+        // Set the fields to specify which types of place data to
+        // return after the user has made a selection.
+        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+
+        // Start the autocomplete intent.
+        val intent = Autocomplete.IntentBuilder(
+            AutocompleteActivityMode.FULLSCREEN, fields)
+            .build(requireContext());
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+    }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
             if (data != null) {
-                if (resultCode == RESULT_OK) {
-                    val place = Autocomplete.getPlaceFromIntent(data)
-                    Log.i(TAG, "Place: " + place.name)
-                    val latLng = place.latLng
-                    setLatLngTextViews(latLng)
-                    address = place.name
-                    setAddressTextView()
-                    editTextRadius.requestFocus()
-                } else if (resultCode == AutocompleteActivity.RESULT_ERROR) {
-                    // TODO: Handle the error.
-                    val status = Autocomplete.getStatusFromIntent(data)
-                    Log.i(TAG, "${status.statusMessage}")
-                } else if (resultCode == RESULT_CANCELED) {
-                    // The user canceled the operation.
+                when (resultCode) {
+                    RESULT_OK -> {
+                        val place = Autocomplete.getPlaceFromIntent(data)
+                        Log.i(TAG, "Place: " + place.name)
+                        val latLng = place.latLng
+                        setLatLngTextViews(latLng)
+                        address = place.name
+                        setAddressTextView()
+                        if (place.latLng != null && simpleSearch) {
+                            listener.searchButtonPressed(place.latLng!!.latitude, place.latLng!!.longitude, DEFAULT_SEARCH_RADIUS, false)
+                        } else {
+                            editTextRadius.requestFocus()
+                        }
+                    }
+                    AutocompleteActivity.RESULT_ERROR -> {
+                        // TODO: Handle the error.
+                        val status = Autocomplete.getStatusFromIntent(data)
+                        Log.i(TAG, "${status.statusMessage}")
+                    }
+                    RESULT_CANCELED -> {
+                        // The user canceled the operation.
+                    }
                 }
             } else {
                 Log.d(TAG, "intent is equal to null")

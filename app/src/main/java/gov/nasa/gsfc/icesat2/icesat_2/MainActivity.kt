@@ -26,15 +26,13 @@ import androidx.navigation.ui.setupActionBarWithNavController
 import androidx.navigation.ui.setupWithNavController
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.material.snackbar.Snackbar
-import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
-import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
 
-
+const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
 private const val LOCATION_REQUEST_CODE = 6
 
@@ -137,7 +135,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         return cm.activeNetworkInfo != null
     }
 
-    override fun useCurrentLocationButtonPressed() {
+    override fun useCurrentLocationButtonPressed(simpleSearch: Boolean) {
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
 
@@ -154,7 +152,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             return
         }
 
-        locationManager.requestLocationUpdates("gps", 10000, 50F, object : LocationListener {
+        locationManager.requestLocationUpdates("gps", 1000, 50F, object : LocationListener {
             override fun onLocationChanged(location: Location?) {
                 if (location != null) {
                     Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
@@ -166,6 +164,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                     if (frag is SearchFragment) {
                         Log.d(TAG, "YAY! Frag is Search Frag")
                         frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
+
+
+                        //automatically start searching if simpleSearch
+                        if (simpleSearch) {
+                            searchButtonPressed(location.latitude, location.longitude, DEFAULT_SEARCH_RADIUS, false)
+                        }
+                        locationManager.removeUpdates(this)
                     }
                 } else {
                     Log.d(TAG, "onLocationCHanged but location is null")
