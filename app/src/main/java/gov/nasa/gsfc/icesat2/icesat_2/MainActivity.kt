@@ -204,17 +204,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         } else {
             //clicked deny
             Log.d(TAG, "Permission Denied in Callback")
-            grantAccessSnackbar()
+            //grantAccessSnackbar()
+            if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
+                grantAccessSnackbar()
+            }
         }
     }
 
     private fun requestLocationPermissionDialog() {
         ActivityCompat.requestPermissions(
             this,
-            arrayOf(
-                android.Manifest.permission.ACCESS_FINE_LOCATION,
-                android.Manifest.permission.ACCESS_COARSE_LOCATION
-            ),
+            arrayOf(Manifest.permission.ACCESS_FINE_LOCATION, Manifest.permission.ACCESS_COARSE_LOCATION),
             LOCATION_REQUEST_CODE
         )
     }
@@ -222,16 +222,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private fun grantAccessSnackbar() {
         Snackbar.make(findViewById(R.id.constraintLayout), R.string.locationSnackbar, Snackbar.LENGTH_LONG)
             .setAction(R.string.grantAccess) {
-                if (ActivityCompat.shouldShowRequestPermissionRationale(this, android.Manifest.permission.ACCESS_FINE_LOCATION)) {
-                    Log.d(TAG, "should show request true")
-                    requestLocationPermissionDialog()
-                } else {
-                    Log.d(TAG, "should show request false")
                     val intent = Intent()
                     intent.action = Settings.ACTION_APPLICATION_DETAILS_SETTINGS
                     intent.data = Uri.fromParts("package", this.packageName, null)
                     startActivity(intent)
-                }
             }
             .show()
     }
