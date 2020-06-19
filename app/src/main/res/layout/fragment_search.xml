@@ -15,17 +15,29 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
+    <ImageView
+        android:id="@+id/banner"
+        android:layout_width="wrap_content"
+        android:layout_height="80dp"
+        android:layout_marginTop="8dp"
+        android:background="@color/indigo_50"
+        android:contentDescription="@string/icesatBanner"
+        android:padding="2dp"
+        android:src="@drawable/white_logo"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
     <TextView
         android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginTop="32dp"
-        android:inputType="textMultiLine"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView18"
+        app:layout_constraintTop_toBottomOf="@+id/banner"
         tools:text="Honolulu" />
 
     <TextView
@@ -37,7 +49,7 @@
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/imageView18" />
+        app:layout_constraintTop_toBottomOf="@+id/banner" />
 
     <Button
         android:id="@+id/btnSelectOnMap"
@@ -94,20 +106,6 @@
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
-    <TextView
-        android:id="@+id/textViewEnterLatLng"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="16dp"
-        android:text="@string/enterLatLong"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintHorizontal_bias="0.497"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
-
     <EditText
         android:id="@+id/editTextLat"
         android:layout_width="150dp"
@@ -137,19 +135,6 @@
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextLat"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
-    <TextView
-        android:id="@+id/textView4"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-        android:text="@string/enterSearchRadius"
-        android:textColor="@color/design_default_color_on_secondary"
-        android:textSize="20sp"
-        android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/editTextLat" />
-
     <EditText
         android:id="@+id/editTextRadius"
         android:layout_width="150dp"
@@ -162,7 +147,7 @@
         android:inputType="number|numberDecimal"
         android:visibility="gone"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/textView4" />
+        app:layout_constraintTop_toBottomOf="@+id/editTextLat" />
 
     <Spinner
         android:id="@+id/unitSpinner"
@@ -184,18 +169,6 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/unitSpinner" />
-
-    <ImageView
-        android:id="@+id/imageView18"
-        android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/indigo_50"
-        android:padding="2dp"
-        android:src="@drawable/white_logo"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewSimpleSearch"
