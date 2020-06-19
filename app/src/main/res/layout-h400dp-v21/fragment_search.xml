@@ -15,49 +15,65 @@
         android:orientation="vertical"
         app:layout_constraintGuide_percent="0.5" />
 
-    <ImageView
-        android:id="@+id/banner"
+
+    <LinearLayout
+        android:id="@+id/bannerLinearLayout"
         android:layout_width="wrap_content"
-        android:layout_height="80dp"
-        android:layout_marginTop="8dp"
-        android:background="@color/indigo_50"
-        android:contentDescription="@string/icesatBanner"
-        android:padding="2dp"
-        android:src="@drawable/white_logo"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/icesatBanner"
+            android:padding="5dp"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textViewBanner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/icesatBanner"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="4dp"
         android:textAlignment="center"
-        android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner"
+        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout"
         tools:text="Honolulu" />
 
     <TextView
         android:id="@+id/textViewEnterLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="32dp"
+        android:layout_marginTop="4dp"
         android:text="@string/enterLocation"
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/banner" />
+        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout" />
 
     <Button
         android:id="@+id/btnSelectOnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="24dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
-
+        android:drawableStart="@drawable/ic_baseline_map_40"
         android:text="@string/useMap"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textViewEnterLocation" />
@@ -66,7 +82,7 @@
         android:id="@+id/btnTrack"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
+        android:drawableStart="@drawable/ic_baseline_map_40"
         android:text="@string/track"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
         app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
@@ -78,7 +94,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-
+        android:drawableStart="@drawable/ic_baseline_my_location_40"
         android:text="@string/useLocation"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnSelectOnMap"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
@@ -88,8 +104,8 @@
         style="@style/Widget.AppCompat.Button"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
-
+        android:layout_marginTop="0dp"
+        android:drawableStart="@drawable/ic_baseline_search_40"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="@+id/btnUseCurrentLoc"
         app:layout_constraintStart_toStartOf="@+id/btnUseCurrentLoc"
@@ -108,9 +124,9 @@
 
     <EditText
         android:id="@+id/editTextLat"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
@@ -123,7 +139,7 @@
 
     <EditText
         android:id="@+id/editTextLon"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:autofillHints=""
@@ -137,7 +153,7 @@
 
     <EditText
         android:id="@+id/editTextRadius"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
@@ -151,7 +167,7 @@
 
     <Spinner
         android:id="@+id/unitSpinner"
-        android:layout_width="150dp"
+        android:layout_width="120dp"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:entries="@array/unitSelector"
@@ -163,24 +179,23 @@
         android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
         android:text="@string/search"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/unitSpinner" />
 
     <TextView
         android:id="@+id/textViewSimpleSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
         android:padding="4dp"
         android:text="@string/simpleSearch"
         android:visibility="gone"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnSearch"
+        app:layout_constraintEnd_toStartOf="@+id/guideline" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
