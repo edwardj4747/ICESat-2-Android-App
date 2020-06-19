@@ -25,7 +25,8 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback {
+class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
+GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointList: ArrayList<Point>
@@ -142,6 +143,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         mMap = googleMap
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
+        mMap.setOnPolylineClickListener(this)
         if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
             || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
             mMap.isMyLocationEnabled = true
@@ -162,6 +164,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
 
     private fun addChainPolyline(chain:ArrayList<Point>) {
         Log.d(TAG, "addChainPolyLine Starts")
+        var polylineTag = 0
         var polylineOptions = PolylineOptions()
 
         //adding a marker at each point - maybe polygons are a better way to do this
@@ -169,7 +172,8 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         for (i in 0 until chain.size) {
             //check if the point is on the same chain as the previous point
             if (i != 0 && !onSameChain(chain[i - 1], chain[i])) {
-                drawPolyline(polylineOptions)
+                drawPolyline(polylineOptions, polylineTag)
+                polylineTag = count
                 polylineOptions = PolylineOptions()
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
@@ -179,7 +183,7 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
             markerList.add(markerAdded)
             count++
         }
-        drawPolyline(polylineOptions)
+        drawPolyline(polylineOptions, polylineTag)
         addCircleRadius(searchRadius)
     }
 
@@ -188,10 +192,13 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
     }
 
-    private fun drawPolyline(polylineOptions: PolylineOptions) {
+    private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
+        Log.d(TAG, "Adding polyline with tag $tagValue")
         polylineList.add(mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
             color = (0xff32CD32.toInt())
+            isClickable = true
+            tag = tagValue
         })
     }
 
@@ -359,5 +366,10 @@ class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListe
         } else {
             Toast.makeText(requireContext(), getString(R.string.selectALocation), Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onPolylineClick(p0: Polyline?) {
+        Log.d(TAG, "polylineClicked. Tag is ${p0?.tag} chain date is ${pointList[p0?.tag as Int].dateString}")
+
     }
 }
