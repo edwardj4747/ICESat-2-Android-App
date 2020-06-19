@@ -8,22 +8,6 @@
     android:background="@color/backgroundColor"
     tools:context=".ui.search.SearchFragment">
 
-    <LinearLayout
-        android:layout_width="match_parent"
-        android:layout_height="match_parent"
-        android:orientation="horizontal"></LinearLayout>
-
-    <TextView
-        android:id="@+id/textViewBanner"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
-        android:text="@string/icesatBanner"
-        android:textAlignment="center"
-        app:layout_constraintEnd_toEndOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="parent" />
-
     <androidx.constraintlayout.widget.Guideline
         android:id="@+id/guideline"
         android:layout_width="wrap_content"
@@ -32,6 +16,34 @@
         app:layout_constraintGuide_percent="0.5" />
 
 
+    <LinearLayout
+        android:id="@+id/bannerLinearLayout"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:orientation="horizontal"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent">
+
+        <ImageView
+            android:id="@+id/imageView18"
+            android:layout_width="0dp"
+            android:layout_height="60dp"
+            android:layout_weight="1"
+            android:adjustViewBounds="true"
+            android:contentDescription="@string/icesatBanner"
+            android:padding="5dp"
+            app:srcCompat="@mipmap/ic_launcher" />
+
+        <TextView
+            android:id="@+id/textViewBanner2"
+            android:layout_width="wrap_content"
+            android:layout_height="wrap_content"
+            android:layout_gravity="center"
+            android:text="@string/icesatBanner"
+            android:textSize="14sp" />
+    </LinearLayout>
 
     <TextView
         android:id="@+id/textViewAdress"
@@ -41,7 +53,7 @@
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBanner"
+        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout"
         tools:text="Honolulu" />
 
     <TextView
@@ -53,7 +65,7 @@
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/textViewBanner" />
+        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout" />
 
     <Button
         android:id="@+id/btnSelectOnMap"
