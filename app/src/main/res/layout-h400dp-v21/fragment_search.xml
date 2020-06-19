@@ -1,0 +1,190 @@
+<?xml version="1.0" encoding="utf-8"?>
+<androidx.constraintlayout.widget.ConstraintLayout xmlns:android="http://schemas.android.com/apk/res/android"
+    xmlns:app="http://schemas.android.com/apk/res-auto"
+    xmlns:tools="http://schemas.android.com/tools"
+    android:id="@+id/searchFragment"
+    android:layout_width="match_parent"
+    android:layout_height="match_parent"
+    android:background="@color/backgroundColor"
+    tools:context=".ui.search.SearchFragment">
+
+    <LinearLayout
+        android:layout_width="match_parent"
+        android:layout_height="match_parent"
+        android:orientation="horizontal"></LinearLayout>
+
+    <TextView
+        android:id="@+id/textViewBanner"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/icesatBanner"
+        android:textAlignment="center"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
+
+    <androidx.constraintlayout.widget.Guideline
+        android:id="@+id/guideline"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:orientation="vertical"
+        app:layout_constraintGuide_percent="0.5" />
+
+
+
+    <TextView
+        android:id="@+id/textViewAdress"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="20dp"
+        android:textAlignment="center"
+        android:textSize="8sp"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBanner"
+        tools:text="Honolulu" />
+
+    <TextView
+        android:id="@+id/textViewEnterLocation"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:text="@string/enterLocation"
+        android:textColor="@color/design_default_color_on_secondary"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/textViewBanner" />
+
+    <Button
+        android:id="@+id/btnSelectOnMap"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="4dp"
+        android:layout_marginEnd="8dp"
+        android:drawableStart="@drawable/ic_baseline_map_40"
+        android:text="@string/useMap"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/textViewEnterLocation" />
+
+    <Button
+        android:id="@+id/btnTrack"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:drawableStart="@drawable/ic_baseline_map_40"
+        android:text="@string/track"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
+        app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
+        app:layout_constraintStart_toStartOf="@+id/btnSelectOnMap" />
+
+    <Button
+        android:id="@+id/btnUseCurrentLoc"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:drawableStart="@drawable/ic_baseline_my_location_40"
+        android:text="@string/useLocation"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnSelectOnMap"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <Button
+        android:id="@+id/btnUseSearchBar"
+        style="@style/Widget.AppCompat.Button"
+        android:layout_width="0dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="0dp"
+        android:drawableStart="@drawable/ic_baseline_search_40"
+        android:text="@string/search"
+        app:layout_constraintEnd_toEndOf="@+id/btnUseCurrentLoc"
+        app:layout_constraintStart_toStartOf="@+id/btnUseCurrentLoc"
+        app:layout_constraintTop_toBottomOf="@+id/btnUseCurrentLoc" />
+
+    <TextView
+        android:id="@+id/textViewAdvancedSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:padding="4dp"
+        android:text="@string/advancedSearch"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
+
+    <EditText
+        android:id="@+id/editTextLat"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="2dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/latHint"
+        android:inputType="numberDecimal|numberSigned"
+        android:nextFocusDown="@id/editTextLon"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
+
+    <EditText
+        android:id="@+id/editTextLon"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/longHint"
+        android:inputType="numberDecimal|numberSigned"
+        android:nextFocusDown="@id/editTextRadius"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/editTextLat"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
+    <EditText
+        android:id="@+id/editTextRadius"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginTop="8dp"
+        android:layout_marginEnd="8dp"
+        android:autofillHints=""
+        android:ems="10"
+        android:hint="@string/radius"
+        android:inputType="number|numberDecimal"
+        android:visibility="gone"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editTextLat" />
+
+    <Spinner
+        android:id="@+id/unitSpinner"
+        android:layout_width="120dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:entries="@array/unitSelector"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@id/editTextRadius"
+        app:layout_constraintStart_toEndOf="@+id/editTextRadius" />
+
+    <Button
+        android:id="@+id/btnSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="0dp"
+        android:text="@string/search"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/unitSpinner" />
+
+    <TextView
+        android:id="@+id/textViewSimpleSearch"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="8dp"
+        android:padding="4dp"
+        android:text="@string/simpleSearch"
+        android:visibility="gone"
+        app:layout_constraintBaseline_toBaselineOf="@+id/btnSearch"
+        app:layout_constraintEnd_toStartOf="@+id/guideline" />
+
+
+</androidx.constraintlayout.widget.ConstraintLayout>
