@@ -67,6 +67,10 @@ class SearchFragment : Fragment() {
         //will display a menu
         setHasOptionsMenu(true)
 
+        btnTrack.setOnClickListener {
+            Toast.makeText(requireContext(), "Hopefully able to show current location soon", Toast.LENGTH_SHORT).show()
+        }
+
         btnSearch.setOnClickListener {
             val inputs = allInputsValid() //returns array of {lat, long, radius} if valid. null if not valid
             if (inputs != null) {
