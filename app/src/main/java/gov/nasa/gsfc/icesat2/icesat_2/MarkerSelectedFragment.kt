@@ -93,7 +93,7 @@ class MarkerSelectedFragment : Fragment() {
 
         } else {
             //just want to display a chain entry
-            textViewDate.text = "Track starts at: ${selectedPoint.date}"
+            textViewDate.text = getString(R.string.trackBeginsAt, selectedPoint.date, selectedPoint.year)
             /*val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
 
             textViewDate.layoutParams = params*/
