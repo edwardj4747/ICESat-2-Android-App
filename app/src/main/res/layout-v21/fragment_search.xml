@@ -57,7 +57,7 @@
         android:layout_height="wrap_content"
         android:layout_marginTop="24dp"
         android:layout_marginEnd="8dp"
-
+        android:drawableStart="@drawable/ic_baseline_map_60"
         android:text="@string/useMap"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/textViewEnterLocation" />
@@ -66,7 +66,7 @@
         android:id="@+id/btnTrack"
         android:layout_width="0dp"
         android:layout_height="wrap_content"
-
+        android:drawableStart="@drawable/ic_baseline_map_60"
         android:text="@string/track"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
         app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
@@ -78,7 +78,7 @@
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
-
+        android:drawableStart="@drawable/ic_baseline_my_location_60"
         android:text="@string/useLocation"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnSelectOnMap"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
@@ -89,7 +89,7 @@
         android:layout_width="0dp"
         android:layout_height="wrap_content"
         android:layout_marginTop="8dp"
-
+        android:drawableStart="@drawable/ic_baseline_search_60"
         android:text="@string/search"
         app:layout_constraintEnd_toEndOf="@+id/btnUseCurrentLoc"
         app:layout_constraintStart_toStartOf="@+id/btnUseCurrentLoc"
@@ -181,6 +181,16 @@
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toBottomOf="@+id/btnSearch" />
+
+    <TextView
+        android:id="@+id/textView"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="32dp"
+        android:text="Default v21 version"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
