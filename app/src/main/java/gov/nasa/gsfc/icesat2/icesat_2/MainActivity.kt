@@ -66,7 +66,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         //toolbar.setupWithNavController(navController, appBarConfiguration)
 
         navController = findNavController(R.id.nav_host_fragment)
-        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_info))
+        val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_gallery, R.id.navigation_info))
 
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav_view.setupWithNavController(navController)
