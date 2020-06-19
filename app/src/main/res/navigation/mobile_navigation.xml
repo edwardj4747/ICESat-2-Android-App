@@ -38,7 +38,7 @@
     <fragment
         android:id="@+id/navigation_info"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.info.InfoFragment"
-        android:label="@string/title_notifications"
+        android:label="@string/info"
         tools:layout="@layout/fragment_info" />
     <fragment
         android:id="@+id/mapFragment2"
