@@ -250,15 +250,19 @@ GoogleMap.OnPolylineClickListener {
     //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
     override fun onMarkerClick(p0: Marker?): Boolean {
         marker = p0
-        val fragmentTransaction = fm.beginTransaction()
         val markerTag = marker?.tag as Int
-        markerSelectedFragment = MarkerSelectedFragment.newInstance(pointList[markerTag])
+        showMarkerDisplayFragment(markerTag, true)
+        return false
+    }
+
+    private fun showMarkerDisplayFragment(tagValue: Int, isMarker: Boolean) {
+        val fragmentTransaction = fm.beginTransaction()
+        markerSelectedFragment = MarkerSelectedFragment.newInstance(pointList[tagValue], isMarker)
         fragmentTransaction.apply {
             setCustomAnimations(R.anim.slide_in_down, R.anim.blank_animation)
             replace(R.id.mapFragmentContainer, markerSelectedFragment)
             commit()
         }
-        return false
     }
 
     override fun onMapClick(p0: LatLng?) {
@@ -270,6 +274,11 @@ GoogleMap.OnPolylineClickListener {
                 commit()
             }
         }
+    }
+
+    override fun onPolylineClick(p0: Polyline?) {
+        Log.d(TAG, "polylineClicked. Tag is ${p0?.tag} chain date is ${pointList[p0?.tag as Int].dateString}")
+        showMarkerDisplayFragment(p0.tag as Int, false)
     }
 
     override fun closeButtonPressed() {
@@ -368,8 +377,4 @@ GoogleMap.OnPolylineClickListener {
         }
     }
 
-    override fun onPolylineClick(p0: Polyline?) {
-        Log.d(TAG, "polylineClicked. Tag is ${p0?.tag} chain date is ${pointList[p0?.tag as Int].dateString}")
-
-    }
 }

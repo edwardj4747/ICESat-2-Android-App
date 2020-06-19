@@ -15,6 +15,7 @@ import kotlinx.android.synthetic.main.fragment_marker_selected.*
 
 private const val TAG = "MarkerSelectedFragment"
 private const val ARG_PARAM3 = "param3"
+private const val ARG_PARAM4 = "param4"
 
 /**
  * A simple [Fragment] subclass.
@@ -31,11 +32,13 @@ class MarkerSelectedFragment : Fragment() {
     private var favoritesEntryToAdd: Point? = null
     private var favoritesEntryToRemove: Point? = null
     private lateinit var geocoder: Geocoder
+    private var isMarker: Boolean = true
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
         arguments?.let {
             selectedPoint = it.getParcelable<Point>(ARG_PARAM3)!!
+            isMarker = it.getBoolean(ARG_PARAM4)
         }
     }
 
@@ -55,35 +58,47 @@ class MarkerSelectedFragment : Fragment() {
 
         geocoder = Geocoder(context)
 
-        //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
-        //textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
-        //todo: not sure this is going to work in other localities
-        textViewDate.text = getString(R.string.dateDisplay, selectedPoint.dayOfWeek, selectedPoint.date, selectedPoint.year)
-        textViewTime.text = getString(R.string.timeDisplay, selectedPoint.time, selectedPoint.ampm, selectedPoint.timezone)
+        if (isMarker) {
+            //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
+            //textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
+            //todo: not sure this is going to work in other localities
+            textViewDate.text = getString(R.string.dateDisplay, selectedPoint.dayOfWeek, selectedPoint.date, selectedPoint.year)
+            textViewTime.text = getString(R.string.timeDisplay, selectedPoint.time, selectedPoint.ampm, selectedPoint.timezone)
 
-
-        //if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
-        if (entryInDatabase(selectedPoint.dateObject.time)) {
-            btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
-            btnFavorite.tag = "favorite"
-        }
-
-        btnFavorite.setOnClickListener {
-            if (btnFavorite.tag == "favorite") {
-                //remove from favorites
-                btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
-                btnFavorite.tag = "notFavorite"
-                Toast.makeText(requireContext(), "Removed From Favorites", Toast.LENGTH_SHORT).show()
-                favoritesEntryToAdd = null
-                favoritesEntryToRemove = selectedPoint
-            } else {
+            //if (entryInDatabase(FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude))) {
+            if (entryInDatabase(selectedPoint.dateObject.time)) {
                 btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
                 btnFavorite.tag = "favorite"
-                Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT).show()
-                favoritesEntryToAdd = selectedPoint
-                favoritesEntryToRemove = null
             }
 
+            btnFavorite.setOnClickListener {
+                if (btnFavorite.tag == "favorite") {
+                    //remove from favorites
+                    btnFavorite.setImageResource(R.drawable.ic_star_border_black_24dp)
+                    btnFavorite.tag = "notFavorite"
+                    Toast.makeText(requireContext(), "Removed From Favorites", Toast.LENGTH_SHORT)
+                        .show()
+                    favoritesEntryToAdd = null
+                    favoritesEntryToRemove = selectedPoint
+                } else {
+                    btnFavorite.setImageResource(R.drawable.ic_shaded_star_24)
+                    btnFavorite.tag = "favorite"
+                    Toast.makeText(requireContext(), "Added to Favorites", Toast.LENGTH_SHORT)
+                        .show()
+                    favoritesEntryToAdd = selectedPoint
+                    favoritesEntryToRemove = null
+                }
+
+            }
+
+        } else {
+            //just want to display a chain entry
+            textViewDate.text = "Track starts at: ${selectedPoint.date}"
+            /*val params = ConstraintLayout.LayoutParams(ConstraintLayout.LayoutParams.WRAP_CONTENT, ConstraintLayout.LayoutParams.WRAP_CONTENT)
+
+            textViewDate.layoutParams = params*/
+            textViewTime.visibility = View.GONE
+            btnFavorite.visibility= View.INVISIBLE
         }
 
         btnClose.setOnClickListener {
@@ -94,10 +109,11 @@ class MarkerSelectedFragment : Fragment() {
 
     companion object {
         @JvmStatic
-        fun newInstance(param3: Point) =
+        fun newInstance(param3: Point, isMarker: Boolean) =
             MarkerSelectedFragment().apply {
                 arguments = Bundle().apply {
                     putParcelable(ARG_PARAM3, param3)
+                    putBoolean(ARG_PARAM4, isMarker)
                 }
             }
     }
