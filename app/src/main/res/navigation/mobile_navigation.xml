@@ -36,7 +36,11 @@
         tools:layout="@layout/fragment_favorite" >
         <action
             android:id="@+id/action_navigation_favorites_to_singleMarkerMap"
-            app:destination="@id/singleMarkerMap" />
+            app:destination="@id/singleMarkerMap"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -100,8 +104,12 @@
         android:label="@string/map"
         tools:layout="@layout/fragment_single_marker_map" >
         <argument android:name="lat"
-            android:defaultValue="0" />
+            android:defaultValue="0.0" />
         <argument android:name="long"
-            android:defaultValue="0" />
+            android:defaultValue="0.0" />
+        <argument
+            android:name="title"
+            app:argType="string"
+            android:defaultValue='""' />
     </fragment>
 </navigation>

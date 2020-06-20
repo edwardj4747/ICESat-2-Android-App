@@ -144,5 +144,7 @@ class FavoritesFragment : Fragment(), IFavoritesFragmentCallback {
     //navigates from favorites adapter to single marker map
     override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String) {
         Log.d(TAG, "navigateSingleMarkerMap called \n $title")
+        val params = FavoritesFragmentDirections.actionNavigationFavoritesToSingleMarkerMap(lat.toFloat(), long.toFloat(), title)
+        this.findNavController().navigate(params)
     }
 }
