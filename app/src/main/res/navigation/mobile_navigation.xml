@@ -98,5 +98,10 @@
         android:id="@+id/singleMarkerMap"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.SingleMarkerMap"
         android:label="@string/map"
-        tools:layout="@layout/fragment_single_marker_map" />
+        tools:layout="@layout/fragment_single_marker_map" >
+        <argument android:name="lat"
+            android:defaultValue="0" />
+        <argument android:name="long"
+            android:defaultValue="0" />
+    </fragment>
 </navigation>

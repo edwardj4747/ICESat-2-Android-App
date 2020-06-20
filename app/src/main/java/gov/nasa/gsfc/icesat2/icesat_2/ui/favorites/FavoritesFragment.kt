@@ -13,13 +13,14 @@ import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
 import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.FavoritesAdapter
+import gov.nasa.gsfc.icesat2.icesat_2.IFavoritesFragmentCallback
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 import kotlinx.android.synthetic.main.fragment_favorite.*
 
 private const val TAG = "FavoritesFragment"
 
-class FavoritesFragment : Fragment() {
+class FavoritesFragment : Fragment(), IFavoritesFragmentCallback {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var favoritesList: List<FavoritesEntry>
@@ -55,6 +56,7 @@ class FavoritesFragment : Fragment() {
        displayNoFavoritesTextIfNecessary()
 
        val adapter = FavoritesAdapter(requireContext(), localFavoritesList, this.findNavController())
+       adapter.setListener(this)
        favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
@@ -137,5 +139,10 @@ class FavoritesFragment : Fragment() {
         for (i in 0 until localDeletedFavorites.size) {
             favoritesViewModel.delete(localDeletedFavorites[i])
         }
+    }
+
+    //navigates from favorites adapter to single marker map
+    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String) {
+        Log.d(TAG, "navigateSingleMarkerMap called \n $title")
     }
 }

@@ -12,12 +12,19 @@ import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 
+
+interface IFavoritesFragmentCallback {
+    fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String)
+}
+
 private const val TAG = "FavoritesAdapter"
 
 class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>, private val navController: NavController) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
 
     private val geocoder = Geocoder(context)
     private val displayLocations = allFavorites.size < 10
+
+    private lateinit var listener: IFavoritesFragmentCallback
 
     inner class FavoritesHolder(private val view: View) : RecyclerView.ViewHolder(view){
         var textViewDateTime: TextView = view.findViewById(R.id.textViewDateTime)
@@ -40,10 +47,13 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
             favorite.lat.toString(), 0x00B0.toChar(), favorite.lng.toString(), 0x00B0.toChar())
 
         holder.locationListLinearLayout.setOnClickListener {
+
+            val selectedFavorite = allFavorites[holder.adapterPosition]
             Log.d(TAG, "onClick at Position ${holder.adapterPosition}")
             Log.d(TAG, "data of point is ${allFavorites[holder.adapterPosition].dateString}")
-            navController.navigate(R.id.singleMarkerMap)
 
+            //callback inside of [FavoritesFragment] to launch going to the singleMarkerMap
+            listener.navigateToSingleMarkerMap(selectedFavorite.lat, selectedFavorite.lng, selectedFavorite.dateString)
         }
 
 
@@ -51,6 +61,10 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
 
     override fun getItemCount(): Int {
         return allFavorites.size
+    }
+
+    fun setListener(listener: IFavoritesFragmentCallback) {
+        this.listener = listener
     }
 
     fun getFavoriteAt(index: Int): FavoritesEntry {
