@@ -8,12 +8,13 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
+import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 
 private const val TAG = "FavoritesAdapter"
 
-class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
+class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>, private val navController: NavController) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
 
     private val geocoder = Geocoder(context)
     private val displayLocations = allFavorites.size < 10
@@ -41,7 +42,10 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
         holder.locationListLinearLayout.setOnClickListener {
             Log.d(TAG, "onClick at Position ${holder.adapterPosition}")
             Log.d(TAG, "data of point is ${allFavorites[holder.adapterPosition].dateString}")
+            navController.navigate(R.id.singleMarkerMap)
+
         }
+
 
     }
 

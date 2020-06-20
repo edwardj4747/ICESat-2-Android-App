@@ -7,6 +7,7 @@ import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import androidx.lifecycle.ViewModelProviders
+import androidx.navigation.fragment.findNavController
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
@@ -53,7 +54,7 @@ class FavoritesFragment : Fragment() {
 
        displayNoFavoritesTextIfNecessary()
 
-       val adapter = FavoritesAdapter(requireContext(), localFavoritesList)
+       val adapter = FavoritesAdapter(requireContext(), localFavoritesList, this.findNavController())
        favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 

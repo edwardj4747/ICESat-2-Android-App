@@ -33,7 +33,11 @@
         android:id="@+id/navigation_favorites"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesFragment"
         android:label="@string/favorites"
-        tools:layout="@layout/fragment_favorite" />
+        tools:layout="@layout/fragment_favorite" >
+        <action
+            android:id="@+id/action_navigation_favorites_to_singleMarkerMap"
+            app:destination="@id/singleMarkerMap" />
+    </fragment>
 
     <fragment
         android:id="@+id/navigation_info"
@@ -90,4 +94,9 @@
             app:argType="integer"
             android:defaultValue="0" />
     </fragment>
+    <fragment
+        android:id="@+id/singleMarkerMap"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.SingleMarkerMap"
+        android:label="@string/map"
+        tools:layout="@layout/fragment_single_marker_map" />
 </navigation>
