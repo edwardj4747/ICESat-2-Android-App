@@ -10,7 +10,6 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
-import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.FavoritesAdapter
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
@@ -23,6 +22,8 @@ class FavoritesFragment : Fragment() {
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var favoritesList: List<FavoritesEntry>
     private var swipeListenerAttached = false
+    private var recyclerViewInitialized = false
+    private lateinit var localFavoritesList: ArrayList<FavoritesEntry>
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -36,7 +37,11 @@ class FavoritesFragment : Fragment() {
         favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "allFavorites $it")
             favoritesList = it
-            initializeRecyclerView()
+            if (!recyclerViewInitialized && favoritesList.isNotEmpty()) {
+                initializeRecyclerView()
+            } else {
+                Log.d(TAG, "rv already initialized or favorites list is empty")
+            }
         })
 
         setHasOptionsMenu(true)
@@ -44,37 +49,39 @@ class FavoritesFragment : Fragment() {
     }
 
    private fun initializeRecyclerView() {
-       if (favoritesList.isEmpty()) {
+       recyclerViewInitialized = true
+       //todo: this is kind of inefficient
+       localFavoritesList = ArrayList(favoritesList)
+
+       /*if (favoritesList.isEmpty()) {
            textViewNoFavorites.visibility = View.VISIBLE
        } else {
            textViewNoFavorites.visibility = View.INVISIBLE
-       }
-       val adapter = FavoritesAdapter(requireContext(), favoritesList)
+       }*/
+
+       val adapter = FavoritesAdapter(requireContext(), localFavoritesList)
        favoriteRecyclerView.adapter = adapter
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
-       if (!swipeListenerAttached) {
-           Log.d(TAG, "Attaching swipe listener")
-           swipeListenerAttached = true
+
+           /*Log.d(TAG, "Attaching swipe listener")
+           swipeListenerAttached = true*/
            //delete swiping
-           ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(ItemTouchHelper.DOWN, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
-               override fun onMove(
-                   recyclerView: RecyclerView,
-                   viewHolder: RecyclerView.ViewHolder,
-                   target: RecyclerView.ViewHolder
-               ): Boolean {
+           ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+               override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
                    return false
                }
 
                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                    try {
-                       val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
-                       favoritesViewModel.delete(deletedFavorite.dateObjectTime)
-                       Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                       //val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
+                       //favoritesViewModel.delete(deletedFavorite.dateObjectTime)
+                       /*Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
                            .setAction(R.string.undo) {
                                favoritesViewModel.insert(deletedFavorite)
                            }
-                           .show()
+                           .show()*/
+                       localFavoritesList.removeAt(viewHolder.adapterPosition)
                        adapter.notifyItemRemoved(viewHolder.adapterPosition)
                    } catch (e: Exception) {
                        Log.d(TAG, "error in onswiped ${e.message}")
@@ -83,7 +90,7 @@ class FavoritesFragment : Fragment() {
 
                }
            }).attachToRecyclerView(favoriteRecyclerView)
-       }
+
 
    }
 
