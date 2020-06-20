@@ -2,7 +2,6 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.content.Context
 import android.location.Geocoder
-import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -29,12 +28,8 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
 
 
     override fun onBindViewHolder(holder: FavoritesHolder, position: Int) {
-        Log.d(TAG, "allFavorites size ${allFavorites.size}")
-
         val favorite = allFavorites[position]
         holder.textViewDateTime.text = favorite.dateString
-
-
 
         holder.textViewLatLng.text = context.getString(
             R.string.geoLatLng, favorite.geocodedLocation,

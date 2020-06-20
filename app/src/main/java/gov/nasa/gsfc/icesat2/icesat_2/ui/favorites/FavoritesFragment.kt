@@ -10,6 +10,7 @@ import androidx.lifecycle.ViewModelProviders
 import androidx.recyclerview.widget.ItemTouchHelper
 import androidx.recyclerview.widget.LinearLayoutManager
 import androidx.recyclerview.widget.RecyclerView
+import com.google.android.material.snackbar.Snackbar
 import gov.nasa.gsfc.icesat2.icesat_2.FavoritesAdapter
 import gov.nasa.gsfc.icesat2.icesat_2.R
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
@@ -24,6 +25,7 @@ class FavoritesFragment : Fragment() {
     private var swipeListenerAttached = false
     private var recyclerViewInitialized = false
     private lateinit var localFavoritesList: ArrayList<FavoritesEntry>
+    private val localDeletedFavorites = ArrayList<Long>() //to keep track of which favorites were deleted and used to update database on stop
 
     override fun onCreateView(
             inflater: LayoutInflater,
@@ -35,13 +37,9 @@ class FavoritesFragment : Fragment() {
         val root = inflater.inflate(R.layout.fragment_favorite, container, false)
 
         favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "allFavorites $it")
+            Log.d(TAG, "allFavorites size is ${it.size}: $it")
             favoritesList = it
-            if (!recyclerViewInitialized && favoritesList.isNotEmpty()) {
-                initializeRecyclerView()
-            } else {
-                Log.d(TAG, "rv already initialized or favorites list is empty")
-            }
+            initializeRecyclerView()
         })
 
         setHasOptionsMenu(true)
@@ -74,13 +72,19 @@ class FavoritesFragment : Fragment() {
 
                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                    try {
+                       val deletedFavoritePosition = viewHolder.adapterPosition
+                       val deletedFavorite = localFavoritesList[deletedFavoritePosition]
                        //val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
                        //favoritesViewModel.delete(deletedFavorite.dateObjectTime)
-                       /*Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                       Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
                            .setAction(R.string.undo) {
-                               favoritesViewModel.insert(deletedFavorite)
+                               //favoritesViewModel.insert(deletedFavorite)
+                               localDeletedFavorites.remove(deletedFavorite.dateObjectTime)
+                               localFavoritesList.add(deletedFavoritePosition, deletedFavorite)
+                               adapter.notifyItemInserted(deletedFavoritePosition)
                            }
-                           .show()*/
+                           .show()
+                       localDeletedFavorites.add(deletedFavorite.dateObjectTime)
                        localFavoritesList.removeAt(viewHolder.adapterPosition)
                        adapter.notifyItemRemoved(viewHolder.adapterPosition)
                    } catch (e: Exception) {
@@ -117,5 +121,14 @@ class FavoritesFragment : Fragment() {
             }
             ?.setNegativeButton(negative) {dialog, which ->  }
         alertBuilder.show()
+    }
+
+    //delete items from the database
+    override fun onStop() {
+        super.onStop()
+        Log.d(TAG, "number of favorites to remove is ${localDeletedFavorites.size}")
+        for (i in 0 until localDeletedFavorites.size) {
+            favoritesViewModel.delete(localDeletedFavorites[i])
+        }
     }
 }
