@@ -51,11 +51,7 @@ class FavoritesFragment : Fragment() {
        //todo: this is kind of inefficient
        localFavoritesList = ArrayList(favoritesList)
 
-       /*if (favoritesList.isEmpty()) {
-           textViewNoFavorites.visibility = View.VISIBLE
-       } else {
-           textViewNoFavorites.visibility = View.INVISIBLE
-       }*/
+       displayNoFavoritesTextIfNecessary()
 
        val adapter = FavoritesAdapter(requireContext(), localFavoritesList)
        favoriteRecyclerView.adapter = adapter
@@ -82,11 +78,13 @@ class FavoritesFragment : Fragment() {
                                localDeletedFavorites.remove(deletedFavorite.dateObjectTime)
                                localFavoritesList.add(deletedFavoritePosition, deletedFavorite)
                                adapter.notifyItemInserted(deletedFavoritePosition)
+                               displayNoFavoritesTextIfNecessary()
                            }
                            .show()
                        localDeletedFavorites.add(deletedFavorite.dateObjectTime)
                        localFavoritesList.removeAt(viewHolder.adapterPosition)
                        adapter.notifyItemRemoved(viewHolder.adapterPosition)
+                       displayNoFavoritesTextIfNecessary()
                    } catch (e: Exception) {
                        Log.d(TAG, "error in onswiped ${e.message}")
                        Log.d(TAG, "${e.stackTrace}")
@@ -97,6 +95,14 @@ class FavoritesFragment : Fragment() {
 
 
    }
+
+    private fun displayNoFavoritesTextIfNecessary() {
+        if (localFavoritesList.isEmpty()) {
+            textViewNoFavorites.visibility = View.VISIBLE
+        } else {
+            textViewNoFavorites.visibility = View.INVISIBLE
+        }
+    }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.delete_menu, menu)
