@@ -1,6 +1,7 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
+import android.util.Log
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
@@ -13,6 +14,8 @@ import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.MarkerOptions
 
+private const val TAG = "SingleMarkerMap"
+
 class SingleMarkerMap : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
@@ -20,6 +23,7 @@ class SingleMarkerMap : Fragment(), OnMapReadyCallback {
     private lateinit var title: String
     private var lat = 0.0
     private var long = 0.0
+    private var markerDisplayed = false
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -49,7 +53,13 @@ class SingleMarkerMap : Fragment(), OnMapReadyCallback {
         val markerPosition = LatLng(lat, long)
         val marker = mMap.addMarker(MarkerOptions().position(markerPosition).title(title))
         mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(markerPosition, 15F))
-        marker.showInfoWindow()
+        mMap.setOnCameraIdleListener {
+            Log.d(TAG, "camera is idle")
+            if (!markerDisplayed) {
+                markerDisplayed = true
+                marker.showInfoWindow()
+            }
+        }
     }
 
 }
