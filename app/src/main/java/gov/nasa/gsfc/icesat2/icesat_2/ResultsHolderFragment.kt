@@ -1,10 +1,11 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
-import androidx.fragment.app.Fragment
 import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
+import androidx.fragment.app.Fragment
+import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_results_holder.*
 
 /**
@@ -12,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_results_holder.*
  */
 private const val TAG = "ResultsHolderFragment"
 
-class ResultsHolderFragment : Fragment() {
+class ResultsHolderFragment : Fragment(), IFavoritesFragmentCallback {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -23,9 +24,15 @@ class ResultsHolderFragment : Fragment() {
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
-        val sectionsPagerAdapter = MapListsPagerAdapter(requireContext(), childFragmentManager)
+        val sectionsPagerAdapter = MapListsPagerAdapter(requireContext(), childFragmentManager, this)
         viewPager.adapter = sectionsPagerAdapter
         tabs.setupWithViewPager(viewPager)
+
+    }
+
+    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String) {
+        val params = ResultsHolderFragmentDirections.actionResultsHolderFragmentToSingleMarkerMap(lat.toFloat(), long.toFloat(), title)
+        this.findNavController().navigate(params)
     }
 
 }

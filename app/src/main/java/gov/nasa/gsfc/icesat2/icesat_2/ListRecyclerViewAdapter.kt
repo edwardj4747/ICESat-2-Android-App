@@ -8,6 +8,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.widget.ImageView
+import android.widget.LinearLayout
 import android.widget.TextView
 import androidx.recyclerview.widget.RecyclerView
 
@@ -18,6 +19,7 @@ class ListViewHolder(view: View) : RecyclerView.ViewHolder(view) {
     var textViewDateTime: TextView = view.findViewById(R.id.textViewDateTime)
     var textViewLatLng: TextView = view.findViewById(R.id.textViewLatLng)
     var imageView: ImageView = view.findViewById(R.id.imageView)
+    var locationListLinearLayout: LinearLayout = view.findViewById(R.id.locationListLinearLayout)
 }
 
 class ListRecyclerViewAdapter(val context: Context, private val allPoints: ArrayList<Point>) : RecyclerView.Adapter<ListViewHolder>(){
@@ -28,6 +30,7 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     private val scale: Float = context.resources.displayMetrics.density
     private val dpAsPixels = (headerPadding * scale + 0.5f).toInt()
     private var listWithHeaders: ArrayList<Point?>
+    private lateinit var listener: IFavoritesFragmentCallback
 
     init {
         headerLocations = calculateHeaderLocations(allPoints)
@@ -82,11 +85,21 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
             holder.textViewLatLng.visibility = View.VISIBLE
             holder.imageView.visibility = View.VISIBLE
             holder.textViewLatLng.text = context.getString(R.string.latLngDisplayString, item.latitude.toString(), 0x00B0.toChar(), item.longitude.toString(), 0x00B0.toChar())
+
+            holder.locationListLinearLayout.setOnClickListener {
+                Log.d(TAG, "list clicked at position $position")
+                listener.navigateToSingleMarkerMap(item.latitude, item.longitude, item.dateString)
+            }
         }
+
     }
 
     override fun getItemCount(): Int {
        return allPoints.size + headerLocations.size
+    }
+
+    fun setUpListener(listener: IFavoritesFragmentCallback) {
+        this.listener = listener
     }
 
 

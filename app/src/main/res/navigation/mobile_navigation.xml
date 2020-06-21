@@ -56,7 +56,11 @@
         android:id="@+id/resultsHolderFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.ResultsHolderFragment"
         android:label="@string/searchResults"
-        tools:layout="@layout/fragment_results_holder" />
+        tools:layout="@layout/fragment_results_holder" >
+        <action
+            android:id="@+id/action_resultsHolderFragment_to_singleMarkerMap"
+            app:destination="@id/singleMarkerMap" />
+    </fragment>
     <fragment
         android:id="@+id/selectOnMapFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.SelectOnMapFragment"

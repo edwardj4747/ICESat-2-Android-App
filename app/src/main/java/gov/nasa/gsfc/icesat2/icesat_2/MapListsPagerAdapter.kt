@@ -15,7 +15,7 @@ private val TAB_TITLES = arrayOf(
  * A [FragmentPagerAdapter] that returns a fragment corresponding to
  * one of the sections/tabs/pages.
  */
-class MapListsPagerAdapter(private val context: Context, fm: FragmentManager)
+class MapListsPagerAdapter(private val context: Context, fm: FragmentManager, private val listener: IFavoritesFragmentCallback)
     : FragmentPagerAdapter(fm) {
 
     override fun getItem(position: Int): Fragment {
@@ -24,7 +24,9 @@ class MapListsPagerAdapter(private val context: Context, fm: FragmentManager)
         return if (position == 0) {
             MapFragment()
         } else {
-            ListFragment()
+            val listFragment = ListFragment()
+            listFragment.setUpListener(listener)
+            listFragment
         }
     }
 
