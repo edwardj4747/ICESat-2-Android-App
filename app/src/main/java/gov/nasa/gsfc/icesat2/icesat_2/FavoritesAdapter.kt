@@ -8,23 +8,21 @@ import android.view.View
 import android.view.ViewGroup
 import android.widget.LinearLayout
 import android.widget.TextView
-import androidx.navigation.NavController
 import androidx.recyclerview.widget.RecyclerView
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 
 
-interface IFavoritesFragmentCallback {
-    fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String)
-}
-
 private const val TAG = "FavoritesAdapter"
 
-class FavoritesAdapter(private val context: Context, private val allFavorites: List<FavoritesEntry>, private val navController: NavController) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
+class FavoritesAdapter(
+    private val context: Context,
+    private val allFavorites: List<FavoritesEntry>
+) : RecyclerView.Adapter<FavoritesAdapter.FavoritesHolder>() {
 
     private val geocoder = Geocoder(context)
     private val displayLocations = allFavorites.size < 10
 
-    private lateinit var listener: IFavoritesFragmentCallback
+    private lateinit var listener: ILaunchSingleMarkerMap
 
     inner class FavoritesHolder(private val view: View) : RecyclerView.ViewHolder(view){
         var textViewDateTime: TextView = view.findViewById(R.id.textViewDateTime)
@@ -63,7 +61,7 @@ class FavoritesAdapter(private val context: Context, private val allFavorites: L
         return allFavorites.size
     }
 
-    fun setListener(listener: IFavoritesFragmentCallback) {
+    fun setListener(listener: ILaunchSingleMarkerMap) {
         this.listener = listener
     }
 

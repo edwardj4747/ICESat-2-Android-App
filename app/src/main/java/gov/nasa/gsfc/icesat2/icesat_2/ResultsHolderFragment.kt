@@ -13,7 +13,7 @@ import kotlinx.android.synthetic.main.fragment_results_holder.*
  */
 private const val TAG = "ResultsHolderFragment"
 
-class ResultsHolderFragment : Fragment(), IFavoritesFragmentCallback {
+class ResultsHolderFragment : Fragment(), ILaunchSingleMarkerMap {
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,

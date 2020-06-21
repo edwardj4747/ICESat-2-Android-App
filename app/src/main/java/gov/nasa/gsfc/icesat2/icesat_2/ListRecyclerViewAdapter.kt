@@ -30,7 +30,7 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
     private val scale: Float = context.resources.displayMetrics.density
     private val dpAsPixels = (headerPadding * scale + 0.5f).toInt()
     private var listWithHeaders: ArrayList<Point?>
-    private lateinit var listener: IFavoritesFragmentCallback
+    private lateinit var listener: ILaunchSingleMarkerMap
 
     init {
         headerLocations = calculateHeaderLocations(allPoints)
@@ -98,7 +98,7 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
        return allPoints.size + headerLocations.size
     }
 
-    fun setUpListener(listener: IFavoritesFragmentCallback) {
+    fun setUpListener(listener: ILaunchSingleMarkerMap) {
         this.listener = listener
     }
 

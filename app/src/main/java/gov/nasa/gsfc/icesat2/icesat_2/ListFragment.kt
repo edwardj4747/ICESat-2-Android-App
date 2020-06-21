@@ -16,8 +16,8 @@ import kotlinx.android.synthetic.main.fragment_list.*
 
 private const val TAG = "ListFragment"
 
-class ListFragment : Fragment(), IFavoritesFragmentCallback {
-    private lateinit var listener: IFavoritesFragmentCallback
+class ListFragment : Fragment(), ILaunchSingleMarkerMap {
+    private lateinit var listener: ILaunchSingleMarkerMap
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -54,7 +54,7 @@ class ListFragment : Fragment(), IFavoritesFragmentCallback {
         recyclerView.adapter = listRecyclerViewAdapter
     }
 
-    fun setUpListener(listener: IFavoritesFragmentCallback) {
+    fun setUpListener(listener: ILaunchSingleMarkerMap) {
         this.listener = listener
     }
 
