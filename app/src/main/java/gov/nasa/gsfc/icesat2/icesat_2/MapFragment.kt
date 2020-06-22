@@ -180,8 +180,6 @@ GoogleMap.OnPolylineClickListener {
                 drawPolyline(polylineOptions, polylineTag)
                 polylineTag = count
                 polylineOptions = PolylineOptions()
-                //add date to flyover date
-                flyoverDates.add(chain[i].date)
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             //add marker to map and markerList
@@ -207,6 +205,8 @@ GoogleMap.OnPolylineClickListener {
             isClickable = true
             tag = tagValue
         })
+        //add date to flyover date
+        flyoverDates.add(pointList[tagValue].date)
     }
 
     private fun addCircleRadius(radius: Double) {
