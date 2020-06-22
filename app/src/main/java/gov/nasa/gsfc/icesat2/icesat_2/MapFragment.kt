@@ -4,7 +4,6 @@ import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
 import android.graphics.Bitmap
-import android.graphics.drawable.BitmapDrawable
 import android.location.Geocoder
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -353,26 +352,51 @@ GoogleMap.OnPolylineClickListener {
                 attemptToAddToCalendar()
             }
             R.id.menuShare -> {
-                /*Log.d(TAG, "share button clicked")
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
-                    type = "text/plain"
+                //take screenshot
+                val screenshot: Bitmap? = null
+                mMap.snapshot { bitmap ->
+                    if (bitmap != null) {
+                        val file = File(requireActivity().externalCacheDir, "myImage.png")
+                        val fileOutputStream = FileOutputStream(file)
+                        bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
+                        fileOutputStream.flush()
+                        fileOutputStream.close()
+
+                        val fileProviderUri = FileProvider.getUriForFile(requireContext(), requireContext().applicationContext.packageName
+                                + ".provider", file);
+                        //install.setDataAndType(apkURI, mimeType);
+                        //install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+                        val sendIntent: Intent = Intent().apply {
+                            action = Intent.ACTION_SEND
+                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
+                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
+                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
+                            putExtra(Intent.EXTRA_STREAM, fileProviderUri)
+                            type = "image/png"
+                        }
+
+
+                        val shareIntent = Intent.createChooser(sendIntent, null)
+                        startActivity(shareIntent)
+                    }
+                    Log.d(TAG, "snapshot is ready method called. Map screenshot is $screenshot")
                 }
 
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)*/
 
-                val myDrawable = imageView17.drawable
+                //val bitmap = Bitmap.createBitmap(mapFragmentConstraintLayout.drawToBitmap())
+
+
+                /*val myDrawable = imageView17.drawable
                 val bitmap = (myDrawable as BitmapDrawable).bitmap
                 val file = File(requireActivity().externalCacheDir, "myImage.png")
                 val fileOutputStream = FileOutputStream(file)
                 bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
                 fileOutputStream.flush()
-                fileOutputStream.close()
+                fileOutputStream.close()*/
 
 
-                val fileProviderUri = FileProvider.getUriForFile(requireContext(), requireContext().applicationContext.packageName
+                /*val fileProviderUri = FileProvider.getUriForFile(requireContext(), requireContext().applicationContext.packageName
                         + ".provider", file);
                 //install.setDataAndType(apkURI, mimeType);
                 //install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
@@ -380,29 +404,14 @@ GoogleMap.OnPolylineClickListener {
                     action = Intent.ACTION_SEND
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
                     flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
                     putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                     type = "image/png"
                 }
 
 
                 val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
-
-                /*Log.d(TAG, "share button clicked")
-
-                val uri = Uri.parse("android.resource://${requireContext().packageName}/" + R.drawable.icesatc);
-                val contentUri = FileProvider.getUriForFile(requireContext(), "com.mydomain.fileprovider", File(uri.path))
-                Log.d(TAG, "Made it here; uri is $uri")
-
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
-                    type = "text/plain"
-                }
-
-                val shareIntent = Intent.createChooser(sendIntent, null)
                 startActivity(shareIntent)*/
-                //Toast.makeText(requireContext(), "Feature In Development", Toast.LENGTH_SHORT).show()
             }
         }
         return super.onOptionsItemSelected(item)
