@@ -369,15 +369,26 @@ GoogleMap.OnPolylineClickListener {
                                 + ".provider", file);
                         //install.setDataAndType(apkURI, mimeType);
                         //install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
+
+                        var searchString = MainActivity.getMainViewModel()?.searchString?.value
+                        if (searchString == "Your Location") {
+                            searchString = "our area"
+                        } else if (searchString == null) {
+                            searchString = ""
+                        }
+
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
-                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)))
+                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, searchString, flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)))
                             putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                             type = "image/png"
                         }
+
+
+                        Log.d(TAG, "search string is ${MainActivity.getMainViewModel()?.searchString?.value}")
 
 
                         val shareIntent = Intent.createChooser(sendIntent, null)

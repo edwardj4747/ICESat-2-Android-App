@@ -154,8 +154,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             return
         }
 
-        val frag = navHostFragment?.childFragmentManager?.fragments?.get(0)
-        if (frag is SearchFragment) {
+        val frag = getFrag()
+        if (frag != null && frag is SearchFragment) {
             frag.setAddressValue(getString(R.string.yourLocation))
         }
 
@@ -192,6 +192,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                 Log.d(TAG, "provider is disabled $provider")
             }
         })
+    }
+
+    private fun getFrag(): Fragment? {
+        return navHostFragment?.childFragmentManager?.fragments?.get(0)
     }
 
     override fun onRequestPermissionsResult(
@@ -247,6 +251,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             showMap(navigationActionID)
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
+            val frag = getFrag()
+            if (frag != null && frag is SearchFragment) {
+                mainViewModel.searchString.value = frag.getAddressValue()
+            }
         }
     }
 
