@@ -374,7 +374,7 @@ GoogleMap.OnPolylineClickListener {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
-                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, flyoverDates.toString().replace("[", "").replace("]", "")))
+                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)))
                             putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                             type = "image/png"
                         }
