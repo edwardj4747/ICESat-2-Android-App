@@ -359,7 +359,7 @@ GoogleMap.OnPolylineClickListener {
                 val screenshot: Bitmap? = null
                 mMap.snapshot { bitmap ->
                     if (bitmap != null) {
-                        val file = File(requireActivity().externalCacheDir, "myImage.png")
+                        val file = File(requireActivity().externalCacheDir, "ICESat-2Flyover.png")
                         val fileOutputStream = FileOutputStream(file)
                         bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
                         fileOutputStream.flush()
