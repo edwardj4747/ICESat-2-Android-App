@@ -377,12 +377,15 @@ GoogleMap.OnPolylineClickListener {
                             searchString = ""
                         }
 
+                        val datesOfOccurrence = flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)
+                            .replaceAfterLast(",", getString(R.string.icesatShareLastDate, flyoverDates[flyoverDates.size - 1]))
+
                         val sendIntent: Intent = Intent().apply {
                             action = Intent.ACTION_SEND
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
-                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, searchString, flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)))
+                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, searchString, datesOfOccurrence))
                             putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                             type = "image/png"
                         }
