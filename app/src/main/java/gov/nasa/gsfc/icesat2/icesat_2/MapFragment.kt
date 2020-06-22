@@ -6,13 +6,13 @@ import android.content.pm.PackageManager
 import android.graphics.Bitmap
 import android.graphics.drawable.BitmapDrawable
 import android.location.Geocoder
-import android.net.Uri
 import android.os.Bundle
 import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
+import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -370,15 +370,20 @@ GoogleMap.OnPolylineClickListener {
                 bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
                 fileOutputStream.flush()
                 fileOutputStream.close()
-                file.setReadable(true, false)
 
 
+                val fileProviderUri = FileProvider.getUriForFile(requireContext(), requireContext().applicationContext.packageName
+                        + ".provider", file);
+                //install.setDataAndType(apkURI, mimeType);
+                //install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                    putExtra(Intent.EXTRA_STREAM, Uri.fromFile(file))
+                    flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
+                    putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                     type = "image/png"
                 }
+
 
                 val shareIntent = Intent.createChooser(sendIntent, null)
                 startActivity(shareIntent)
