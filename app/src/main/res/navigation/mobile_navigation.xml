@@ -59,7 +59,11 @@
         tools:layout="@layout/fragment_results_holder" >
         <action
             android:id="@+id/action_resultsHolderFragment_to_singleMarkerMap"
-            app:destination="@id/singleMarkerMap" />
+            app:destination="@id/singleMarkerMap"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/selectOnMapFragment"
