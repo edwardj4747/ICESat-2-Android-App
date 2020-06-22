@@ -43,6 +43,7 @@ GoogleMap.OnPolylineClickListener {
     private var count = 0 //to access the point array based on the marker later
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
+    private val flyoverDates = ArrayList<String>()
 
 
     override fun onCreateView(
@@ -179,6 +180,8 @@ GoogleMap.OnPolylineClickListener {
                 drawPolyline(polylineOptions, polylineTag)
                 polylineTag = count
                 polylineOptions = PolylineOptions()
+                //add date to flyover date
+                flyoverDates.add(chain[i].date)
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             //add marker to map and markerList
@@ -371,7 +374,7 @@ GoogleMap.OnPolylineClickListener {
                             flags = Intent.FLAG_ACTIVITY_NEW_TASK
                             flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
                             putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
-                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
+                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, flyoverDates.toString().replace("[", "").replace("]", "")))
                             putExtra(Intent.EXTRA_STREAM, fileProviderUri)
                             type = "image/png"
                         }

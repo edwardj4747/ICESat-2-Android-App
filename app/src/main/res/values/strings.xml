@@ -104,7 +104,7 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <!--    Main Menu-->
     <string name="addToCalendar">Add to Calendar</string>
     <string name="share">Share</string>
-    <string name="icesatShare">Check this out! NASA\'s ICESat-2 satellite will be flying over our area.</string>
+    <string name="icesatShare">Check this out! NASA\'s ICESat-2 satellite will be flying over our area on: %1$s.</string>
 
 
     <!--    Select on Map-->
