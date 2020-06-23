@@ -1,11 +1,8 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -19,13 +16,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), IShare, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
+class MapFragment : Fragment(), IShareAndCalendar, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
 GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
@@ -313,33 +308,9 @@ GoogleMap.OnPolylineClickListener {
      }*/
 
 
-    private fun addToCalendar(title: String, startTime: Date, lat: Double, long: Double) {
-        val cityLocation = geocodeLocation(lat, long)
 
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.Events.TITLE, title)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.time)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime.time + 60 * 1000) //end time is one minute later
-            putExtra(CalendarContract.Events.EVENT_LOCATION, cityLocation)
-        }
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
-    }
 
-    private fun geocodeLocation(lat: Double, long: Double) : String {
-        Log.d(TAG, "geocode location starts")
-        val geocoder = Geocoder(requireContext())
-        val address = geocoder.getFromLocation(lat, long, 1)
-        //Log.d(TAG, "adress is $address")
-        Log.d(TAG, "address line ${address[0].getAddressLine(0)}")
-       /* Log.d(TAG, "address line ${address[0].getAddressLine(1)}")
-        Log.d(TAG, "address line ${address[0].getAddressLine(2)}")
-        Log.d(TAG, "address line ${address[0].getAddressLine(3)}")*/
-        Log.d(TAG, "admin area is ${address[0].adminArea}")
-        return address[0].getAddressLine(0)
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -362,7 +333,7 @@ GoogleMap.OnPolylineClickListener {
         if (marker != null) {
             val markerTag = marker?.tag as Int
             Log.d(TAG, "markerTag is $markerTag; Point is ${pointList[markerTag]}")
-            addToCalendar(
+            addToCalendar(requireContext(),
                 getString(R.string.icesatFlyover),
                 pointList[markerTag].dateObject,
                 pointList[markerTag].latitude,

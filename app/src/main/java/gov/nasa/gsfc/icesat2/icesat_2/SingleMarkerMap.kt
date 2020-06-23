@@ -14,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 private const val TAG = "SingleMarkerMap"
 
-class SingleMarkerMap : Fragment(), IShare, OnMapReadyCallback {
+class SingleMarkerMap : Fragment(), IShareAndCalendar, OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private val args by navArgs<SingleMarkerMapArgs>()

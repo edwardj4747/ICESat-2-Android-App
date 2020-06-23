@@ -4,15 +4,49 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.location.Geocoder
+import android.provider.CalendarContract
 import android.util.Log
 import androidx.core.content.FileProvider
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.io.FileOutputStream
+import java.util.*
 
 private const val TAG = "IShare"
 
-interface IShare {
+interface IShareAndCalendar {
+
+    fun addToCalendar(context: Context, title: String, startTime: Date, lat: Double, long: Double) {
+        val cityLocation = geocodeLocation(context, lat, long)
+
+        val intent = Intent(Intent.ACTION_INSERT).apply {
+            data = CalendarContract.Events.CONTENT_URI
+            putExtra(CalendarContract.Events.TITLE, title)
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.time)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime.time + 60 * 1000) //end time is one minute later
+            putExtra(CalendarContract.Events.EVENT_LOCATION, cityLocation)
+        }
+        if (intent.resolveActivity(context.packageManager) != null) {
+            context.startActivity(intent)
+        }
+    }
+
+    //TODO: change this to a geocoding interface
+    private fun geocodeLocation(context: Context, lat: Double, long: Double) : String {
+        Log.d(TAG, "geocode location starts")
+        val geocoder = Geocoder(context)
+        val address = geocoder.getFromLocation(lat, long, 1)
+        //Log.d(TAG, "adress is $address")
+        Log.d(TAG, "address line ${address[0].getAddressLine(0)}")
+        /* Log.d(TAG, "address line ${address[0].getAddressLine(1)}")
+         Log.d(TAG, "address line ${address[0].getAddressLine(2)}")
+         Log.d(TAG, "address line ${address[0].getAddressLine(3)}")*/
+        Log.d(TAG, "admin area is ${address[0].adminArea}")
+        return address[0].getAddressLine(0)
+    }
+
+
     fun showShareScreen(mMap: GoogleMap, activity: Activity, context: Context, flyoverDates: ArrayList<String>) {
         //take screenshot + show share screen dialog
         val screenshot: Bitmap? = null
