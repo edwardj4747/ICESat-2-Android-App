@@ -36,9 +36,10 @@ interface IShare {
                     searchString = ""
                 }
 
-                val datesOfOccurrence = flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)
-                    .replaceAfterLast(",", context.getString(R.string.icesatShareLastDate, flyoverDates[flyoverDates.size - 1]))
-
+                var datesOfOccurrence = flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)
+                if (flyoverDates.size > 1) {
+                    datesOfOccurrence = datesOfOccurrence.replaceAfterLast(",", context.getString(R.string.icesatShareLastDate, flyoverDates[flyoverDates.size - 1]))
+                }
                 val sendIntent: Intent = Intent().apply {
                     action = Intent.ACTION_SEND
                     flags = Intent.FLAG_ACTIVITY_NEW_TASK

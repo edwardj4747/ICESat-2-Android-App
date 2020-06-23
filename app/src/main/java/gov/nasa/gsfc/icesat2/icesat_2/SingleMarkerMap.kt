@@ -2,9 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.os.Bundle
 import android.util.Log
-import android.view.LayoutInflater
-import android.view.View
-import android.view.ViewGroup
+import android.view.*
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.navArgs
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -16,7 +14,7 @@ import com.google.android.gms.maps.model.MarkerOptions
 
 private const val TAG = "SingleMarkerMap"
 
-class SingleMarkerMap : Fragment(), OnMapReadyCallback {
+class SingleMarkerMap : Fragment(), IShare, OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     private val args by navArgs<SingleMarkerMapArgs>()
@@ -35,6 +33,8 @@ class SingleMarkerMap : Fragment(), OnMapReadyCallback {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+
+        setHasOptionsMenu(true)
 
         lat = args.lat.toDouble()
         long = args.long.toDouble()
@@ -60,6 +60,25 @@ class SingleMarkerMap : Fragment(), OnMapReadyCallback {
                 marker.showInfoWindow()
             }
         }
+    }
+
+    override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
+        inflater.inflate(R.menu.main_menu, menu)
+    }
+
+    override fun onOptionsItemSelected(item: MenuItem): Boolean {
+        when (item.itemId) {
+            R.id.menuShare -> {
+                Log.d(TAG, "menu share pressed")
+                //need a little more parsing of the title?
+                showShareScreen(mMap, requireActivity(), requireContext(), arrayListOf(title))
+            }
+            R.id.menuAddToCalendar -> {
+                Log.d(TAG, "add to calendar pressed")
+            }
+        }
+
+        return super.onOptionsItemSelected(item)
     }
 
 }
