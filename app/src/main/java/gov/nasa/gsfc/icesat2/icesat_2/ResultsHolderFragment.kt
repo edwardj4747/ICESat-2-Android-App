@@ -7,6 +7,7 @@ import android.view.ViewGroup
 import androidx.fragment.app.Fragment
 import androidx.navigation.fragment.findNavController
 import kotlinx.android.synthetic.main.fragment_results_holder.*
+import java.util.*
 
 /**
  * A simple [Fragment] subclass.
@@ -30,8 +31,8 @@ class ResultsHolderFragment : Fragment(), ILaunchSingleMarkerMap {
 
     }
 
-    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String) {
-        val params = ResultsHolderFragmentDirections.actionResultsHolderFragmentToSingleMarkerMap(lat.toFloat(), long.toFloat(), title)
+    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String, dateObjectTime: Long) {
+        val params = ResultsHolderFragmentDirections.actionResultsHolderFragmentToSingleMarkerMap(lat.toFloat(), long.toFloat(), title, dateObjectTime)
         this.findNavController().navigate(params)
     }
 

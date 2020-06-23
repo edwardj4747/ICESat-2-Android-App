@@ -88,7 +88,7 @@ class ListRecyclerViewAdapter(val context: Context, private val allPoints: Array
 
             holder.locationListLinearLayout.setOnClickListener {
                 Log.d(TAG, "list clicked at position $position")
-                listener.navigateToSingleMarkerMap(item.latitude, item.longitude, item.dateString)
+                listener.navigateToSingleMarkerMap(item.latitude, item.longitude, item.dateString, item.dateObject.time)
             }
         }
 
