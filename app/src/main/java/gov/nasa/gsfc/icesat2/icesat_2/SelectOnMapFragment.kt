@@ -34,7 +34,7 @@ private const val TAG = "SelectOnMapFragment"
  * Use the [SelectOnMapFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+class SelectOnMapFragment : Fragment(), IGeocoding, OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var chosenLocation: LatLng
@@ -124,7 +124,9 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
             }
             chosenLocation = clickLocation
             val markerOptions = MarkerOptions()
-            stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
+            //stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
+            //method in IGeocoding interface
+            stringLocation = getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
             val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
             marker = mMap.addMarker(markerOptions.position(clickLocation).title(stringLocation).snippet(truncatedLatLng))
             marker.showInfoWindow()
