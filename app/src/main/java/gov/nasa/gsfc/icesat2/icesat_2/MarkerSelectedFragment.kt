@@ -22,7 +22,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [MarkerSelectedFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MarkerSelectedFragment : Fragment() {
+class MarkerSelectedFragment : Fragment(), IGeocoding {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var selectedPoint: Point
@@ -125,7 +125,8 @@ class MarkerSelectedFragment : Fragment() {
         super.onStop()
 
         if (favoritesEntryToAdd != null) {
-            val geocodedString = Geocoding.getGeographicInfo(geocoder, selectedPoint.latitude, selectedPoint.longitude)
+            //val geocodedString = Geocoding.getGeographicInfo(geocoder, selectedPoint.latitude, selectedPoint.longitude)
+            val geocodedString = getGeographicInfo(geocoder, selectedPoint.latitude, selectedPoint.longitude)
             val addingFavorite = FavoritesEntry(selectedPoint.dateObject.time, selectedPoint.dateString, selectedPoint.latitude, selectedPoint.longitude, geocodedString)
             if (!entryInDatabase(addingFavorite)) {
                 Log.d(TAG, "entry is NOT in favorites. Adding it")
