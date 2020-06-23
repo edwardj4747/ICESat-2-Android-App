@@ -21,6 +21,7 @@ class SingleMarkerMap : Fragment(), IShareAndCalendar, OnMapReadyCallback {
     private lateinit var title: String
     private var lat = 0.0
     private var long = 0.0
+    private var dateObjectTime = 0L
     private var markerDisplayed = false
 
     override fun onCreateView(
@@ -39,6 +40,7 @@ class SingleMarkerMap : Fragment(), IShareAndCalendar, OnMapReadyCallback {
         lat = args.lat.toDouble()
         long = args.long.toDouble()
         title = args.title
+        dateObjectTime = args.dateObjectTime
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
@@ -75,6 +77,7 @@ class SingleMarkerMap : Fragment(), IShareAndCalendar, OnMapReadyCallback {
             }
             R.id.menuAddToCalendar -> {
                 Log.d(TAG, "add to calendar pressed")
+                addToCalendar(requireContext(), getString(R.string.icesatFlyover), dateObjectTime, lat, long)
             }
         }
 

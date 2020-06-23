@@ -17,14 +17,14 @@ private const val TAG = "IShare"
 
 interface IShareAndCalendar {
 
-    fun addToCalendar(context: Context, title: String, startTime: Date, lat: Double, long: Double) {
+    fun addToCalendar(context: Context, title: String, startTime: Long, lat: Double, long: Double) {
         val cityLocation = geocodeLocation(context, lat, long)
 
         val intent = Intent(Intent.ACTION_INSERT).apply {
             data = CalendarContract.Events.CONTENT_URI
             putExtra(CalendarContract.Events.TITLE, title)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.time)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime.time + 60 * 1000) //end time is one minute later
+            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime)
+            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime + 60 * 1000) //end time is one minute later
             putExtra(CalendarContract.Events.EVENT_LOCATION, cityLocation)
         }
         if (intent.resolveActivity(context.packageManager) != null) {

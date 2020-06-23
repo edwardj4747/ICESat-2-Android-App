@@ -335,7 +335,7 @@ GoogleMap.OnPolylineClickListener {
             Log.d(TAG, "markerTag is $markerTag; Point is ${pointList[markerTag]}")
             addToCalendar(requireContext(),
                 getString(R.string.icesatFlyover),
-                pointList[markerTag].dateObject,
+                pointList[markerTag].dateObject.time,
                 pointList[markerTag].latitude,
                 pointList[markerTag].longitude
             )
