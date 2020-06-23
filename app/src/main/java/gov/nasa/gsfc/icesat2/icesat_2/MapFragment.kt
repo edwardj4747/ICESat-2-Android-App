@@ -3,7 +3,6 @@ package gov.nasa.gsfc.icesat2.icesat_2
 import android.Manifest
 import android.content.Intent
 import android.content.pm.PackageManager
-import android.graphics.Bitmap
 import android.location.Geocoder
 import android.os.Bundle
 import android.provider.CalendarContract
@@ -11,7 +10,6 @@ import android.util.Log
 import android.view.*
 import android.widget.Toast
 import androidx.core.app.ActivityCompat
-import androidx.core.content.FileProvider
 import androidx.fragment.app.Fragment
 import androidx.fragment.app.FragmentManager
 import androidx.lifecycle.Observer
@@ -21,15 +19,13 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.io.File
-import java.io.FileOutputStream
 import java.util.*
 import kotlin.collections.ArrayList
 
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
+class MapFragment : Fragment(), IShare, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
 GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
@@ -355,56 +351,8 @@ GoogleMap.OnPolylineClickListener {
                 attemptToAddToCalendar()
             }
             R.id.menuShare -> {
-                //take screenshot + show share screen dialog
-                val screenshot: Bitmap? = null
-                mMap.snapshot { bitmap ->
-                    if (bitmap != null) {
-                        val file = File(requireActivity().externalCacheDir, "ICESat-2Flyover.png")
-                        val fileOutputStream = FileOutputStream(file)
-                        bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
-                        fileOutputStream.flush()
-                        fileOutputStream.close()
-
-                        val fileProviderUri = FileProvider.getUriForFile(requireContext(), requireContext().applicationContext.packageName
-                                + ".provider", file);
-                        //install.setDataAndType(apkURI, mimeType);
-                        //install.addFlags(Intent.FLAG_GRANT_READ_URI_PERMISSION);
-
-                        var searchString = MainActivity.getMainViewModel()?.searchString?.value
-                        if (searchString == "Your Location") {
-                            searchString = "our area"
-                        } else if (searchString == null) {
-                            searchString = ""
-                        }
-
-                        val datesOfOccurrence = flyoverDates.toString().substring(1, flyoverDates.toString().length - 1)
-                            .replaceAfterLast(",", getString(R.string.icesatShareLastDate, flyoverDates[flyoverDates.size - 1]))
-
-                        val sendIntent: Intent = Intent().apply {
-                            action = Intent.ACTION_SEND
-                            flags = Intent.FLAG_ACTIVITY_NEW_TASK
-                            flags = Intent.FLAG_GRANT_READ_URI_PERMISSION
-                            putExtra(Intent.EXTRA_SUBJECT, getString(R.string.icesatFlyover))
-                            putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare, searchString, datesOfOccurrence))
-                            putExtra(Intent.EXTRA_STREAM, fileProviderUri)
-                            type = "image/png"
-                        }
-
-
-                        Log.d(TAG, "search string is ${MainActivity.getMainViewModel()?.searchString?.value}")
-
-
-                        val shareIntent = Intent.createChooser(sendIntent, null)
-                        startActivity(shareIntent)
-                    }
-                    Log.d(TAG, "snapshot is ready method called. Map screenshot is $screenshot")
-                }
-
-                //val bitmap = Bitmap.createBitmap(mapFragmentConstraintLayout.drawToBitmap())
-                /*val myDrawable = imageView17.drawable
-                val bitmap = (myDrawable as BitmapDrawable).bitmap
-                val file = File(requireActivity().externalCacheDir, "myImage.png")
-                */
+                //method from IShare interface which shows the sharing dialog
+                showShareScreen(mMap, requireActivity(), requireContext(), flyoverDates)
             }
         }
         return super.onOptionsItemSelected(item)
