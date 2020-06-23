@@ -6,6 +6,7 @@ import android.content.Intent
 import android.graphics.Bitmap
 import android.provider.CalendarContract
 import android.util.Log
+import android.widget.Toast
 import androidx.core.content.FileProvider
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
@@ -73,7 +74,13 @@ interface IShareAndCalendar : IGeocoding {
 
 
                 val shareIntent = Intent.createChooser(sendIntent, null)
-                context.startActivity(shareIntent)
+
+
+                if (shareIntent.resolveActivity(context.packageManager) != null) {
+                    context.startActivity(shareIntent)
+                } else {
+                    Toast.makeText(context, "Error Occurred Please Try Again", Toast.LENGTH_SHORT).show()
+                }
             }
             Log.d(TAG, "snapshot is ready method called. Map screenshot is $screenshot")
         }
