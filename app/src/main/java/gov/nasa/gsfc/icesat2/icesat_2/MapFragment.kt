@@ -35,6 +35,7 @@ GoogleMap.OnPolylineClickListener {
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
     private val flyoverDates = ArrayList<String>()
+    private var markersPlotted = false //have the markers already been added to the map
 
 
     override fun onCreateView(
@@ -52,7 +53,6 @@ GoogleMap.OnPolylineClickListener {
         fm = childFragmentManager
 
 
-        Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
@@ -90,10 +90,11 @@ GoogleMap.OnPolylineClickListener {
         //use allPointsList instead of allPointsChain
         mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
-            Log.d(TAG, "allPointsList is observed")
+            Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
             pointList = it
-            if (this::mMap.isInitialized) {
+            if (this::mMap.isInitialized && !markersPlotted) {
                 Log.d(TAG, "Adding polylines from inside observer")
+                markersPlotted = true
                 addChainPolyline(it)
             }
         })
@@ -145,8 +146,9 @@ GoogleMap.OnPolylineClickListener {
             mMap.isMyLocationEnabled = true
         }
 
-        if (this::pointList.isInitialized) {
+        if (this::pointList.isInitialized && !markersPlotted) {
             Log.d(TAG, "Adding polylines inside onMapReady")
+            markersPlotted = true
             addChainPolyline(pointList)
         }
 
