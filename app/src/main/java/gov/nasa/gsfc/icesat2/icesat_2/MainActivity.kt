@@ -88,9 +88,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                if (destination.label == "Home" && searchFragmentDestination?.label == "Search Results" && previousDestination?.label != "Search Results") {
                     Log.d(TAG, "at search and searchFrag destination is Search Results")
                    launchMapNoAnimation(R.id.action_navigation_search_to_resultsHolderFragment)
-                }
-
-                if (destination.label == "Home" || destination.label == "Search Results") {
+                } else if (destination.label == "Home" || destination.label == "Search Results") {
+                    Log.d(TAG, "searchFrag: setting searchFrag destination")
                     searchFragmentDestination = destination
                 }
 
