@@ -87,7 +87,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
                if (destination.label == "Home" && searchFragmentDestination?.label == "Search Results" && previousDestination?.label != "Search Results") {
                     Log.d(TAG, "at search and searchFrag destination is Search Results")
-                   launchMapNoAnimation(R.id.action_navigation_search_to_resultsHolderFragment)
+                   launchMapNoAnimation()
                 } else if (destination.label == "Home" || destination.label == "Search Results") {
                     Log.d(TAG, "searchFrag: setting searchFrag destination")
                     searchFragmentDestination = destination
@@ -279,8 +279,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navController.navigate(navigationActionID)
     }
 
-    private fun launchMapNoAnimation(navigationActionID: Int) {
-        navController.navigate(navigationActionID, null, NavOptions.Builder().setEnterAnim(R.anim.blank_animation).setExitAnim(R.anim.blank_animation).build())
+    private fun launchMapNoAnimation() {
+        navController.navigate(R.id.action_navigation_search_to_resultsHolderFragment, null, NavOptions.Builder().setEnterAnim(R.anim.blank_animation).setExitAnim(R.anim.blank_animation)
+            .setPopEnterAnim(R.anim.slide_in_left).setPopExitAnim(R.anim.slide_out_right).build())
     }
 
 
