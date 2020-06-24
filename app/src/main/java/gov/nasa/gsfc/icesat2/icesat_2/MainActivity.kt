@@ -20,6 +20,7 @@ import androidx.core.app.ActivityCompat
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
+import androidx.navigation.NavDestination
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -44,6 +45,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private var gpsEnabled = false
     private lateinit var locationManager: LocationManager
     private var simpleSearch = true
+    private var currentDestination: NavDestination? = null
+    private var previousDestination: NavDestination? = null
+    private var searchFragmentDestination: NavDestination? = null
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -71,11 +75,32 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav_view.setupWithNavController(navController)
 
+        currentDestination = navController.currentDestination
+
+        navController.addOnDestinationChangedListener(object : NavController.OnDestinationChangedListener {
+            override fun onDestinationChanged(
+                controller: NavController, destination: NavDestination, arguments: Bundle?) {
+                //maintain track of where we were in the search
+                previousDestination = currentDestination
+                currentDestination = destination
+
+               if (destination.label == "Home" && searchFragmentDestination?.label == "Search Results" && previousDestination?.label != "Search Results") {
+                    Log.d(TAG, "at search and searchFrag destination is Search Results")
+                    launchMapOnMainThread(mainViewModel.searchCenter.value!!.latitude, mainViewModel.searchCenter.value!!.longitude,
+                        mainViewModel.searchRadius.value!!, R.id.action_navigation_search_to_resultsHolderFragment)
+                }
+
+                if (destination.label == "Home" || destination.label == "Search Results") {
+                    searchFragmentDestination = destination
+                }
+
+                Log.d(TAG, "searchFrag destination is ${searchFragmentDestination?.label} \n previous destination is ${previousDestination?.label}")
+            }
+        })
+
         navHostFragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
-
-
     }
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
