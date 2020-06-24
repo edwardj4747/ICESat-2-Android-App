@@ -27,6 +27,9 @@
         <action
             android:id="@+id/action_navigation_search_to_selectOnMapFragment"
             app:destination="@id/selectOnMapFragment" />
+        <action
+            android:id="@+id/action_navigation_search_to_satelliteTrackingFragment"
+            app:destination="@id/satelliteTrackingFragment" />
     </fragment>
 
     <fragment
@@ -120,4 +123,8 @@
             app:argType="string"
             android:defaultValue='""' />
     </fragment>
+    <fragment
+        android:id="@+id/satelliteTrackingFragment"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.SatelliteTrackingFragment"
+        android:label="SatelliteTrackingFragment" />
 </navigation>
