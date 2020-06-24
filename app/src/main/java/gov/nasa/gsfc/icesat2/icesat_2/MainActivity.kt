@@ -21,6 +21,7 @@ import androidx.fragment.app.Fragment
 import androidx.lifecycle.ViewModelProviders
 import androidx.navigation.NavController
 import androidx.navigation.NavDestination
+import androidx.navigation.NavOptions
 import androidx.navigation.findNavController
 import androidx.navigation.ui.AppBarConfiguration
 import androidx.navigation.ui.setupActionBarWithNavController
@@ -86,8 +87,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
                if (destination.label == "Home" && searchFragmentDestination?.label == "Search Results" && previousDestination?.label != "Search Results") {
                     Log.d(TAG, "at search and searchFrag destination is Search Results")
-                    launchMapOnMainThread(mainViewModel.searchCenter.value!!.latitude, mainViewModel.searchCenter.value!!.longitude,
-                        mainViewModel.searchRadius.value!!, R.id.action_navigation_search_to_resultsHolderFragment)
+                   launchMapNoAnimation(R.id.action_navigation_search_to_resultsHolderFragment)
                 }
 
                 if (destination.label == "Home" || destination.label == "Search Results") {
@@ -278,6 +278,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private fun showMap(navigationActionID: Int) {
         //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
         navController.navigate(navigationActionID)
+    }
+
+    private fun launchMapNoAnimation(navigationActionID: Int) {
+        navController.navigate(navigationActionID, null, NavOptions.Builder().setEnterAnim(R.anim.blank_animation).setExitAnim(R.anim.blank_animation).build())
     }
 
 
