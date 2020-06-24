@@ -68,7 +68,7 @@ class SearchFragment : Fragment() {
         setHasOptionsMenu(true)
 
         btnTrack.setOnClickListener {
-            Toast.makeText(requireContext(), "Hopefully able to show current location soon", Toast.LENGTH_SHORT).show()
+            listener.trackButtonPressed()
         }
 
         btnSearch.setOnClickListener {
