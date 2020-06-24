@@ -3,6 +3,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 import android.animation.Animator
 import android.animation.ObjectAnimator
 import android.animation.TypeEvaluator
+import android.graphics.BitmapFactory
 import android.os.Bundle
 import android.util.Log
 import android.util.Property
@@ -15,6 +16,7 @@ import com.google.android.gms.maps.CameraUpdateFactory
 import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
+import com.google.android.gms.maps.model.BitmapDescriptorFactory
 import com.google.android.gms.maps.model.LatLng
 import com.google.android.gms.maps.model.Marker
 import com.google.android.gms.maps.model.MarkerOptions
@@ -68,8 +70,9 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
     override fun onMapReady(p0: GoogleMap) {
         mMap = p0
 
-        satelliteMarker = mMap.addMarker(MarkerOptions().position(satellitePos[0]))
-
+        val iconBitmap = BitmapFactory.decodeResource(requireContext().resources, R.drawable.icesatc)
+        satelliteMarker = mMap.addMarker(MarkerOptions().position(satellitePos[0]).icon(
+            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(satellitePos[0], 8F))
         animateMarkerToICS(satelliteMarker, satellitePos[count])
 
