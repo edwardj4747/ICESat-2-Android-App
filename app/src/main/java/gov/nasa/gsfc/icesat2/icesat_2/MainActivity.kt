@@ -33,6 +33,7 @@ import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
+import java.net.URL
 
 const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
@@ -119,35 +120,40 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
          * otherwise display a dialog that no results were found
          */
         if (!currentlySearching) {
-            if (isNetworkConnected()) {
-                currentlySearching = true
-                CoroutineScope(Dispatchers.IO).launch {
-                    val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                        val downloadData = DownloadData()
-                        val result: Deferred<Boolean> = async {
-                            downloadData.startDownload(serverLocation)
+            try {
+                val url = URL(serverLocation)
+                if (isNetworkConnected()) {
+                    currentlySearching = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
+                            val downloadData = DownloadData(url)
+                            val result: Deferred<Boolean> = async {
+                                downloadData.startDownload(serverLocation)
+                            }
+                            searchResultsFound = result.await()
                         }
-                        searchResultsFound = result.await()
-                    }
 
-                    jobDownloadData.join()
+                        jobDownloadData.join()
 
-                    Log.d(TAG, "searchResultsFound = $searchResultsFound")
-                    if (searchResultsFound) {
-                        Log.d(TAG, "YAY!! Search results found")
-                        if (calledFromSelectOnMap) {
-                            launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
+                        Log.d(TAG, "searchResultsFound = $searchResultsFound")
+                        if (searchResultsFound) {
+                            Log.d(TAG, "YAY!! Search results found")
+                            if (calledFromSelectOnMap) {
+                                launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
+                            } else {
+                                launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                            }
                         } else {
-                            launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                            Log.d(TAG, "No Search results found")
+                            showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
                         }
-                    } else {
-                        Log.d(TAG, "No Search results found")
-                        showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+                        currentlySearching = false
                     }
-                    currentlySearching = false
+                } else {
+                    showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
                 }
-            } else {
-                showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
+            } catch (e: Exception) {
+                Log.d(TAG, "error in searching ${e.message}")
             }
         }
     }

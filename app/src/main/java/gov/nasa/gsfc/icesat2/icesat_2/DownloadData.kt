@@ -15,7 +15,7 @@ private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
 
-class DownloadData {
+class DownloadData(private val url: URL) {
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
@@ -38,7 +38,6 @@ class DownloadData {
         var resultsFound = false
         val job = CoroutineScope(Dispatchers.IO).launch {
             try {
-                val url = URL(string)
                 val jsonText = url.readText()
                 val jsonObject = JSONObject(jsonText)
 
