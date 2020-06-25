@@ -39,7 +39,7 @@ const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
 private const val LOCATION_REQUEST_CODE = 6
 
-class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
+class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadDataErrorCallback {
 
     private lateinit var navController: NavController
     private var currentlySearching = false //to make sure only one search is running at a time
@@ -105,12 +105,23 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
 
+
+
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
         Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
 
         var searchResultsFound = false
+
+
+        val u = URL(serverLocation)
+        val dd = DownloadData(u, this)
+        CoroutineScope(Dispatchers.IO).launch {
+            dd.startDownloadDataProcess()
+        }
+        return
+
 
         /**
          * If there is not a current search happening and user is connected to a network THEN
@@ -126,9 +137,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                     currentlySearching = true
                     CoroutineScope(Dispatchers.IO).launch {
                         val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                            val downloadData = DownloadData(url)
+                            val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
-                                downloadData.startDownload(serverLocation)
+                                downloadData.startDownload()
                             }
                             searchResultsFound = result.await()
                         }
@@ -155,6 +166,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             } catch (e: Exception) {
                 Log.d(TAG, "error in searching ${e.message}")
             }
+        }
+    }
+
+    override fun searchTimedOut() {
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.d(TAG, "MAIN ACTIVITY: Searched Time out")
+            showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
         }
     }
 

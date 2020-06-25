@@ -1,10 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.*
 import org.json.JSONObject
-import java.io.IOException
-import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -14,8 +13,11 @@ private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
+private const val JOB_TIMEOUT = 3000L
 
-class DownloadData(private val url: URL) {
+class DownloadData(private val url: URL, context: Context) {
+
+    private var listener: IDownloadDataErrorCallback = context as MainActivity
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
@@ -31,9 +33,24 @@ class DownloadData(private val url: URL) {
         }
     }
 
+    suspend fun startDownloadDataProcess() {
+        withContext(Dispatchers.IO) {
+
+            val job = withTimeoutOrNull(JOB_TIMEOUT) {
+                startDownload() // wait until job is done
+                Log.d(TAG, "download finished")
+            }
+
+            if(job == null){
+                val cancelMessage = "Cancelling startDownloadDataProcess. Exceeded $JOB_TIMEOUT ms"
+                listener.searchTimedOut()
+            }
+
+        }
+    }
 
     //return true if any points meet search criteria. False if no points meet criteria
-    suspend fun startDownload(string: String) : Boolean{
+    suspend fun startDownload(): Boolean{
         Log.d(TAG, "startDownload method begins")
         var resultsFound = false
         val job = CoroutineScope(Dispatchers.IO).launch {
@@ -103,12 +120,11 @@ class DownloadData(private val url: URL) {
                     //TODO: Handle these cases
                 }
 
-            } catch (e: MalformedURLException) {
-                Log.d(TAG, "Malformed URL Exception ${e.message}")
-            } catch (e: IOException) {
-                Log.d(TAG, "IO Exception ${e.message}")
+            /*} catch (e: IOException) {
+                Log.d(TAG, "IO Exception ${e.message}")*/
             } catch (e: Exception) {
                 Log.d(TAG, "Exception ${e.message}")
+                listener.searchTimedOut()
             }
         }
 
