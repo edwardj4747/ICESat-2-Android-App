@@ -112,6 +112,7 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="touchAndHold">Touch and hold to \nadd a location</string>
     <string name="locationSnackbar">Location Needs to be Enabled to use this Feature</string>
     <string name="grantAccess">Grant Access</string>
+    <string name="unknownLocation">Unknown Location</string>
 
 
     <!--    Favorites Fragment-->

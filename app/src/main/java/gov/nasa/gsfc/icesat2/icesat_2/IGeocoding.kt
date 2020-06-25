@@ -10,7 +10,11 @@ interface IGeocoding {
     fun getAddress(context: Context, lat: Double, long: Double) : String {
         val geocoder = Geocoder(context)
         val address = geocoder.getFromLocation(lat, long, 1)
-        return address[0].getAddressLine(0)
+        return try {
+            address[0].getAddressLine(0)
+        } catch (e: Exception) {
+            context.getString(R.string.unknownLocation)
+        }
     }
 
     fun getGeographicInfo(geocoder: Geocoder, lat: Double, long: Double): String {
