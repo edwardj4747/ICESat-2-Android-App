@@ -34,7 +34,7 @@ GoogleMap.OnPolylineClickListener {
     private var count = 0 //to access the point array based on the marker later
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
-    private val flyoverDates = ArrayList<String>()
+    private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
 
 
@@ -199,7 +199,7 @@ GoogleMap.OnPolylineClickListener {
             tag = tagValue
         })
         //add date to flyover date
-        flyoverDates.add(pointList[tagValue].date)
+        flyoverDatesAndTimes.add(String.format("%s (%.5s %s)", pointList[tagValue].date, pointList[tagValue].time, pointList[tagValue].ampm))
     }
 
     private fun addCircleRadius(radius: Double) {
@@ -325,7 +325,7 @@ GoogleMap.OnPolylineClickListener {
             }
             R.id.menuShare -> {
                 //method from IShare interface which shows the sharing dialog
-                showShareScreen(mMap, requireActivity(), requireContext(), flyoverDates)
+                showShareScreen(mMap, requireActivity(), requireContext(), flyoverDatesAndTimes)
             }
         }
         return super.onOptionsItemSelected(item)
