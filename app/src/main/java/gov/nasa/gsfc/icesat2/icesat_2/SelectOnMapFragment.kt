@@ -108,7 +108,7 @@ class SelectOnMapFragment : Fragment(), IGeocoding, OnMapReadyCallback, GoogleMa
             mMap.isMyLocationEnabled = true
             val fusedLocationProviderClient: FusedLocationProviderClient = LocationServices.getFusedLocationProviderClient(requireContext())
             fusedLocationProviderClient.lastLocation.addOnSuccessListener {
-                if (it != null) {
+                if (it != null && !this::marker.isInitialized) {
                     mMap.animateCamera(CameraUpdateFactory.newLatLngZoom(LatLng(it.latitude, it.longitude), 5F))
                 }
             }
