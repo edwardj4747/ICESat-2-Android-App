@@ -29,4 +29,10 @@ class MainViewModel : ViewModel() {
     fun getSearchRadius(): LiveData<Double> {
         return searchRadius
     }
+
+    val searchString = MutableLiveData<String>()
+
+    fun getSearchString(): LiveData<String> {
+        return searchString
+    }
 }

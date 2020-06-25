@@ -51,7 +51,7 @@ class FavoritesAdapter(
             Log.d(TAG, "data of point is ${allFavorites[holder.adapterPosition].dateString}")
 
             //callback inside of [FavoritesFragment] to launch going to the singleMarkerMap
-            listener.navigateToSingleMarkerMap(selectedFavorite.lat, selectedFavorite.lng, selectedFavorite.dateString)
+            listener.navigateToSingleMarkerMap(selectedFavorite.lat, selectedFavorite.lng, selectedFavorite.dateString, selectedFavorite.dateObjectTime)
         }
 
 

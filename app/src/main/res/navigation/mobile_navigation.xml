@@ -119,5 +119,7 @@
             android:name="title"
             app:argType="string"
             android:defaultValue='""' />
+        <argument android:name="dateObjectTime"
+            app:argType="long" />
     </fragment>
 </navigation>

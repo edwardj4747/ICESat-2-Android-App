@@ -34,7 +34,7 @@ private const val TAG = "SelectOnMapFragment"
  * Use the [SelectOnMapFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
+class SelectOnMapFragment : Fragment(), IGeocoding, OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var chosenLocation: LatLng
@@ -42,19 +42,8 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
     private lateinit var marker: Marker
     private lateinit var listener: ISearchFragmentCallback
     private var seekBarValue = 12.5 //used to store the radius of the search
+    private var stringLocation = ""
 
-    // TODO: Rename and change types of parameters
-    private var param1: String? = null
-    private var param2: String? = null
-
-    override fun onCreate(savedInstanceState: Bundle?) {
-        super.onCreate(savedInstanceState)
-        arguments?.let {
-            param1 = it.getString(ARG_PARAM1)
-            param2 = it.getString(ARG_PARAM2)
-        }
-        Log.d(TAG, "select on map fragment created")
-    }
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -104,28 +93,10 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
 
         btnSearch.setOnClickListener {
             listener.searchButtonPressed(chosenLocation.latitude, chosenLocation.longitude, seekBarValue, true)
+            MainActivity.getMainViewModel()?.searchString?.value = stringLocation
         }
     }
 
-    companion object {
-        /**
-         * Use this factory method to create a new instance of
-         * this fragment using the provided parameters.
-         *
-         * @param param1 Parameter 1.
-         * @param param2 Parameter 2.
-         * @return A new instance of fragment SelectOnMapFragment.
-         */
-        // TODO: Rename and change types and number of parameters
-        @JvmStatic
-        fun newInstance(param1: String, param2: String) =
-            SelectOnMapFragment().apply {
-                arguments = Bundle().apply {
-                    putString(ARG_PARAM1, param1)
-                    putString(ARG_PARAM2, param2)
-                }
-            }
-    }
 
     override fun onMapReady(p0: GoogleMap) {
         Log.d(TAG, "map ready")
@@ -153,7 +124,9 @@ class SelectOnMapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMapLongC
             }
             chosenLocation = clickLocation
             val markerOptions = MarkerOptions()
-            val stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
+            //stringLocation = Geocoding.getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
+            //method in IGeocoding interface
+            stringLocation = getAddress(requireContext(), clickLocation.latitude, clickLocation.longitude)
             val truncatedLatLng = String.format("%.2f, %.2f", clickLocation.latitude, clickLocation.longitude)
             marker = mMap.addMarker(markerOptions.position(clickLocation).title(stringLocation).snippet(truncatedLatLng))
             marker.showInfoWindow()

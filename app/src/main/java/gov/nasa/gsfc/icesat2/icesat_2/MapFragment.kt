@@ -1,11 +1,8 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.Manifest
-import android.content.Intent
 import android.content.pm.PackageManager
-import android.location.Geocoder
 import android.os.Bundle
-import android.provider.CalendarContract
 import android.util.Log
 import android.view.*
 import android.widget.Toast
@@ -19,13 +16,11 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
-import java.util.*
-import kotlin.collections.ArrayList
 
 
 private const val TAG = "MapFragment"
 
-class MapFragment : Fragment(), OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
+class MapFragment : Fragment(), IShareAndCalendar, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
 GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
@@ -39,6 +34,8 @@ GoogleMap.OnPolylineClickListener {
     private var count = 0 //to access the point array based on the marker later
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
+    private val flyoverDatesAndTimes = ArrayList<String>()
+    private var markersPlotted = false //have the markers already been added to the map
 
 
     override fun onCreateView(
@@ -56,7 +53,6 @@ GoogleMap.OnPolylineClickListener {
         fm = childFragmentManager
 
 
-        Log.d(TAG, "onActivityCreated. Fragment being replaced")
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
@@ -94,10 +90,11 @@ GoogleMap.OnPolylineClickListener {
         //use allPointsList instead of allPointsChain
         mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
-            Log.d(TAG, "allPointsList is observed")
+            Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
             pointList = it
-            if (this::mMap.isInitialized) {
+            if (this::mMap.isInitialized && !markersPlotted) {
                 Log.d(TAG, "Adding polylines from inside observer")
+                markersPlotted = true
                 addChainPolyline(it)
             }
         })
@@ -149,8 +146,9 @@ GoogleMap.OnPolylineClickListener {
             mMap.isMyLocationEnabled = true
         }
 
-        if (this::pointList.isInitialized) {
+        if (this::pointList.isInitialized && !markersPlotted) {
             Log.d(TAG, "Adding polylines inside onMapReady")
+            markersPlotted = true
             addChainPolyline(pointList)
         }
 
@@ -200,6 +198,8 @@ GoogleMap.OnPolylineClickListener {
             isClickable = true
             tag = tagValue
         })
+        //add date to flyover date
+        flyoverDatesAndTimes.add(String.format("%s (%.5s %s)", pointList[tagValue].date, pointList[tagValue].time, pointList[tagValue].ampm))
     }
 
     private fun addCircleRadius(radius: Double) {
@@ -310,33 +310,9 @@ GoogleMap.OnPolylineClickListener {
      }*/
 
 
-    private fun addToCalendar(title: String, startTime: Date, lat: Double, long: Double) {
-        val cityLocation = geocodeLocation(lat, long)
 
-        val intent = Intent(Intent.ACTION_INSERT).apply {
-            data = CalendarContract.Events.CONTENT_URI
-            putExtra(CalendarContract.Events.TITLE, title)
-            putExtra(CalendarContract.EXTRA_EVENT_BEGIN_TIME, startTime.time)
-            putExtra(CalendarContract.EXTRA_EVENT_END_TIME, startTime.time + 60 * 1000) //end time is one minute later
-            putExtra(CalendarContract.Events.EVENT_LOCATION, cityLocation)
-        }
-        if (intent.resolveActivity(requireContext().packageManager) != null) {
-            startActivity(intent)
-        }
-    }
 
-    private fun geocodeLocation(lat: Double, long: Double) : String {
-        Log.d(TAG, "geocode location starts")
-        val geocoder = Geocoder(requireContext())
-        val address = geocoder.getFromLocation(lat, long, 1)
-        //Log.d(TAG, "adress is $address")
-        Log.d(TAG, "address line ${address[0].getAddressLine(0)}")
-       /* Log.d(TAG, "address line ${address[0].getAddressLine(1)}")
-        Log.d(TAG, "address line ${address[0].getAddressLine(2)}")
-        Log.d(TAG, "address line ${address[0].getAddressLine(3)}")*/
-        Log.d(TAG, "admin area is ${address[0].adminArea}")
-        return address[0].getAddressLine(0)
-    }
+
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
@@ -348,15 +324,8 @@ GoogleMap.OnPolylineClickListener {
                 attemptToAddToCalendar()
             }
             R.id.menuShare -> {
-                Log.d(TAG, "share button clicked")
-                val sendIntent: Intent = Intent().apply {
-                    action = Intent.ACTION_SEND
-                    putExtra(Intent.EXTRA_TEXT, getString(R.string.icesatShare))
-                    type = "text/plain"
-                }
-
-                val shareIntent = Intent.createChooser(sendIntent, null)
-                startActivity(shareIntent)
+                //method from IShare interface which shows the sharing dialog
+                showShareScreen(mMap, requireActivity(), requireContext(), flyoverDatesAndTimes)
             }
         }
         return super.onOptionsItemSelected(item)
@@ -366,9 +335,9 @@ GoogleMap.OnPolylineClickListener {
         if (marker != null) {
             val markerTag = marker?.tag as Int
             Log.d(TAG, "markerTag is $markerTag; Point is ${pointList[markerTag]}")
-            addToCalendar(
+            addToCalendar(requireContext(),
                 getString(R.string.icesatFlyover),
-                pointList[markerTag].dateObject,
+                pointList[markerTag].dateObject.time,
                 pointList[markerTag].latitude,
                 pointList[markerTag].longitude
             )

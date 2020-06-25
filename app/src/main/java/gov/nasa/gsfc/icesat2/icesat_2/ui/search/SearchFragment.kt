@@ -227,6 +227,8 @@ class SearchFragment : Fragment() {
         setAddressTextView()
     }
 
+    fun getAddressValue(): String? = address
+
     //return null if there is an error with one of the inputs. Otherwise return array of {lat, lng, radius}
     //NOTE RADIUS can be entered in kilometers but will be converted immediately into miles to make for seamless use
     private fun allInputsValid(): DoubleArray? {

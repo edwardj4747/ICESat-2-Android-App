@@ -58,7 +58,7 @@ class ListFragment : Fragment(), ILaunchSingleMarkerMap {
         this.listener = listener
     }
 
-    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String) {
-        listener.navigateToSingleMarkerMap(lat, long, title)
+    override fun navigateToSingleMarkerMap(lat: Double, long: Double, title: String, dateObjectTime: Long) {
+        listener.navigateToSingleMarkerMap(lat, long, title, dateObjectTime)
     }
 }
