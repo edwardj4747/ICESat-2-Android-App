@@ -4,14 +4,18 @@ import android.app.Activity
 import android.content.Context
 import android.content.Intent
 import android.graphics.Bitmap
+import android.graphics.BitmapFactory
+import android.graphics.Canvas
 import android.provider.CalendarContract
 import android.util.Log
 import android.widget.Toast
+import androidx.core.content.ContextCompat
 import androidx.core.content.FileProvider
 import com.google.android.gms.maps.GoogleMap
 import java.io.File
 import java.io.FileOutputStream
 import java.util.*
+import kotlin.math.max
 
 private const val TAG = "IShare"
 
@@ -34,12 +38,33 @@ interface IShareAndCalendar : IGeocoding {
 
     fun showShareScreen(mMap: GoogleMap, activity: Activity, context: Context, flyoverDates: ArrayList<String>) {
         //take screenshot + show share screen dialog
+
+        /*val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.white_logo)
+        val logoDrawable = if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
+            context.resources.getDrawable(R.drawable.white_logo, null)
+        } else {
+            null
+        }
+        val canvas = Canvas()
+        logoDrawable?.draw(canvas)*/
+
+
         val screenshot: Bitmap? = null
-        mMap.snapshot { bitmap ->
-            if (bitmap != null) {
+        mMap.snapshot { mapBitmap ->
+            if (mapBitmap != null) {
+
+               /* val mapDrawable = BitmapDrawable(context.resources, mapBitmap)
+                mapDrawable.draw(canvas)*/
+
+                val combinedBitmap = addLogoToBitmap(context, mapBitmap)
+
+
+
+
                 val file = File(activity.externalCacheDir, "ICESat-2Flyover.png")
                 val fileOutputStream = FileOutputStream(file)
-                bitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
+                //mapBitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
+                combinedBitmap.compress(Bitmap.CompressFormat.PNG, 80, fileOutputStream)
                 fileOutputStream.flush()
                 fileOutputStream.close()
 
@@ -84,5 +109,56 @@ interface IShareAndCalendar : IGeocoding {
             }
             Log.d(TAG, "snapshot is ready method called. Map screenshot is $screenshot")
         }
+    }
+
+    private fun addLogoToBitmap(context: Context, mapBitmap: Bitmap) : Bitmap {
+
+        //determine height of the screen in pixels
+        val displayMetrics = context.resources.displayMetrics
+        Log.d(TAG, "displaymetrics height is ${displayMetrics.heightPixels}")
+
+        val displayHeight = displayMetrics.heightPixels * 0.1F
+        val paddingValue = displayHeight * 0.1F
+
+        Log.d(TAG, "displayHeight is $displayHeight is padding value is $paddingValue")
+
+
+        //val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.white_logo)
+        //val logoBitmap = scaleLogoBitmap(context, mapBitmap.width, paddingValue.toInt())
+        val logoBitmap = scaleLogoBitmap(context, displayHeight.toInt(), paddingValue.toInt())
+
+        /*val mutableLogoBitmap = logoBitmap.copy(logoBitmap.config, true)
+        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.KITKAT) {
+            mutableLogoBitmap.width = mapBitmap.width
+            //mutableLogoBitmap.height = mutableLogoBitmap.width / (mutableLogoBitmap.width / mutableLogoBitmap.height)
+            mutableLogoBitmap.height = 100
+        }*/
+
+        val resultBitmap = Bitmap.createBitmap(max(logoBitmap.width, mapBitmap.width), logoBitmap.height + mapBitmap.height, mapBitmap.config)
+
+        val canvas = Canvas(resultBitmap)
+        canvas.drawColor(ContextCompat.getColor(context, R.color.backgroundColor))
+        val leftOffset = (canvas.width - logoBitmap.width) / 2F
+        canvas.drawBitmap(logoBitmap, leftOffset, paddingValue, null)
+        canvas.drawBitmap(mapBitmap, 0F, logoBitmap.height.toFloat() + paddingValue, null)
+        logoBitmap.recycle()
+        logoBitmap.recycle()
+
+        return resultBitmap
+    }
+
+    private fun scaleLogoBitmap(context: Context, maxSize: Int, paddingValue: Int) : Bitmap {
+        val logoBitmap = BitmapFactory.decodeResource(context.resources, R.drawable.white_logo)
+        var width: Int = logoBitmap.width
+        var height: Int = logoBitmap.height
+
+
+        val bitmapRatio = width.toFloat() / height.toFloat()
+
+            height = maxSize
+            width = (height * bitmapRatio).toInt()
+            //height = (width / bitmapRatio).toInt()
+
+        return Bitmap.createScaledBitmap(logoBitmap, width - 2 * paddingValue, height - 2 * paddingValue, true)
     }
 }
