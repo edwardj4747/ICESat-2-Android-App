@@ -13,7 +13,7 @@ private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
-private const val JOB_TIMEOUT = 3000L
+private const val JOB_TIMEOUT = 5000L
 
 class DownloadData(private val url: URL, context: Context) {
 
@@ -33,20 +33,21 @@ class DownloadData(private val url: URL, context: Context) {
         }
     }
 
-    suspend fun startDownloadDataProcess() {
+    suspend fun startDownloadDataProcess() : Boolean{
+        var result = false
         withContext(Dispatchers.IO) {
-
             val job = withTimeoutOrNull(JOB_TIMEOUT) {
-                startDownload() // wait until job is done
+                result = startDownload() // wait until job is done
                 Log.d(TAG, "download finished")
             }
 
             if(job == null){
-                val cancelMessage = "Cancelling startDownloadDataProcess. Exceeded $JOB_TIMEOUT ms"
                 listener.searchTimedOut()
             }
 
         }
+        Log.d(TAG, "start download process result is $result")
+        return result
     }
 
     //return true if any points meet search criteria. False if no points meet criteria
