@@ -115,12 +115,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         var searchResultsFound = false
 
 
-        val u = URL(serverLocation)
+        /*val u = URL(serverLocation)
         val dd = DownloadData(u, this)
         CoroutineScope(Dispatchers.IO).launch {
             dd.startDownloadDataProcess()
-        }
-        return
+        }*/
 
 
         /**
@@ -139,7 +138,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                         val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                             val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
-                                downloadData.startDownload()
+                                //downloadData.startDownload()
+                                downloadData.startDownloadDataProcess()
                             }
                             searchResultsFound = result.await()
                         }
@@ -156,7 +156,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             }
                         } else {
                             Log.d(TAG, "No Search results found")
-                            showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+                            //showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
                         }
                         currentlySearching = false
                     }
@@ -173,6 +173,23 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         CoroutineScope(Dispatchers.Main).launch {
             Log.d(TAG, "MAIN ACTIVITY: Searched Time out")
             showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
+        }
+    }
+
+    override fun noResultsFound() {
+        CoroutineScope(Dispatchers.Main).launch {
+            showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+        }
+    }
+
+    override fun showSearchFeedback(reason: String) {
+        CoroutineScope(Dispatchers.Main).launch {
+            Log.d(TAG, "show search feedback called with reason $reason")
+            if (reason == "timedOut") {
+                showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
+            } else if (reason == "No Results") {
+                showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+            }
         }
     }
 

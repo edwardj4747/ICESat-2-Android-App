@@ -13,10 +13,11 @@ private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
-private const val JOB_TIMEOUT = 5000L
+private const val JOB_TIMEOUT = 10L
 
 class DownloadData(private val url: URL, context: Context) {
 
+    private lateinit var mainSearchJob: Job
     private var listener: IDownloadDataErrorCallback = context as MainActivity
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
@@ -42,7 +43,10 @@ class DownloadData(private val url: URL, context: Context) {
             }
 
             if(job == null){
-                listener.searchTimedOut()
+                Log.d(TAG, "Canceling search job")
+                mainSearchJob.cancel()
+                listener.showSearchFeedback("timedOut")
+                //listener.searchTimedOut()
             }
 
         }
@@ -54,7 +58,7 @@ class DownloadData(private val url: URL, context: Context) {
     suspend fun startDownload(): Boolean{
         Log.d(TAG, "startDownload method begins")
         var resultsFound = false
-        val job = CoroutineScope(Dispatchers.IO).launch {
+        mainSearchJob = CoroutineScope(Dispatchers.IO).launch {
             try {
                 val jsonText = url.readText()
                 val jsonObject = JSONObject(jsonText)
@@ -114,6 +118,8 @@ class DownloadData(private val url: URL, context: Context) {
                     } else {
                         //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
                         mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
+                        //listener.noResultsFound()
+                        listener.showSearchFeedback("No Results")
                         resultsFound = false
                     }
                 } else {
@@ -125,11 +131,11 @@ class DownloadData(private val url: URL, context: Context) {
                 Log.d(TAG, "IO Exception ${e.message}")*/
             } catch (e: Exception) {
                 Log.d(TAG, "Exception ${e.message}")
-                listener.searchTimedOut()
+                //listener.searchTimedOut()
             }
         }
 
-        job.join()
+        mainSearchJob.join()
         Log.d(TAG, "startDownload method ends. returning $resultsFound")
         return resultsFound
     }
