@@ -319,6 +319,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         return super.onOptionsItemSelected(item)
     }
 
+    override fun trackButtonPressed() {
+        Log.d(TAG, "Track button pressed")
+    }
 
 
 }

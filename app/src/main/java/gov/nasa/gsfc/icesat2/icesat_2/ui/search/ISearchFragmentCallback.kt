@@ -6,4 +6,6 @@ interface ISearchFragmentCallback {
     fun useCurrentLocationButtonPressed(simpleSearch: Boolean)
 
     fun selectOnMapButtonPressed()
+
+    fun trackButtonPressed()
 }
