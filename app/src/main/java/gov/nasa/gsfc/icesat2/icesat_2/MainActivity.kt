@@ -33,6 +33,7 @@ import gov.nasa.gsfc.icesat2.icesat_2.ui.search.SearchFragment
 import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
+import java.net.URL
 
 const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
@@ -321,6 +322,23 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun trackButtonPressed() {
         Log.d(TAG, "Track button pressed")
+        val downloadData = DownloadData()
+        val currentTimeInMillis = System.currentTimeMillis()
+        //val downloadLink = "http://localhost:8081/find?time=$currentTimeInMillis"
+        val downloadLink = "http://helloworld-env.eba-tdbsm27u.us-east-1.elasticbeanstalk.com/"
+        Log.d(TAG, "downloadlink is $downloadLink")
+        try {
+            val url = URL(downloadLink)
+            CoroutineScope(Dispatchers.IO).launch {
+                val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
+                    downloadData.downloadTrackingData(url)
+                }
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "url exception ${e.message}")
+        }
+
+
     }
 
 

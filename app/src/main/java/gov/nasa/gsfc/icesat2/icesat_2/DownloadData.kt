@@ -167,4 +167,16 @@ class DownloadData {
 
         return splitByDateArrayList
     }
+
+
+    fun downloadTrackingData(url: URL) {
+        Log.d(TAG, "downloadTracking data Starts")
+
+        try {
+            val data = url.readText()
+            Log.d(TAG, "Data is $data")
+        } catch (e: java.lang.Exception) {
+            Log.d(TAG, "Downloading Tracking data exception ${e.message}")
+        }
+    }
 }
