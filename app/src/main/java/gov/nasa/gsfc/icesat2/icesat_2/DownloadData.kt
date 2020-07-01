@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.util.Log
 import kotlinx.coroutines.*
+import org.json.JSONArray
 import org.json.JSONObject
 import java.io.IOException
 import java.net.MalformedURLException
@@ -169,14 +170,29 @@ class DownloadData {
     }
 
 
-    fun downloadTrackingData(url: URL) {
+    fun downloadTrackingData(url: URL) : ArrayList<TrackingPoint> {
         Log.d(TAG, "downloadTracking data Starts")
-
+        val trackingData = ArrayList<TrackingPoint>()
         try {
             val data = url.readText()
             Log.d(TAG, "Data is $data")
+
+            val jsonArray = JSONArray(data)
+            Log.d(TAG, "size is ${jsonArray.length()}")
+            for (i in 0 until jsonArray.length()) {
+                val currentObj = jsonArray.getJSONObject(i)
+                val timeInMillis = currentObj.getLong("timeInMillis")
+                val lat = currentObj.getDouble("lat")
+                val lon = currentObj.getDouble("lon")
+                val description = currentObj.getString("dateString")
+                trackingData.add(TrackingPoint(timeInMillis, lat, lon, description))
+            }
+            Log.d(TAG, "trackingData \n $trackingData")
         } catch (e: java.lang.Exception) {
             Log.d(TAG, "Downloading Tracking data exception ${e.message}")
         }
+        return trackingData
     }
 }
+
+data class TrackingPoint(val timeInMillis:Long, val lat: Double, val long: Double, val description: String) {}
