@@ -18,6 +18,8 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_satellite_tracking.*
+import kotlinx.coroutines.*
+import java.net.URL
 
 private const val TAG = "SatelliteTrackingFrag"
 
@@ -64,11 +66,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
     override fun onMapReady(p0: GoogleMap) {
         mMap = p0
 
-        val polylineOptions = PolylineOptions().geodesic(true)
-        for (element in satellitePos) {
-            polylineOptions.add(LatLng(element.lat, element.long))
-        }
-        mMap.addPolyline(polylineOptions)
+        drawSatellitePosPolyline()
 
         val currentTimeInMillis = System.currentTimeMillis()
         Log.d(TAG, "===================")
@@ -92,6 +90,16 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
 
         animateMarkerToICS(satelliteMarker, count, durationForFirstSegment.toLong())
 
+    }
+
+    private fun drawSatellitePosPolyline(dummyArr: ArrayList<TrackingPoint> = ArrayList()) {
+        CoroutineScope(Dispatchers.Main).launch {
+            val polylineOptions = PolylineOptions().geodesic(true)
+            for (element in satellitePos) {
+                polylineOptions.add(LatLng(element.lat, element.long))
+            }
+            mMap.addPolyline(polylineOptions)
+        }
     }
 
     /**
@@ -148,6 +156,38 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
                     //val newPosition = LatLng(satellitePos[count].lat, satellitePos[count].long)
                     Log.d(TAG, "animation ends count is now $count")
                     animateMarkerToICS(satelliteMarker, count, calculateTimeIncrement(count))
+
+                    if (count > satellitePos.size - 3) {
+                        Log.d(TAG, "Starting Download of newData")
+                        val downloadData = DownloadData()
+                        val currentTimeInMillis = System.currentTimeMillis()
+                        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis"
+                        try {
+                            val url = URL(downloadLink)
+                            CoroutineScope(Dispatchers.IO).launch {
+                                val newData: Deferred<ArrayList<TrackingPoint>> = async {
+                                    downloadData.downloadTrackingData(url)
+                                }
+                                if (newData.await().isNotEmpty()) {
+                                    Log.d(TAG, "Adding more data to satelliteTrack")
+                                    //this will probably return a few entries, so we need to check and remove the duplicates
+
+                                    newData.await()
+                                    //extend polyline too
+                                    Log.d(TAG, "Before adding new Points $satellitePos")
+                                    for (i in 2 until newData.await().size) {
+                                        satellitePos.add(newData.await()[i])
+                                    }
+                                    Log.d(TAG, "after adding new points $satellitePos")
+                                    Log.d(TAG, "new size of satellitePos = ${satellitePos.size}")
+                                    Log.d(TAG, "New Data added is ${newData.await()}")
+                                    drawSatellitePosPolyline(newData.await())
+                                }
+                            }
+                        } catch (e: Exception) {
+                            Log.d(TAG, "Exception trying to download more data")
+                        }
+                    }
                 } else {
                     Log.d(TAG, "all trackingData has been animated and shown")
                 }
