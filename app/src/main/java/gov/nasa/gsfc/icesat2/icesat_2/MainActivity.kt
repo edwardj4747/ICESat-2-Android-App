@@ -324,8 +324,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "Track button pressed")
         val downloadData = DownloadData()
         val currentTimeInMillis = System.currentTimeMillis()
-        //val downloadLink = "http://localhost:8081/find?time=$currentTimeInMillis"
-        val downloadLink = "http://helloworld-env.eba-tdbsm27u.us-east-1.elasticbeanstalk.com/"
+        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis"
         Log.d(TAG, "downloadlink is $downloadLink")
         try {
             val url = URL(downloadLink)
