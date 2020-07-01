@@ -35,4 +35,10 @@ class MainViewModel : ViewModel() {
     fun getSearchString(): LiveData<String> {
         return searchString
     }
+
+    var trackingData = MutableLiveData<ArrayList<TrackingPoint>>()
+
+    fun getTrackingData(): LiveData<ArrayList<TrackingPoint>> {
+        return trackingData
+    }
 }

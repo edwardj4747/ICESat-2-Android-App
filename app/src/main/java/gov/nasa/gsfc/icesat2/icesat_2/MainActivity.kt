@@ -336,7 +336,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                     }
                     if (trackingData.await().isNotEmpty()) {
                         Log.d(TAG, "Tracking data is NOT emmpty")
-                        navigateToSatelitteTracking()
+                        navigateToSatelitteTracking(trackingData.await())
                     }
                 }
             }
@@ -346,8 +346,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "track button pressed ends")
     }
 
-    private fun navigateToSatelitteTracking() {
+    private fun navigateToSatelitteTracking(trackingData: ArrayList<TrackingPoint>) {
         CoroutineScope(Dispatchers.Main).launch {
+            mainViewModel.trackingData.value = trackingData
+            Log.d(TAG, "Posted Tracking data to view model")
             navController.navigate(R.id.action_navigation_search_to_satelliteTrackingFragment)
         }
     }
