@@ -331,16 +331,25 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
             val url = URL(downloadLink)
             CoroutineScope(Dispatchers.IO).launch {
                 val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                    downloadData.downloadTrackingData(url)
+                    val trackingData: Deferred<ArrayList<TrackingPoint>> = async {
+                        downloadData.downloadTrackingData(url)
+                    }
+                    if (trackingData.await().isNotEmpty()) {
+                        Log.d(TAG, "Tracking data is NOT emmpty")
+                        navigateToSatelitteTracking()
+                    }
                 }
             }
         } catch (e: Exception) {
             Log.d(TAG, "url exception ${e.message}")
         }
-
-
+        Log.d(TAG, "track button pressed ends")
     }
 
-
+    private fun navigateToSatelitteTracking() {
+        CoroutineScope(Dispatchers.Main).launch {
+            navController.navigate(R.id.action_navigation_search_to_satelliteTrackingFragment)
+        }
+    }
 
 }
