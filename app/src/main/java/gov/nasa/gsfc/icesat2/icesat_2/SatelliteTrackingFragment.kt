@@ -17,27 +17,13 @@ import com.google.android.gms.maps.GoogleMap
 import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
-
-interface LatLngInterpolator {
-    fun interpolate(fraction: Float, a: LatLng, b: LatLng): LatLng {
-        val lat = (b.latitude - a.latitude) * fraction + a.latitude
-        var lngDelta = b.longitude - a.longitude
-
-        // Take the shortest path across the 180th meridian.
-        if (Math.abs(lngDelta) > 180) {
-            lngDelta -= Math.signum(lngDelta) * 360
-        }
-        val lng = lngDelta * fraction + a.longitude
-        return LatLng(lat, lng)
-    }
-
-}
+import kotlinx.android.synthetic.main.fragment_satellite_tracking.*
 
 private const val TAG = "SatelliteTrackingFrag"
 
 private const val ZOOM_LEVEL = 1F
 
-class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpolator {
+class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
 
     private lateinit var mMap: GoogleMap
     //one point every five seconds
@@ -102,6 +88,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
         satelliteMarker = mMap.addMarker(MarkerOptions().position(startingPosition).icon(
             BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPosition, ZOOM_LEVEL))
+
         animateMarkerToICS(satelliteMarker, count, durationForFirstSegment.toLong())
 
     }
@@ -153,6 +140,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
             override fun onAnimationStart(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
+                Log.d(TAG, "reached ${satellitePos[count + 1].lat}, ${satellitePos[count + 1].long} at ${System.currentTimeMillis()}. diff is ${System.currentTimeMillis() - satellitePos[count + 1].timeInMillis}")
                 if (continueAnimating && count + 2 < satellitePos.size) {
                     //move the camera
                     count++
@@ -169,6 +157,19 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
 
     private fun calculateTimeIncrement(startingIndex: Int): Long {
         return satellitePos[count + 1].timeInMillis - satellitePos[startingIndex].timeInMillis
+    }
+
+    fun interpolate(fraction: Float, a: LatLng, b: LatLng): LatLng {
+        val lat = (b.latitude - a.latitude) * fraction + a.latitude
+        var lngDelta = b.longitude - a.longitude
+
+        // Take the shortest path across the 180th meridian.
+        if (Math.abs(lngDelta) > 180) {
+            lngDelta -= Math.signum(lngDelta) * 360
+        }
+        val lng = lngDelta * fraction + a.longitude
+        textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
+        return LatLng(lat, lng)
     }
 
     override fun onStop() {
