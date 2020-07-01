@@ -27,6 +27,13 @@
         <action
             android:id="@+id/action_navigation_search_to_selectOnMapFragment"
             app:destination="@id/selectOnMapFragment" />
+        <action
+            android:id="@+id/action_navigation_search_to_satelliteTrackingFragment"
+            app:destination="@id/satelliteTrackingFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
 
     <fragment
@@ -122,4 +129,8 @@
         <argument android:name="dateObjectTime"
             app:argType="long" />
     </fragment>
+    <fragment
+        android:id="@+id/satelliteTrackingFragment"
+        android:name="gov.nasa.gsfc.icesat2.icesat_2.SatelliteTrackingFragment"
+        android:label="SatelliteTrackingFragment" />
 </navigation>

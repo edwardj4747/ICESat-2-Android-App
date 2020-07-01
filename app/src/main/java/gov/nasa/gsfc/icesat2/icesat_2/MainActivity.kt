@@ -321,6 +321,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     }
 
     override fun trackButtonPressed() {
+
         Log.d(TAG, "Track button pressed")
         val downloadData = DownloadData()
         val currentTimeInMillis = System.currentTimeMillis()
@@ -339,6 +340,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
 
     }
+
 
 
 }
