@@ -47,7 +47,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
     private val timeIncrement = 5000L
     private lateinit var satelliteMarker: Marker
     private var continueAnimating = true
-    private var count = 1
+    private var count = 0
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -83,19 +83,57 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
         }
         mMap.addPolyline(polylineOptions)
 
+        val currentTimeInMillis = System.currentTimeMillis()
+        Log.d(TAG, "===================")
+        Log.d(TAG, "start: ${satellitePos[0].timeInMillis}")
+        Log.d(TAG, "curr : $currentTimeInMillis")
+        Log.d(TAG, "end 1: ${satellitePos[1].timeInMillis}")
+        Log.d(TAG, "===================")
 
+        //LatLng and Double are the only types that will ever be put in the array, so casts are safe
+        val calculatePositionArray = calculateStartingPosition()
+        val startingPosition = calculatePositionArray[0] as LatLng
+        val percentage = calculatePositionArray[1] as Double
 
-        val startingPosition = LatLng(satellitePos[0].lat, satellitePos[0].long)
+        val durationForFirstSegment = calculateTimeIncrement(0) * (1 - percentage)
+        Log.d(TAG, "duration for first segment is ${durationForFirstSegment.toLong()}")
+
+        //val startingPosition = LatLng(satellitePos[0].lat, satellitePos[0].long)
         satelliteMarker = mMap.addMarker(MarkerOptions().position(startingPosition).icon(
             BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPosition, ZOOM_LEVEL))
-        animateMarkerToICS(satelliteMarker, count)
+        animateMarkerToICS(satelliteMarker, count, durationForFirstSegment.toLong())
 
     }
 
-    private fun animateMarkerToICS(marker: Marker, finalMarkerCount: Int) {
-        val finalPosition = LatLng(satellitePos[finalMarkerCount].lat, satellitePos[finalMarkerCount].long)
+    /**
+     * @return an array of (LatLng, percentage) where LatLng is the starting LatLng and percentage is
+     * an approximation of how much of the distance between the the first LatLng (before now) and the
+     * second LatLng(after now) the satelitte has covered
+     */
+    private fun calculateStartingPosition() : Array<Any> {
+        val currentTimeInMillis = System.currentTimeMillis()
+        val numerator = currentTimeInMillis - satellitePos[0].timeInMillis
+        val denominator = satellitePos[1].timeInMillis - satellitePos[0].timeInMillis
+        val percentage = (numerator.toDouble() / denominator).toDouble()
+        Log.d(TAG, "num $numerator denom $denominator percentage is $percentage")
 
+        val dlat = satellitePos[1].lat - satellitePos[0].lat
+        val dlong = satellitePos[1].long - satellitePos[0].long
+
+        val startLat = satellitePos[0].lat + percentage * dlat
+        val startLong = satellitePos[0].long + percentage * dlong
+        Log.d(TAG, "dlat $dlat; dlong $dlong")
+        Log.d(TAG, "beginLat ${satellitePos[0].lat} endLat ${satellitePos[1].lat}, resLat $startLat")
+        Log.d(TAG, "beginLong ${satellitePos[0].long} endlong ${satellitePos[1].long}, resLat $startLong")
+
+        //TODO: check for when crosses over from -88 to 88 or 180 degrees
+        return arrayOf(LatLng(startLat, startLong), percentage)
+    }
+
+    private fun animateMarkerToICS(marker: Marker, finalMarkerCount: Int, duration: Long) {
+
+        val finalPosition = LatLng(satellitePos[finalMarkerCount + 1].lat, satellitePos[finalMarkerCount + 1].long)
         val typeEvaluator = object : TypeEvaluator<LatLng> {
 
             override fun evaluate(fraction: Float, startValue: LatLng, endValue: LatLng): LatLng {
@@ -105,7 +143,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
 
         val property: Property<Marker, LatLng> = Property.of(Marker::class.java, LatLng::class.java, "position")
         val animator: ObjectAnimator = ObjectAnimator.ofObject(marker, property, typeEvaluator, finalPosition)
-        animator.duration = calculateTimeIncrement(count)
+        animator.duration = duration
         animator.interpolator = LinearInterpolator()
 
         animator.start()
@@ -115,12 +153,14 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback, LatLngInterpol
             override fun onAnimationStart(animation: Animator?) {}
 
             override fun onAnimationEnd(animation: Animator?) {
-                if (continueAnimating && count + 1 < satellitePos.size) {
+                if (continueAnimating && count + 2 < satellitePos.size) {
                     //move the camera
                     count++
                     //val newPosition = LatLng(satellitePos[count].lat, satellitePos[count].long)
                     Log.d(TAG, "animation ends count is now $count")
-                    animateMarkerToICS(satelliteMarker, count)
+                    animateMarkerToICS(satelliteMarker, count, calculateTimeIncrement(count))
+                } else {
+                    Log.d(TAG, "all trackingData has been animated and shown")
                 }
             }
 
