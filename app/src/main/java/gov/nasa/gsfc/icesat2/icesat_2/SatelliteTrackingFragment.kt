@@ -49,8 +49,9 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
 
         Log.d(TAG, "onActivityCreated Starts")
         MainActivity.getMainViewModel()?.getTrackingData()?.observe(viewLifecycleOwner, Observer {
-            satellitePos = arrayListOf(it[0], it[1])
-            Log.d(TAG, "FOR THIS TEST using satellite pos as \n $satellitePos")
+            //satellitePos = arrayListOf(it[0], it[1])
+            //Log.d(TAG, "FOR THIS TEST using satellite pos as \n $satellitePos")
+            satellitePos = it
         })
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
