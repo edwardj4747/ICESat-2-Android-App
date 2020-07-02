@@ -71,6 +71,9 @@
 
     <string name="icesatFlyover">ICESat-2 Flyover</string>
 
+<!--    Tracking Fragment-->
+    <string name="icesat2">ICESat-2</string>
+    <string name="trackingLatLong">Lat: %1$d\nLon: %2$d</string>
 
     <!--    MarkerSelectedFragment-->
     <string name="dateDisplay">%1$s, %2$s, %3$s</string>
