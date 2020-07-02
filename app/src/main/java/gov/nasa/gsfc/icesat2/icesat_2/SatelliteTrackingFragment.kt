@@ -55,6 +55,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             //satellitePos = arrayListOf(it[0], it[1])
             //Log.d(TAG, "FOR THIS TEST using satellite pos as \n $satellitePos")
             satellitePos = it
+            Log.d(TAG, "satellitePos.size is ${satellitePos.size}")
         })
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
