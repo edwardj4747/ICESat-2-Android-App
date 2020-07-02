@@ -36,4 +36,16 @@
         android:textStyle="bold"
         app:layout_constraintBottom_toTopOf="@+id/textViewDisplayCoords"
         app:layout_constraintEnd_toEndOf="@+id/textViewDisplayCoords" />
+
+    <TextView
+        android:id="@+id/textViewNearPole"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:text="@string/nearNorthPole"
+        android:textSize="24sp"
+        android:visibility="invisible"
+        app:layout_constraintBottom_toBottomOf="parent"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 </androidx.constraintlayout.widget.ConstraintLayout>

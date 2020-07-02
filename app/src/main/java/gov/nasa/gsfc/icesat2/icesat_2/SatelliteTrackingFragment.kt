@@ -10,6 +10,7 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import android.view.animation.LinearInterpolator
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.lifecycle.Observer
 import com.google.android.gms.maps.CameraUpdateFactory
@@ -226,6 +227,19 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         val lng = lngDelta * fraction + a.longitude
         try {
             textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
+            when {
+                lat > 83 -> {
+                    textViewNearPole.text = getString(R.string.nearNorthPole)
+                    textViewNearPole.visibility = View.VISIBLE
+                }
+                lat < -83 -> {
+                    textViewNearPole.text = getString(R.string.nearSouthPole)
+                    textViewNearPole.visibility = View.VISIBLE
+                }
+                textViewNearPole.isVisible -> {
+                    textViewNearPole.visibility = View.INVISIBLE
+                }
+            }
         } catch (e: Exception) { Log.d(TAG, "set text CATCH BLOCK") }
         return LatLng(lat, lng)
     }
