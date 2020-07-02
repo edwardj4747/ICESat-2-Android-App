@@ -74,6 +74,7 @@
 <!--    Tracking Fragment-->
     <string name="icesat2">ICESat-2</string>
     <string name="trackingLatLong">Lat: %1$d\nLon: %2$d</string>
+    <string name="moreData"><u>More Data</u></string>
 
     <!--    MarkerSelectedFragment-->
     <string name="dateDisplay">%1$s, %2$s, %3$s</string>

@@ -15,15 +15,6 @@
 
     </androidx.fragment.app.FragmentContainerView>
 
-    <Button
-        android:id="@+id/btnMoreData"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:layout_marginBottom="16dp"
-        android:text="More \nData"
-        app:layout_constraintBottom_toTopOf="@+id/textViewDisplayCoords"
-        app:layout_constraintEnd_toEndOf="@+id/textViewDisplayCoords" />
-
     <TextView
         android:id="@+id/textViewDisplayCoords"
         android:layout_width="wrap_content"
@@ -33,4 +24,16 @@
         android:text="TextView"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewMoreData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="8dp"
+        android:padding="5dp"
+        android:text="@string/moreData"
+        android:textSize="16sp"
+        android:textStyle="bold"
+        app:layout_constraintBottom_toTopOf="@+id/textViewDisplayCoords"
+        app:layout_constraintEnd_toEndOf="@+id/textViewDisplayCoords" />
 </androidx.constraintlayout.widget.ConstraintLayout>

@@ -63,7 +63,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
-        btnMoreData.setOnClickListener {
+        textViewMoreData.setOnClickListener {
             downloadMoreData()
         }
 
