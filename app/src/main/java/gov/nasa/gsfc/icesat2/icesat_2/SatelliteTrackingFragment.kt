@@ -46,11 +46,11 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         return inflater.inflate(R.layout.fragment_satellite_tracking, container, false)
     }
 
-    //todo: correct position among index 0 and index 1 points
+
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
-        Log.d(TAG, "onActivityCreated Starts")
+        Log.d(TAG, "onActivityCreated Starts. savedInstanceState $savedInstanceState")
         MainActivity.getMainViewModel()?.getTrackingData()?.observe(viewLifecycleOwner, Observer {
             //satellitePos = arrayListOf(it[0], it[1])
             //Log.d(TAG, "FOR THIS TEST using satellite pos as \n $satellitePos")
@@ -69,8 +69,29 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
 
     }
 
+    override fun onResume() {
+        super.onResume()
+        if (this::mMap.isInitialized) {
+            continueAnimating = true
+            initializeAnimation()
+        }
+    }
+
     override fun onMapReady(p0: GoogleMap) {
         mMap = p0
+        initializeAnimation()
+    }
+
+    private fun initializeAnimation() {
+        //determine position in list (useful in leave app and then come back)
+        val currentTime = System.currentTimeMillis()
+        while (count < satellitePos.size - 2 && currentTime > satellitePos[count + 1].timeInMillis) {
+            count++
+        }
+        if (count >= satellitePos.size - 2) {
+            downloadMoreData()
+        }
+        Log.d(TAG, "After while loop, count is $count")
 
         drawSatellitePosPolyline()
 
@@ -86,7 +107,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         var startingPosition = calculatePositionArray[0] as LatLng
         var percentage = calculatePositionArray[1] as Double
 
-        while (percentage > 1) {
+        while (percentage > 1 && count < satellitePos.size - 2) {
             Log.d(TAG, "While loop running with percentage $percentage and count $count")
             count++
             calculatePositionArray = calculateStartingPosition(count)
@@ -94,16 +115,24 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             percentage = calculatePositionArray[1] as Double
         }
 
-        val durationForFirstSegment = calculateTimeIncrement(0) * (1 - percentage)
+        val durationForFirstSegment = calculateTimeIncrement(count) * (1 - percentage)
         Log.d(TAG, "duration for first segment is ${durationForFirstSegment.toLong()}")
 
         //val startingPosition = LatLng(satellitePos[0].lat, satellitePos[0].long)
-        satelliteMarker = mMap.addMarker(MarkerOptions().position(startingPosition).icon(
-            BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
+
+        //if we don't have a marker, add one. Otherwise move the current marker
+        if (!this::satelliteMarker.isInitialized) {
+            satelliteMarker = mMap.addMarker(
+                MarkerOptions().position(startingPosition).icon(
+                    BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_VIOLET)))
+        } else {
+            satelliteMarker.position = startingPosition
+        }
+
+
         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(startingPosition, ZOOM_LEVEL))
 
         animateMarkerToICS(satelliteMarker, count, durationForFirstSegment.toLong())
-
     }
 
     private fun drawSatellitePosPolyline(dummyArr: ArrayList<TrackingPoint> = ArrayList()) {
