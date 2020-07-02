@@ -15,6 +15,15 @@
 
     </androidx.fragment.app.FragmentContainerView>
 
+    <Button
+        android:id="@+id/btnMoreData"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginBottom="16dp"
+        android:text="More \nData"
+        app:layout_constraintBottom_toTopOf="@+id/textViewDisplayCoords"
+        app:layout_constraintEnd_toEndOf="@+id/textViewDisplayCoords" />
+
     <TextView
         android:id="@+id/textViewDisplayCoords"
         android:layout_width="wrap_content"

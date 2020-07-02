@@ -63,6 +63,10 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             .findFragmentById(R.id.map) as SupportMapFragment
         mapFragment.getMapAsync(this)
 
+        btnMoreData.setOnClickListener {
+            downloadMoreData()
+        }
+
     }
 
     override fun onMapReady(p0: GoogleMap) {
@@ -168,35 +172,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
                     animateMarkerToICS(satelliteMarker, count, calculateTimeIncrement(count))
 
                     if (count > satellitePos.size - 3) {
-                        Log.d(TAG, "Starting Download of newData")
-                        val downloadData = DownloadData()
-                        val currentTimeInMillis = System.currentTimeMillis()
-                        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis"
-                        try {
-                            val url = URL(downloadLink)
-                            CoroutineScope(Dispatchers.IO).launch {
-                                val newData: Deferred<ArrayList<TrackingPoint>> = async {
-                                    downloadData.downloadTrackingData(url)
-                                }
-                                if (newData.await().isNotEmpty()) {
-                                    Log.d(TAG, "Adding more data to satelliteTrack")
-                                    //this will probably return a few entries, so we need to check and remove the duplicates
-
-                                    newData.await()
-                                    //extend polyline too
-                                    Log.d(TAG, "Before adding new Points $satellitePos")
-                                    for (i in 2 until newData.await().size) {
-                                        satellitePos.add(newData.await()[i])
-                                    }
-                                    Log.d(TAG, "after adding new points $satellitePos")
-                                    Log.d(TAG, "new size of satellitePos = ${satellitePos.size}")
-                                    Log.d(TAG, "New Data added is ${newData.await()}")
-                                    drawSatellitePosPolyline(newData.await())
-                                }
-                            }
-                        } catch (e: Exception) {
-                            Log.d(TAG, "Exception trying to download more data")
-                        }
+                        downloadMoreData()
                     }
                 } else {
                     Log.d(TAG, "all trackingData has been animated and shown")
@@ -223,6 +199,50 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
         } catch (e: Exception) { Log.d(TAG, "set text CATCH BLOCK") }
         return LatLng(lat, lng)
+    }
+
+    fun downloadMoreData() {
+        Log.d(TAG, "Starting Download of newData")
+        val downloadData = DownloadData()
+        //val currentTimeInMillis = System.currentTimeMillis()
+        val lastTimeInCurrentData = satellitePos[satellitePos.size - 1].timeInMillis + 1
+        val numResults = 30
+        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$lastTimeInCurrentData&numResults=$numResults"
+        //0th entry will be the same but all of the following will be different so we can just append the different ones
+        try {
+            val url = URL(downloadLink)
+            CoroutineScope(Dispatchers.IO).launch {
+                val newData: Deferred<ArrayList<TrackingPoint>> = async {
+                    downloadData.downloadTrackingData(url)
+                }
+
+                if (newData.await().isNotEmpty()) {
+                    Log.d(TAG, "previous size of satellitePos is ${satellitePos.size}")
+                    for (i in 1 until newData.await().size) {
+                        satellitePos.add(newData.await()[i])
+                    }
+                    Log.d(TAG, "new size of satellitePos is ${satellitePos.size}")
+                    //remove the duplicates
+
+                    /*Log.d(TAG, "Adding more data to satelliteTrack")
+                    //this will probably return a few entries, so we need to check and remove the duplicates
+
+                    newData.await()
+                    //extend polyline too
+                    Log.d(TAG, "Before adding new Points $satellitePos")
+                    for (i in 2 until newData.await().size) {
+                        satellitePos.add(newData.await()[i])
+                    }
+                    Log.d(TAG, "after adding new points $satellitePos")
+                    Log.d(TAG, "new size of satellitePos = ${satellitePos.size}")
+                    Log.d(TAG, "New Data added is ${newData.await()}")*/
+                    Log.d(TAG, "about to draw polyline")
+                    drawSatellitePosPolyline(newData.await())
+                }
+            }
+        } catch (e: Exception) {
+            Log.d(TAG, "Exception trying to download more data")
+        }
     }
 
     override fun onStop() {
