@@ -36,6 +36,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
     private lateinit var satelliteMarker: Marker
     private var continueAnimating = true
     private var count = 0
+    private lateinit var animator: ObjectAnimator
 
     override fun onCreateView(
         inflater: LayoutInflater, container: ViewGroup?,
@@ -76,9 +77,17 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "===================")
 
         //LatLng and Double are the only types that will ever be put in the array, so casts are safe
-        val calculatePositionArray = calculateStartingPosition()
-        val startingPosition = calculatePositionArray[0] as LatLng
-        val percentage = calculatePositionArray[1] as Double
+        var calculatePositionArray = calculateStartingPosition(count)
+        var startingPosition = calculatePositionArray[0] as LatLng
+        var percentage = calculatePositionArray[1] as Double
+
+        while (percentage > 1) {
+            Log.d(TAG, "While loop running with percentage $percentage and count $count")
+            count++
+            calculatePositionArray = calculateStartingPosition(count)
+            startingPosition = calculatePositionArray[0] as LatLng
+            percentage = calculatePositionArray[1] as Double
+        }
 
         val durationForFirstSegment = calculateTimeIncrement(0) * (1 - percentage)
         Log.d(TAG, "duration for first segment is ${durationForFirstSegment.toLong()}")
@@ -107,21 +116,21 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
      * an approximation of how much of the distance between the the first LatLng (before now) and the
      * second LatLng(after now) the satelitte has covered
      */
-    private fun calculateStartingPosition() : Array<Any> {
+    private fun calculateStartingPosition(startingIndex: Int) : Array<Any> {
         val currentTimeInMillis = System.currentTimeMillis()
-        val numerator = currentTimeInMillis - satellitePos[0].timeInMillis
-        val denominator = satellitePos[1].timeInMillis - satellitePos[0].timeInMillis
+        val numerator = currentTimeInMillis - satellitePos[startingIndex].timeInMillis
+        val denominator = satellitePos[startingIndex + 1].timeInMillis - satellitePos[startingIndex].timeInMillis
         val percentage = (numerator.toDouble() / denominator).toDouble()
         Log.d(TAG, "num $numerator denom $denominator percentage is $percentage")
 
-        val dlat = satellitePos[1].lat - satellitePos[0].lat
-        val dlong = satellitePos[1].long - satellitePos[0].long
+        val dlat = satellitePos[startingIndex + 1].lat - satellitePos[startingIndex].lat
+        val dlong = satellitePos[startingIndex + 1].long - satellitePos[startingIndex].long
 
-        val startLat = satellitePos[0].lat + percentage * dlat
-        val startLong = satellitePos[0].long + percentage * dlong
+        val startLat = satellitePos[startingIndex].lat + percentage * dlat
+        val startLong = satellitePos[startingIndex].long + percentage * dlong
         Log.d(TAG, "dlat $dlat; dlong $dlong")
-        Log.d(TAG, "beginLat ${satellitePos[0].lat} endLat ${satellitePos[1].lat}, resLat $startLat")
-        Log.d(TAG, "beginLong ${satellitePos[0].long} endlong ${satellitePos[1].long}, resLat $startLong")
+        Log.d(TAG, "beginLat ${satellitePos[startingIndex].lat} endLat ${satellitePos[startingIndex + 1].lat}, resLat $startLat")
+        Log.d(TAG, "beginLong ${satellitePos[startingIndex].long} endlong ${satellitePos[startingIndex + 1].long}, resLat $startLong")
 
         //TODO: check for when crosses over from -88 to 88 or 180 degrees
         return arrayOf(LatLng(startLat, startLong), percentage)
@@ -138,7 +147,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         }
 
         val property: Property<Marker, LatLng> = Property.of(Marker::class.java, LatLng::class.java, "position")
-        val animator: ObjectAnimator = ObjectAnimator.ofObject(marker, property, typeEvaluator, finalPosition)
+        animator = ObjectAnimator.ofObject(marker, property, typeEvaluator, finalPosition)
         animator.duration = duration
         animator.interpolator = LinearInterpolator()
 
@@ -209,12 +218,16 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             lngDelta -= Math.signum(lngDelta) * 360
         }
         val lng = lngDelta * fraction + a.longitude
-        textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
+        try {
+            textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
+        } catch (e: Exception) { Log.d(TAG, "set text CATCH BLOCK") }
         return LatLng(lat, lng)
     }
 
     override fun onStop() {
         super.onStop()
         continueAnimating = false
+        Log.d(TAG, "cancelling animator")
+        animator.cancel()
     }
 }
