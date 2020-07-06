@@ -34,6 +34,7 @@ GoogleMap.OnPolylineClickListener {
     private var count = 0 //to access the point array based on the marker later
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
+    private val laserBeamList = ArrayList<PolylineOptions>()
     private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
 
@@ -129,6 +130,26 @@ GoogleMap.OnPolylineClickListener {
             } else {
                 polylineList.forEach {
                     it.isVisible = false
+                }
+            }
+        }
+
+        checkBoxLasers.setOnClickListener {
+            if (checkBoxLasers.isChecked && laserBeamList.isEmpty()) {
+                calculateLaserBeams()
+                if (this::mMap.isInitialized) {
+                    for (i in laserBeamList.indices) {
+                        mMap.addPolyline(laserBeamList[i])
+                    }
+                }
+            }
+            if (checkBoxLasers.isChecked) {
+                laserBeamList.forEach {
+                    //it.isVisible = true
+                }
+            } else {
+                laserBeamList.forEach {
+                    //it.isVisible = false
                 }
             }
         }
@@ -283,6 +304,41 @@ GoogleMap.OnPolylineClickListener {
 
     override fun closeButtonPressed() {
         onMapClick(null)
+    }
+
+    private fun calculateLaserBeams() {
+        Log.d(TAG, "Calculating laser beams")
+        for (i in 0 until pointList.size) {
+            Log.d(TAG, "point[$i]: lat: ${pointList[i].latitude}, long:${pointList[i].longitude}")
+        }
+        //val offsets = arrayOf(-3460, 3460)
+        val offsets = arrayOf(-3390, 3390)
+        var laserBeamListIndex = -1 // will be incremented to zero on the first pass through the loop
+        //calculating all the left sides
+            for (count in 0 until pointList.size) {
+                val lat_n = pointList[count].latitude
+                val long = pointList[count].longitude
+                val newLong = degreesOfLong(offsets[0], lat_n)
+                Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
+                if (count != 0 && onSameChain(pointList[count], pointList[count - 1])) {
+
+                } else {
+                    Log.d(TAG, "count = $count creating a new polyline for the laser beams")
+                    laserBeamList.add(PolylineOptions())
+                    laserBeamListIndex++
+                }
+                laserBeamList[laserBeamListIndex] = laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
+
+                if (count < 2) {
+                    mMap.addCircle(CircleOptions().radius(3300.0).center(LatLng(lat_n, long)))
+                }
+            }
+
+
+    }
+
+    private fun degreesOfLong(distance: Int, lat: Double): Double {
+        return  distance / (kotlin.math.cos(Math.toRadians(lat)) * 111000)
     }
 
     /* private fun userLocation() {
