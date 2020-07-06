@@ -323,13 +323,12 @@ GoogleMap.OnPolylineClickListener {
                 val long = pointList[count].longitude
                 val newLong = degreesOfLong(offsets[0], lat_n)
 
-                if (count != 0 && onSameChain(pointList[count], pointList[count - 1])) {
-
-                } else {
+                if (count == 0 || !onSameChain(pointList[count], pointList[count - 1])) {
                     Log.d(TAG, "count = $count creating a new polyline for the laser beams")
                     laserBeamList.add(PolylineOptions())
                     laserBeamListIndex++
                 }
+
                 Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
                 laserBeamList[laserBeamListIndex] = laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
 
