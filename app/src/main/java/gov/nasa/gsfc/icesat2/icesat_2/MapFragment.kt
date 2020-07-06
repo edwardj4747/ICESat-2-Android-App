@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -16,6 +17,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlin.math.abs
 
 
 private const val TAG = "MapFragment"
@@ -34,8 +36,10 @@ GoogleMap.OnPolylineClickListener {
     private var count = 0 //to access the point array based on the marker later
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
+    private val laserBeamList = ArrayList<PolylineOptions>()
     private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
+    private val offsets = arrayOf(-3390, -3300, -47, 47, 3300, 3390) //for calculating the position of the laser beam
 
 
     override fun onCreateView(
@@ -51,7 +55,6 @@ GoogleMap.OnPolylineClickListener {
 
         setHasOptionsMenu(true)
         fm = childFragmentManager
-
 
 
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
@@ -99,7 +102,7 @@ GoogleMap.OnPolylineClickListener {
             }
         })
 
-        mainActivityViewModel?.getSearchCenter()?.observe(viewLifecycleOwner, Observer{
+        mainActivityViewModel?.getSearchCenter()?.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "MapFragment searchCenterObserved to be ${it.latitude}, ${it.longitude}")
             searchCenter = it
         })
@@ -133,6 +136,40 @@ GoogleMap.OnPolylineClickListener {
             }
         }
 
+        val laserPolylines = ArrayList<Polyline>()
+        val colorsArr = requireContext().resources.getStringArray(R.array.greenColors)
+        val dash: PatternItem = Dash(30F)
+        val gap: PatternItem = Gap(20F)
+        val dashedPolyline: List<PatternItem> = listOf(gap, dash)
+
+        checkBoxLasers.setOnClickListener {
+            if (checkBoxLasers.isChecked && laserBeamList.isEmpty()) {
+                calculateLaserBeams()
+                val indo = laserBeamList.size / offsets.size //diving by the number of entries in offset
+                Log.d(TAG, "indo is $indo. laserBeamLIst size ${laserBeamList.size} offsets.size = ${offsets.size}")
+                if (this::mMap.isInitialized) {
+                    for (i in laserBeamList.indices) {
+                        if (indo < colorsArr.size) {
+                            Log.d(TAG, "plotting color i % indo ${i % indo}")
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo])).pattern(dashedPolyline)))
+                        } else {
+                            Log.d(TAG, "plotting color sie - 1 :(")
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[(i % indo) % colorsArr.size])).pattern(dashedPolyline)))
+                        }
+                    }
+                }
+            }
+            if (checkBoxLasers.isChecked) {
+                laserPolylines.forEach {
+                    it.isVisible = true
+                }
+            } else {
+                laserPolylines.forEach {
+                    it.isVisible = false
+                }
+            }
+        }
+
     }
 
     override fun onMapReady(googleMap: GoogleMap) {
@@ -141,8 +178,15 @@ GoogleMap.OnPolylineClickListener {
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
         mMap.setOnPolylineClickListener(this)
-        if (ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_FINE_LOCATION) == PackageManager.PERMISSION_GRANTED
-            || ActivityCompat.checkSelfPermission(requireContext(), Manifest.permission.ACCESS_COARSE_LOCATION) == PackageManager.PERMISSION_GRANTED) {
+        if (ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_FINE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+            || ActivityCompat.checkSelfPermission(
+                requireContext(),
+                Manifest.permission.ACCESS_COARSE_LOCATION
+            ) == PackageManager.PERMISSION_GRANTED
+        ) {
             mMap.isMyLocationEnabled = true
         }
 
@@ -160,7 +204,7 @@ GoogleMap.OnPolylineClickListener {
         }*/
     }
 
-    private fun addChainPolyline(chain:ArrayList<Point>) {
+    private fun addChainPolyline(chain: ArrayList<Point>) {
         Log.d(TAG, "addChainPolyLine Starts")
         var polylineTag = 0
         var polylineOptions = PolylineOptions()
@@ -176,7 +220,10 @@ GoogleMap.OnPolylineClickListener {
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             //add marker to map and markerList
-            val markerAdded = mMap.addMarker(myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+            val markerAdded = mMap.addMarker(
+                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude))
+                    .title(chain[i].dateString)
+            )
             markerAdded.tag = count
             markerList.add(markerAdded)
             count++
@@ -185,9 +232,10 @@ GoogleMap.OnPolylineClickListener {
         addCircleRadius(searchRadius)
     }
 
-    private fun onSameChain(p1: Point, p2: Point) : Boolean {
+    private fun onSameChain(p1: Point, p2: Point): Boolean {
         val timingThreshold = 60
-        return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
+        //return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
+        return abs(p1.dateObject.time - p2.dateObject.time) < timingThreshold * 1000
     }
 
     private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
@@ -199,7 +247,14 @@ GoogleMap.OnPolylineClickListener {
             tag = tagValue
         })
         //add date to flyover date
-        flyoverDatesAndTimes.add(String.format("%s (%.5s %s)", pointList[tagValue].date, pointList[tagValue].time, pointList[tagValue].ampm))
+        flyoverDatesAndTimes.add(
+            String.format(
+                "%s (%.5s %s)",
+                pointList[tagValue].date,
+                pointList[tagValue].time,
+                pointList[tagValue].ampm
+            )
+        )
     }
 
     private fun addCircleRadius(radius: Double) {
@@ -210,7 +265,12 @@ GoogleMap.OnPolylineClickListener {
 
         val circle = mMap.addCircle(circleOptions)
 
-        mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(circleOptions.center, getZoomLevel(circle)))
+        mMap.moveCamera(
+            CameraUpdateFactory.newLatLngZoom(
+                circleOptions.center,
+                getZoomLevel(circle)
+            )
+        )
 
         //moveCamera()
     }
@@ -277,12 +337,51 @@ GoogleMap.OnPolylineClickListener {
     }
 
     override fun onPolylineClick(p0: Polyline?) {
-        Log.d(TAG, "polylineClicked. Tag is ${p0?.tag} chain date is ${pointList[p0?.tag as Int].dateString}")
+        Log.d(
+            TAG,
+            "polylineClicked. Tag is ${p0?.tag} chain date is ${pointList[p0?.tag as Int].dateString}"
+        )
         showMarkerDisplayFragment(p0.tag as Int, false)
     }
 
     override fun closeButtonPressed() {
         onMapClick(null)
+    }
+
+    private fun calculateLaserBeams() {
+        Log.d(TAG, "Calculating laser beams")
+
+        //val offsets = arrayOf(-3460, 3460)
+
+        var laserBeamListIndex = -1 // will be incremented to zero on the first pass through the loop
+        //calculating all the left sides
+
+        for (element in offsets) {
+            for (count in 0 until pointList.size) {
+                val lat_n = pointList[count].latitude
+                val long = pointList[count].longitude
+                val newLong = degreesOfLong(element, lat_n)
+
+                if (count == 0 || !onSameChain(pointList[count], pointList[count - 1])) {
+                    //Log.d(TAG, "count = $count creating a new polyline for the laser beams")
+                    laserBeamList.add(PolylineOptions())
+                    laserBeamListIndex++
+                }
+
+                //Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
+                laserBeamList[laserBeamListIndex] =
+                    laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
+/*
+                if (count < 2) {
+                    mMap.addCircle(CircleOptions().radius(3300.0).center(LatLng(lat_n, long)))
+                }*/
+            }
+        }
+    }
+
+
+    private fun degreesOfLong(distance: Int, lat: Double): Double {
+        return  distance / (kotlin.math.cos(Math.toRadians(lat)) * 111000)
     }
 
     /* private fun userLocation() {
