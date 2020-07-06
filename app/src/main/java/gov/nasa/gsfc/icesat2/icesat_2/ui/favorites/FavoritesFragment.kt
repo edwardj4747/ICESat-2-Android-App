@@ -75,7 +75,8 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
                        val deletedFavorite = localFavoritesList[deletedFavoritePosition]
                        //val deletedFavorite = adapter.getFavoriteAt(viewHolder.adapterPosition)
                        //favoritesViewModel.delete(deletedFavorite.dateObjectTime)
-                       Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                       //Snackbar.make(this@FavoritesFragment.requireView(), R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                       Snackbar.make(snackbarCoordinator, R.string.itemDeleted, Snackbar.LENGTH_LONG)
                            .setAction(R.string.undo) {
                                //favoritesViewModel.insert(deletedFavorite)
                                localDeletedFavorites.remove(deletedFavorite.dateObjectTime)
