@@ -45,8 +45,8 @@ class DownloadData(private val url: URL, context: Context) {
             if(job == null){
                 Log.d(TAG, "Canceling search job")
                 mainSearchJob.cancel()
-                listener.showSearchFeedback("timedOut")
-                //listener.searchTimedOut()
+
+                listener.addErrorToSet(SearchError.TIMED_OUT)
             }
 
         }
@@ -118,8 +118,9 @@ class DownloadData(private val url: URL, context: Context) {
                     } else {
                         //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
                         mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
-                        //listener.noResultsFound()
-                        listener.showSearchFeedback("No Results")
+
+                        // todo: no results
+                        listener.addErrorToSet(SearchError.NO_RESULTS)
                         resultsFound = false
                     }
                 } else {

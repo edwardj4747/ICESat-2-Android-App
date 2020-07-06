@@ -1,8 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-interface IDownloadDataErrorCallback {
-    fun searchTimedOut()
-    fun noResultsFound()
+enum class SearchError {
+    TIMED_OUT, NO_RESULTS
+}
 
-    fun showSearchFeedback(reason: String)
+interface IDownloadDataErrorCallback {
+    fun addErrorToSet(searchError: SearchError)
 }

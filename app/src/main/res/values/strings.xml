@@ -51,8 +51,9 @@
     <string name="ok">OK</string>
 
 <!--    Search Error Dialog-->
-    <string name="searchError">Error Occurred while Searching</string>
-    <string name="searchErrorDescription">Search timed out. Please check your network connection</string>
+    <string name="searchError">Search Timed Out</string>
+    <string name="searchErrorDescription">We are having trouble connecting to our servers right now.
+        Please check your network connection and try again.</string>
 
     <!--    Location turned off dialog-->
     <string name="locationOffTitle">Location is Turned Off</string>

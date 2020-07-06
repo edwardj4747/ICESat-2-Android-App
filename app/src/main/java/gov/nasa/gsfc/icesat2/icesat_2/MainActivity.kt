@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private var currentDestination: NavDestination? = null
     private var previousDestination: NavDestination? = null
     private var searchFragmentDestination: NavDestination? = null
+    private val searchErrorSet = HashSet<SearchError>()
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -156,6 +157,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             }
                         } else {
                             Log.d(TAG, "No Search results found")
+                            displayAppropriateDialog()
                             //showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
                         }
                         currentlySearching = false
@@ -169,29 +171,28 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         }
     }
 
-    override fun searchTimedOut() {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.d(TAG, "MAIN ACTIVITY: Searched Time out")
-            showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
-        }
+
+
+    override fun addErrorToSet(searchError: SearchError) {
+        Log.d(TAG, "addError method. Added $searchError")
+        searchErrorSet.add(searchError)
     }
 
-    override fun noResultsFound() {
-        CoroutineScope(Dispatchers.Main).launch {
-            showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
-        }
-    }
-
-    override fun showSearchFeedback(reason: String) {
-        CoroutineScope(Dispatchers.Main).launch {
-            Log.d(TAG, "show search feedback called with reason $reason")
-            if (reason == "timedOut") {
+    private fun displayAppropriateDialog() {
+        Log.d(TAG, "displayAppropriateDialog starts with searchErrorSet $searchErrorSet")
+        if (searchErrorSet.contains(SearchError.TIMED_OUT)) {
+            CoroutineScope(Dispatchers.Main).launch {
                 showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
-            } else if (reason == "No Results") {
+            }
+        } else if (searchErrorSet.contains(SearchError.NO_RESULTS)) {
+            CoroutineScope(Dispatchers.Main).launch {
                 showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
             }
         }
+        searchErrorSet.clear()
+        Log.d(TAG, "displayApproriateDialog ends. searchErrorSet is $searchErrorSet")
     }
+
 
     private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
