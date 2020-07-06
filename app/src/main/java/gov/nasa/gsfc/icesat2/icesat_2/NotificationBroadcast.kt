@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.app.NotificationChannel
 import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -42,11 +43,18 @@ class NotificationBroadcast : BroadcastReceiver() {
                 notificationManager.createNotificationChannel(channel)
             }
 
+            // Create an explicit intent for an Activity in your app
+            val intent = Intent(context, MainActivity::class.java).apply {
+                flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+            }
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
-                .setContentTitle("NOTIFICATION")
-                .setContentText("Open the app why don't you?")
+                .setContentTitle(context.getString(R.string.icesatFlyover))
+                .setContentText(context.getString(R.string.flyoverNotification))
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
 
             with(NotificationManagerCompat.from(context)) {
