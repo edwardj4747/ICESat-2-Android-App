@@ -91,6 +91,11 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
 
             }
 
+            btnNotify.setOnClickListener {
+                Log.d(TAG, "notify button clicked")
+                NotificationBroadcast.createNotification(requireContext())
+            }
+
         } else {
             //just want to display a chain entry
             textViewDate.text = getString(R.string.trackBeginsAt, selectedPoint.date, selectedPoint.year)

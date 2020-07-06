@@ -133,4 +133,8 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="noFavoritesYet">No Favorites Yet</string>
     <string name="geoLatLng"><i>%1$s</i>\n%2$s%3$cN %4$s%5$cE</string>
 
+<!--    notifications-->
+    <string name="channel_name">ICESat-2 Notifications</string>
+    <string name="channel_description">Reminders about when the satellite will be passing over</string>
+
 </resources>
