@@ -39,7 +39,7 @@ GoogleMap.OnPolylineClickListener {
     private val laserBeamList = ArrayList<PolylineOptions>()
     private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
-    private val offsets = arrayOf(-3390, 3390) //for calculating the position of the laser beam
+    private val offsets = arrayOf(-3390, -3300, -47, 47, 3300, 3390) //for calculating the position of the laser beam
 
 
     override fun onCreateView(
@@ -138,17 +138,23 @@ GoogleMap.OnPolylineClickListener {
 
         val laserPolylines = ArrayList<Polyline>()
         val colorsArr = requireContext().resources.getStringArray(R.array.greenColors)
+        val dash: PatternItem = Dash(30F)
+        val gap: PatternItem = Gap(20F)
+        val dashedPolyline: List<PatternItem> = listOf(gap, dash)
 
         checkBoxLasers.setOnClickListener {
             if (checkBoxLasers.isChecked && laserBeamList.isEmpty()) {
                 calculateLaserBeams()
                 val indo = laserBeamList.size / offsets.size //diving by the number of entries in offset
+                Log.d(TAG, "indo is $indo. laserBeamLIst size ${laserBeamList.size} offsets.size = ${offsets.size}")
                 if (this::mMap.isInitialized) {
                     for (i in laserBeamList.indices) {
-                        if (i < colorsArr.size) {
-                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo]))))
+                        if (indo < colorsArr.size) {
+                            Log.d(TAG, "plotting color i % indo ${i % indo}")
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo])).pattern(dashedPolyline)))
                         } else {
-                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[colorsArr.size - 1]))))
+                            Log.d(TAG, "plotting color sie - 1 :(")
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[(i % indo) % colorsArr.size])).pattern(dashedPolyline)))
                         }
                     }
                 }
@@ -344,13 +350,10 @@ GoogleMap.OnPolylineClickListener {
 
     private fun calculateLaserBeams() {
         Log.d(TAG, "Calculating laser beams")
-        for (i in 0 until pointList.size) {
-            Log.d(TAG, "point[$i]: lat: ${pointList[i].latitude}, long:${pointList[i].longitude}")
-        }
+
         //val offsets = arrayOf(-3460, 3460)
 
-        var laserBeamListIndex =
-            -1 // will be incremented to zero on the first pass through the loop
+        var laserBeamListIndex = -1 // will be incremented to zero on the first pass through the loop
         //calculating all the left sides
 
         for (element in offsets) {
@@ -360,18 +363,18 @@ GoogleMap.OnPolylineClickListener {
                 val newLong = degreesOfLong(element, lat_n)
 
                 if (count == 0 || !onSameChain(pointList[count], pointList[count - 1])) {
-                    Log.d(TAG, "count = $count creating a new polyline for the laser beams")
+                    //Log.d(TAG, "count = $count creating a new polyline for the laser beams")
                     laserBeamList.add(PolylineOptions())
                     laserBeamListIndex++
                 }
 
-                Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
+                //Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
                 laserBeamList[laserBeamListIndex] =
                     laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
-
+/*
                 if (count < 2) {
                     mMap.addCircle(CircleOptions().radius(3300.0).center(LatLng(lat_n, long)))
-                }
+                }*/
             }
         }
     }
