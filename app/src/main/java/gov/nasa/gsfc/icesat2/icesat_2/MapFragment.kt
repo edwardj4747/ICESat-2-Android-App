@@ -16,6 +16,7 @@ import com.google.android.gms.maps.OnMapReadyCallback
 import com.google.android.gms.maps.SupportMapFragment
 import com.google.android.gms.maps.model.*
 import kotlinx.android.synthetic.main.fragment_map.*
+import kotlin.math.abs
 
 
 private const val TAG = "MapFragment"
@@ -208,7 +209,8 @@ GoogleMap.OnPolylineClickListener {
 
     private fun onSameChain(p1: Point, p2: Point) : Boolean {
         val timingThreshold = 60
-        return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
+        //return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
+        return abs(p1.dateObject.time - p2.dateObject.time) < timingThreshold * 1000
     }
 
     private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
@@ -315,11 +317,12 @@ GoogleMap.OnPolylineClickListener {
         val offsets = arrayOf(-3390, 3390)
         var laserBeamListIndex = -1 // will be incremented to zero on the first pass through the loop
         //calculating all the left sides
-            for (count in 0 until pointList.size) {
+        Log.d(TAG, "onSame chain 2, 1?")
+        for (count in 0 until pointList.size) {
                 val lat_n = pointList[count].latitude
                 val long = pointList[count].longitude
                 val newLong = degreesOfLong(offsets[0], lat_n)
-                Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
+
                 if (count != 0 && onSameChain(pointList[count], pointList[count - 1])) {
 
                 } else {
@@ -327,6 +330,7 @@ GoogleMap.OnPolylineClickListener {
                     laserBeamList.add(PolylineOptions())
                     laserBeamListIndex++
                 }
+                Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
                 laserBeamList[laserBeamListIndex] = laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
 
                 if (count < 2) {
