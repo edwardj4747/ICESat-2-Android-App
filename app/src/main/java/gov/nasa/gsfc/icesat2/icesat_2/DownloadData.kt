@@ -13,7 +13,7 @@ private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
-private const val JOB_TIMEOUT = 10L
+private const val JOB_TIMEOUT = 4000L
 
 class DownloadData(private val url: URL, context: Context) {
 
