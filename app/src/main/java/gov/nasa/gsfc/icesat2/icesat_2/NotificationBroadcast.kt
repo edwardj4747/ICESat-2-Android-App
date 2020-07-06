@@ -35,6 +35,16 @@ class NotificationBroadcast : BroadcastReceiver() {
         if (context != null) {
             createNotification(context)
         }
+
+        val nm = NotificationsManager()
+        Log.d(TAG, "the values in sharedPreferences are----------")
+        val notificationValues = nm.getSharedPrefValues()
+        notificationValues.forEach {
+            Log.d(TAG, "in shared pref $it")
+        }
+
+
+
     }
 
     companion object {

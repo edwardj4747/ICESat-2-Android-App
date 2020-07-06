@@ -10,6 +10,7 @@ private const val TAG = "NotificationsManager"
 
 
 class NotificationsManager(activity: Activity) {
+
     private val sharedPreferences = activity.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
 
     fun addToNotificationSharedPref(timestamp: Long) {
@@ -46,5 +47,7 @@ class NotificationsManager(activity: Activity) {
             Log.d("map values", key + ": " + value.toString())
         }
     }
+
+    fun getSharedPrefValues() = sharedPreferences.all.values
 
 }
