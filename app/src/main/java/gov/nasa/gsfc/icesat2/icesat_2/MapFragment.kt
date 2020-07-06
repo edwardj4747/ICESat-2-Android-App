@@ -2,6 +2,7 @@ package gov.nasa.gsfc.icesat2.icesat_2
 
 import android.Manifest
 import android.content.pm.PackageManager
+import android.graphics.Color.parseColor
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -38,6 +39,7 @@ GoogleMap.OnPolylineClickListener {
     private val laserBeamList = ArrayList<PolylineOptions>()
     private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
+    private val offsets = arrayOf(-3390, 3390) //for calculating the position of the laser beam
 
 
     override fun onCreateView(
@@ -135,12 +137,19 @@ GoogleMap.OnPolylineClickListener {
         }
 
         val laserPolylines = ArrayList<Polyline>()
+        val colorsArr = requireContext().resources.getStringArray(R.array.greenColors)
+
         checkBoxLasers.setOnClickListener {
             if (checkBoxLasers.isChecked && laserBeamList.isEmpty()) {
                 calculateLaserBeams()
+                val indo = laserBeamList.size / offsets.size //diving by the number of entries in offset
                 if (this::mMap.isInitialized) {
                     for (i in laserBeamList.indices) {
-                        laserPolylines.add(mMap.addPolyline(laserBeamList[i]))
+                        if (i < colorsArr.size) {
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo]))))
+                        } else {
+                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[colorsArr.size - 1]))))
+                        }
                     }
                 }
             }
@@ -339,7 +348,7 @@ GoogleMap.OnPolylineClickListener {
             Log.d(TAG, "point[$i]: lat: ${pointList[i].latitude}, long:${pointList[i].longitude}")
         }
         //val offsets = arrayOf(-3460, 3460)
-        val offsets = arrayOf(-3390, 3390)
+
         var laserBeamListIndex =
             -1 // will be incremented to zero on the first pass through the loop
         //calculating all the left sides
