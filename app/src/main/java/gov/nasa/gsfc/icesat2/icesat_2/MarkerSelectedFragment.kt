@@ -1,5 +1,9 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.app.AlarmManager
+import android.app.PendingIntent
+import android.content.Context
+import android.content.Intent
 import android.location.Geocoder
 import android.os.Bundle
 import android.util.Log
@@ -93,7 +97,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
 
             btnNotify.setOnClickListener {
                 Log.d(TAG, "notify button clicked")
-                NotificationBroadcast.createNotification(requireContext())
+                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+
+                val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+                val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+
+                val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 8000, pendingIntent)
+                //NotificationBroadcast.createNotification(requireContext())
             }
 
         } else {

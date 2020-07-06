@@ -6,6 +6,7 @@ import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
+import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
@@ -13,8 +14,11 @@ private const val CHANNEL_ID = "NotificationsTest"
 private const val DESCRIPTION = "lorem ipsum de description foes here"
 var notificationId = 1
 
+private const val TAG = "NotificationBroadcast"
+
 class NotificationBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
+        Log.d(TAG, "onReceive Called")
         if (context != null) {
             createNotification(context)
         }
@@ -38,8 +42,8 @@ class NotificationBroadcast : BroadcastReceiver() {
                 notificationManager.createNotificationChannel(channel)
             }
 
-            var builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                .setSmallIcon(R.mipmap.ic_launcher)
+            val builder = NotificationCompat.Builder(context, CHANNEL_ID)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle("NOTIFICATION")
                 .setContentText("Open the app why don't you?")
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
