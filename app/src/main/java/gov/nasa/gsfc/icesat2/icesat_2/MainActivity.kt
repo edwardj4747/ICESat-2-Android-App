@@ -72,8 +72,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
         val bundle = intent.extras
         val res = bundle?.getBoolean(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY)
-
+        val lat = intent.extras?.getDouble(NOTIFICATION_LAT)
+        val long = bundle?.getDouble(NOTIFICATION_LONG)
         Log.d(TAG, "notication launched Main activity $res")
+        Log.d(TAG, "lat is $lat; long is $long")
+
+        //if launched from a notification
+        if (res != null && res && lat != null && long != null) {
+            searchButtonPressed(lat, long, 10.0, false)
+        }
+
+
 
         //setSupportActionBar(toolbar)
         //val appBarConfiguration = AppBarConfiguration(navController.graph)
