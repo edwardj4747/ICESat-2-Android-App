@@ -11,6 +11,7 @@ import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
 const val INTENT_REQUEST_CODE = "IntentRequestCode"
+const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 private const val CHANNEL_ID = "NotificationsTest"
 private const val DESCRIPTION = "lorem ipsum de description foes here"
 var notificationId = 1
@@ -85,8 +86,9 @@ class NotificationBroadcast : BroadcastReceiver() {
             // Create an explicit intent for an Activity in your app
             val intent = Intent(context, MainActivity::class.java).apply {
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_CLEAR_TASK
+                putExtra(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY, true)
             }
-            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, 0, intent, 0)
+            val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, 0)
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)

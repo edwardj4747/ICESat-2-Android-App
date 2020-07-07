@@ -67,6 +67,14 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_nav)
 
+        Log.d(TAG, "Main Activity onCreate with $savedInstanceState")
+
+
+        val bundle = intent.extras
+        val res = bundle?.getBoolean(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY)
+
+        Log.d(TAG, "notication launched Main activity $res")
+
         //setSupportActionBar(toolbar)
         //val appBarConfiguration = AppBarConfiguration(navController.graph)
         //toolbar.setupWithNavController(navController, appBarConfiguration)

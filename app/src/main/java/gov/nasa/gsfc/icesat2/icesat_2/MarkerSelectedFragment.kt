@@ -112,6 +112,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
 */
                 createAlarm(System.currentTimeMillis() + 1000)
                 createAlarm(System.currentTimeMillis() + 5000)
+                createAlarm(selectedPoint.dateObject.time)
                 //notificationsSharedPref.deleteAll()
                 //two test alarms
 
