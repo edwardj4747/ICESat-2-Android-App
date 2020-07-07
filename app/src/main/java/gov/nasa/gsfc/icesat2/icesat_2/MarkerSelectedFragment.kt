@@ -144,7 +144,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
     private fun createAlarm(time: Long) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)
         //adding the request code to the intent, so that we can delete it after we show it
-        intent.putExtra(INTENT_REQUEST_CODE, time)
+        intent.putExtra(INTENT_TIME_REQUEST_CODE, time)
+        intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), time.toInt(), intent, 0)
 
 

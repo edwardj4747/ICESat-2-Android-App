@@ -10,7 +10,8 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
-const val INTENT_REQUEST_CODE = "IntentRequestCode"
+const val INTENT_TIME_REQUEST_CODE = "IntentRequestCode"
+const val INTENT_LAT_LNG_STRING = "IntentLatLngString"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 const val NOTIFICATION_LAT = "NotificationLat"
 const val NOTIFICATION_LONG = "NotificationLong"
@@ -31,7 +32,6 @@ class NotificationBroadcast : BroadcastReceiver() {
             /*val mServiceIntent = Intent(context, BootService::class.java)
             context?.startService(mServiceIntent)*/
 
-            val nm = NotificationsSharedPref(context!!)
             Log.d(TAG, "the values in sharedPreferences are----------")
 
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
@@ -51,10 +51,18 @@ class NotificationBroadcast : BroadcastReceiver() {
         }
 
 
+
+        val requestCodeToDelete = intent?.getLongExtra(INTENT_TIME_REQUEST_CODE, -1)
+        val latLngString = intent?.getStringExtra(INTENT_LAT_LNG_STRING)
+        val splitLatLngString = latLngString?.split(",")
+
+        val latParam = splitLatLngString?.get(0)?.toDouble()
+        val longParam = splitLatLngString?.get(1)?.toDouble()
+
         if (context != null) {
-            createNotification(context)
+            createNotification(context, latParam, longParam)
         }
-        val requestCodeToDelete = intent?.getLongExtra(INTENT_REQUEST_CODE, -1)
+
         Log.d(TAG, "--------------------------")
         Log.d(TAG, "onReceive intent request code is${requestCodeToDelete}.}")
 
@@ -68,7 +76,7 @@ class NotificationBroadcast : BroadcastReceiver() {
     }
 
     companion object {
-        fun createNotification(context: Context) {
+        fun createNotification(context: Context, lat: Double?, long: Double?) {
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -88,9 +96,11 @@ class NotificationBroadcast : BroadcastReceiver() {
             // Create an explicit intent for an Activity in your app
             val intent = Intent(context, MainActivity::class.java).apply {
                 //todo: pass in real values for these
-                putExtra(NOTIFICATION_LAT, 23.4)
-                putExtra(NOTIFICATION_LONG, 6.5)
-                putExtra(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY, true)
+                if (lat != null && long != null) {
+                    putExtra(NOTIFICATION_LAT, lat)
+                    putExtra(NOTIFICATION_LONG, long)
+                    putExtra(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY, true)
+                }
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
 
             }
