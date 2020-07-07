@@ -39,6 +39,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
     private var isMarker: Boolean = true
     private lateinit var notificationsSharedPref: NotificationsSharedPref
     private lateinit var alarmManager: AlarmManager
+    private val timeBeforeAlert = 30 * 60 * 1000 //will be used to display the notification half an hour before
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -123,8 +124,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
-                    createAlarm(System.currentTimeMillis() + 1000)
-                    createAlarm(System.currentTimeMillis() + 5000)
+                    //createAlarm(System.currentTimeMillis() + 1000)
+                    //createAlarm(System.currentTimeMillis() + 5000)
                     createAlarm(selectedPointTime)
                     notificationsSharedPref.printAll()
                 }
@@ -160,7 +161,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
         notificationsSharedPref.addToNotificationSharedPref(time)
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(time - System.currentTimeMillis()) / 1000}s")
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+        //show the alert about 30 minutes before the alert
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)
 
     }
 
