@@ -37,6 +37,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
     private var favoritesEntryToRemove: Point? = null
     private lateinit var geocoder: Geocoder
     private var isMarker: Boolean = true
+    private lateinit var notificationsSharedPref: NotificationsSharedPref
+    private lateinit var alarmManager: AlarmManager
+
 
     override fun onCreate(savedInstanceState: Bundle?) {
         super.onCreate(savedInstanceState)
@@ -61,6 +64,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
 
         geocoder = Geocoder(context)
+        notificationsSharedPref = NotificationsSharedPref(requireContext())
+        alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
+
 
         if (isMarker) {
             //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
@@ -94,27 +100,27 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
                 }
 
             }
-            val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val notificationsManager = NotificationsSharedPref(requireContext())
+
+
             btnNotify.setOnClickListener {
                 Log.d(TAG, "notify button clicked")
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
-
-                notificationsManager.deleteAll()
-                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis() + 60000)
-                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis() + 80000)
-
-                notificationsManager.printAll()
-
-
-
-                val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+                notificationsSharedPref.deleteAll()
+                /*val intent = Intent(requireContext(), NotificationBroadcast::class.java)
                 val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
+*/
+                createAlarm(System.currentTimeMillis() + 1000)
+                createAlarm(System.currentTimeMillis() + 5000)
+                //notificationsSharedPref.deleteAll()
+                //two test alarms
 
+                //add the actual alarm for the marker that was clicked. 1) add to preferences; 2) set the alarm
+
+                notificationsSharedPref.printAll()
 
                 Log.d(TAG, "Setting alarms in MarkerSelected Fragment")
-                alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent)
+                //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent)
                 //NotificationBroadcast.createNotification(requireContext())
             }
 
@@ -132,6 +138,21 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
             val listener = requireParentFragment() as MapFragment
             listener.closeButtonPressed()
         }
+    }
+
+    private fun createAlarm(time: Long) {
+        val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+        //adding the request code to the intent, so that we can delete it after we show it
+        intent.putExtra(INTENT_REQUEST_CODE, time)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), time.toInt(), intent, 0)
+
+
+        //1) add to the list of alarms
+        notificationsSharedPref.addToNotificationSharedPref(time)
+        //2) set the alarm
+        Log.d(TAG, "alarm set to go off in ${(time - System.currentTimeMillis()) / 1000}s")
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+
     }
 
     companion object {

@@ -10,6 +10,7 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
+const val INTENT_REQUEST_CODE = "IntentRequestCode"
 private const val CHANNEL_ID = "NotificationsTest"
 private const val DESCRIPTION = "lorem ipsum de description foes here"
 var notificationId = 1
@@ -19,6 +20,9 @@ private const val TAG = "NotificationBroadcast"
 class NotificationBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
         Log.d(TAG, "onReceive Called")
+
+        val nm = NotificationsSharedPref(context!!)
+
         if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
             Log.d(TAG, "onBootReceived")
             /*val mServiceIntent = Intent(context, BootService::class.java)
@@ -43,9 +47,19 @@ class NotificationBroadcast : BroadcastReceiver() {
             }*/
         }
 
+
         if (context != null) {
             createNotification(context)
         }
+        val requestCodeToDelete = intent?.getLongExtra(INTENT_REQUEST_CODE, -1)
+        Log.d(TAG, "--------------------------")
+        Log.d(TAG, "onReceive intent request code is${requestCodeToDelete}.}")
+
+        //delete the notification with the request code passed in the intent
+        nm.delete(requestCodeToDelete!!)
+
+        Log.d(TAG, "After deleting $requestCodeToDelete; all values are")
+        nm.printAll()
 
 
     }

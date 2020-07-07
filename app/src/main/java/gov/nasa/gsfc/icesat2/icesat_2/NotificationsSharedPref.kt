@@ -21,7 +21,7 @@ class NotificationsSharedPref(context: Context) {
         }
     }
 
-    fun removeFromSharedPref(timestamp: Long) {
+    fun delete(timestamp: Long) {
         with(sharedPreferences.edit()) {
             try {
                 remove(timestamp.toString())
