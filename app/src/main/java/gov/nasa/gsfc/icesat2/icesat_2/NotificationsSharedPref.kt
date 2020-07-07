@@ -1,17 +1,17 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-import android.app.Activity
 import android.content.Context
 import android.util.Log
 
 //todo: if package name changes, have to change this too
 private const val NOTIFICATION_SHARED_PREF = "gov.nasa.gsfc.icesat2.icesat_2.NotificationSharedPref"
-private const val TAG = "NotificationsManager"
+private const val TAG = "NotificationsSharedPref"
 
 
-class NotificationsManager(activity: Activity) {
+class NotificationsSharedPref(context: Context) {
 
-    private val sharedPreferences = activity.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
+    //private val sharedPreferences = activity.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
+    private val sharedPreferences = context.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
 
     fun addToNotificationSharedPref(timestamp: Long) {
         Log.d(TAG, "Adding $timestamp to sharedPref")

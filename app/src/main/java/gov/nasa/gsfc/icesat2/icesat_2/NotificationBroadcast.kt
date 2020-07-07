@@ -1,9 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-import android.app.NotificationChannel
-import android.app.NotificationManager
-import android.app.PendingIntent
-import android.app.Service
+import android.app.*
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
@@ -24,8 +21,22 @@ class NotificationBroadcast : BroadcastReceiver() {
         Log.d(TAG, "onReceive Called")
         if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
             Log.d(TAG, "onBootReceived")
-            val mServiceIntent = Intent(context, BootService::class.java)
-            context?.startService(mServiceIntent)
+            /*val mServiceIntent = Intent(context, BootService::class.java)
+            context?.startService(mServiceIntent)*/
+
+            val nm = NotificationsSharedPref(context!!)
+            Log.d(TAG, "the values in sharedPreferences are----------")
+
+            val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
+            val myIntent = Intent(context, NotificationBroadcast::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, 0)
+
+            val notificationValues = nm.getSharedPrefValues()
+            notificationValues.forEach {
+                Log.d(TAG, "in shared pref $it")
+                alarmManager.set(AlarmManager.RTC_WAKEUP, it as Long, pendingIntent)
+            }
+
 
             /*if (context != null) {
                 createNotification(context)
@@ -35,14 +46,6 @@ class NotificationBroadcast : BroadcastReceiver() {
         if (context != null) {
             createNotification(context)
         }
-
-        val nm = NotificationsManager()
-        Log.d(TAG, "the values in sharedPreferences are----------")
-        val notificationValues = nm.getSharedPrefValues()
-        notificationValues.forEach {
-            Log.d(TAG, "in shared pref $it")
-        }
-
 
 
     }
@@ -83,6 +86,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                 // notificationId is a unique int for each notification that you must define
                 notify(notificationId, builder.build())
             }
+            notificationId++
         }
     }
 

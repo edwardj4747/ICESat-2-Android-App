@@ -95,18 +95,18 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
 
             }
             val alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
-            val notificationsManager = NotificationsManager(requireActivity())
+            val notificationsManager = NotificationsSharedPref(requireContext())
             btnNotify.setOnClickListener {
+                Log.d(TAG, "notify button clicked")
+                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+
 
                 notificationsManager.deleteAll()
-                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis())
-                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis() + 108)
+                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis() + 60000)
+                notificationsManager.addToNotificationSharedPref(System.currentTimeMillis() + 80000)
 
                 notificationsManager.printAll()
 
-
-                Log.d(TAG, "notify button clicked")
-                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
 
                 val intent = Intent(requireContext(), NotificationBroadcast::class.java)
