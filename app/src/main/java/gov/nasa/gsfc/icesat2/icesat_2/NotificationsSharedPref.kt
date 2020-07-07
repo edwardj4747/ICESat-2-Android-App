@@ -32,6 +32,10 @@ class NotificationsSharedPref(context: Context) {
         }
     }
 
+    fun contains(timestamp: String): Boolean {
+        return sharedPreferences.contains(timestamp)
+    }
+
     fun deleteAll() {
         sharedPreferences.edit().clear().apply()
     }

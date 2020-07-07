@@ -101,28 +101,35 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
 
             }
 
+            //set the fill/ non fill of btnNotify on create
+            if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())) {
+                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+            } else {
+                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
+            }
+            Log.d(TAG, "OnActivity Created notifications are")
+            notificationsSharedPref.printAll()
 
             btnNotify.setOnClickListener {
                 Log.d(TAG, "notify button clicked")
-                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
-                notificationsSharedPref.deleteAll()
-                /*val intent = Intent(requireContext(), NotificationBroadcast::class.java)
-                val pendingIntent = PendingIntent.getBroadcast(requireContext(), 0, intent, 0)
-*/
-                createAlarm(System.currentTimeMillis() + 1000)
-                createAlarm(System.currentTimeMillis() + 5000)
-                createAlarm(selectedPoint.dateObject.time)
-                //notificationsSharedPref.deleteAll()
-                //two test alarms
+                val selectedPointTime = selectedPoint.dateObject.time
 
-                //add the actual alarm for the marker that was clicked. 1) add to preferences; 2) set the alarm
+                if (notificationsSharedPref.contains(selectedPointTime.toString())) {
+                    btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
+                    notificationsSharedPref.delete(selectedPointTime)
+                    Log.d(TAG, "after deleting resulting notifications are")
+                    notificationsSharedPref.printAll()
+                } else {
+                    btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
-                notificationsSharedPref.printAll()
+                    createAlarm(System.currentTimeMillis() + 1000)
+                    createAlarm(System.currentTimeMillis() + 5000)
+                    createAlarm(selectedPointTime)
+                    notificationsSharedPref.printAll()
+                }
 
-                Log.d(TAG, "Setting alarms in MarkerSelected Fragment")
-                //alarmManager.set(AlarmManager.RTC_WAKEUP, System.currentTimeMillis() + 1000, pendingIntent)
-                //NotificationBroadcast.createNotification(requireContext())
+
             }
 
         } else {
