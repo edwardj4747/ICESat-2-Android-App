@@ -80,8 +80,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "lat is $lat; long is $long")
 
         //if launched from a notification
-        if (res != null && res && lat != null && long != null) {
-            searchButtonPressed(lat, long, 10.0, false)
+        if (res != null && res && lat != null && long != null && time != null) {
+            searchButtonPressed(lat, long, 10.0, false, time)
         }
 
 
@@ -160,7 +160,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
                         if (calledFromSelectOnMap) {
                             launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
                         } else {
-                            launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                            launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment, time)
                         }
                     } else {
                         Log.d(TAG, "No Search results found")
@@ -292,9 +292,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         navController.navigate(R.id.selectOnMapFragment)
     }
 
-    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int) {
+    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int, time: Long = -1L) {
         GlobalScope.launch(Dispatchers.Main) {
             showMap(navigationActionID)
+
+            mainViewModel.notificationTime.value = time
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
             val frag = getFrag()

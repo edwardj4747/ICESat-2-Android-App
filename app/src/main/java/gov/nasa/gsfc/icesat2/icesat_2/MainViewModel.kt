@@ -36,6 +36,8 @@ class MainViewModel : ViewModel() {
         return searchString
     }
 
+    val notificationTime = MutableLiveData<Long>()
+
     var trackingData = MutableLiveData<ArrayList<TrackingPoint>>()
 
     fun getTrackingData(): LiveData<ArrayList<TrackingPoint>> {

@@ -94,6 +94,7 @@ GoogleMap.OnPolylineClickListener {
         mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
             Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
+            Log.d(TAG, "notificationTime is ${mainActivityViewModel.notificationTime.value}")
             pointList = it
             if (this::mMap.isInitialized && !markersPlotted) {
                 Log.d(TAG, "Adding polylines from inside observer")
