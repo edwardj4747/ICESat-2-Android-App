@@ -81,7 +81,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
         //if launched from a notification
         if (res != null && res && lat != null && long != null && time != null) {
-            searchButtonPressed(lat, long, 10.0, false, time)
+            searchButtonPressed(lat, long, DEFAULT_SEARCH_RADIUS, false, time)
         }
 
 

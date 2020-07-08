@@ -94,8 +94,19 @@ GoogleMap.OnPolylineClickListener {
         mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
             Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
-            Log.d(TAG, "notificationTime is ${mainActivityViewModel.notificationTime.value}")
-            pointList = it
+            val notificationTime = mainActivityViewModel.notificationTime.value
+            Log.d(TAG, "notificationTime is $notificationTime")
+            if (notificationTime!= null && notificationTime != -1L) {
+                //search launched by clicking on notification. Only want to show the track with the notification
+                pointList = ArrayList()
+                for (i in 0 until it.size) {
+                    if (onSameChain(it[i], notificationTime)) {
+                        pointList.add(it[i])
+                    }
+                }
+            } else {
+                pointList = it
+            }
             if (this::mMap.isInitialized && !markersPlotted) {
                 Log.d(TAG, "Adding polylines from inside observer")
                 markersPlotted = true
@@ -237,6 +248,11 @@ GoogleMap.OnPolylineClickListener {
         val timingThreshold = 60
         //return p1.dateObject.time + timingThreshold * 1000 > p2.dateObject.time
         return abs(p1.dateObject.time - p2.dateObject.time) < timingThreshold * 1000
+    }
+
+    private fun onSameChain(p1: Point, time: Long): Boolean {
+        val timingThreshold = 60
+        return abs(p1.dateObject.time - time) < timingThreshold * 1000
     }
 
     private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
