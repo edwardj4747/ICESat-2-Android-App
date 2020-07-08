@@ -39,7 +39,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
     private var isMarker: Boolean = true
     private lateinit var notificationsSharedPref: NotificationsSharedPref
     private lateinit var alarmManager: AlarmManager
-    private val timeBeforeAlert = 30 * 60 * 1000 //will be used to display the notification half an hour before
+    private val timeBeforeAlert = 8 * 60 * 60 * 1000 //will be used to display the notification eight hours before
 
 
     override fun onCreate(savedInstanceState: Bundle?) {
@@ -154,6 +154,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
         //adding the request code to the intent, so that we can delete it after we show it
         intent.putExtra(INTENT_TIME_REQUEST_CODE, time)
         intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
+        intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), time.toInt(), intent, 0)
 
 
@@ -161,7 +162,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
         notificationsSharedPref.addToNotificationSharedPref(time)
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(time - System.currentTimeMillis()) / 1000}s")
-        //show the alert about 30 minutes before the alert
+        //show the alert about 8 hrs
         alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)
 
     }

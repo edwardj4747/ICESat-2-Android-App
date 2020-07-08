@@ -12,6 +12,7 @@ import androidx.core.app.NotificationManagerCompat
 
 const val INTENT_TIME_REQUEST_CODE = "IntentRequestCode"
 const val INTENT_LAT_LNG_STRING = "IntentLatLngString"
+const val INTENT_TIME_STRING = "IntentTimeString"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 const val NOTIFICATION_LAT = "NotificationLat"
 const val NOTIFICATION_LONG = "NotificationLong"
@@ -59,8 +60,10 @@ class NotificationBroadcast : BroadcastReceiver() {
         val latParam = splitLatLngString?.get(0)?.toDouble()
         val longParam = splitLatLngString?.get(1)?.toDouble()
 
+        val time = intent?.getStringExtra(INTENT_TIME_STRING)
+
         if (context != null) {
-            createNotification(context, latParam, longParam)
+            createNotification(context, latParam, longParam, time)
         }
 
         Log.d(TAG, "--------------------------")
@@ -76,7 +79,7 @@ class NotificationBroadcast : BroadcastReceiver() {
     }
 
     companion object {
-        fun createNotification(context: Context, lat: Double?, long: Double?) {
+        fun createNotification(context: Context, lat: Double?, long: Double?, time: String?) {
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -106,10 +109,16 @@ class NotificationBroadcast : BroadcastReceiver() {
             }
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
+            val infoMessage = if (time == null) {
+                context.getString(R.string.flyoverNotification)
+            } else {
+                context.getString(R.string.flyoverNotification) + " at $time"
+            }
+
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(context.getString(R.string.icesatFlyover))
-                .setContentText(context.getString(R.string.flyoverNotification))
+                .setContentText(infoMessage)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
