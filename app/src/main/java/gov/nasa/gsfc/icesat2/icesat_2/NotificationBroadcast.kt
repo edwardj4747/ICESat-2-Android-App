@@ -110,9 +110,9 @@ class NotificationBroadcast : BroadcastReceiver() {
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             val infoMessage = if (time == null) {
-                context.getString(R.string.flyoverNotification)
+                context.getString(R.string.flyoverNotification, "today")
             } else {
-                context.getString(R.string.flyoverNotification) + " at $time"
+                context.getString(R.string.flyoverNotification, "at $time")
             }
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
