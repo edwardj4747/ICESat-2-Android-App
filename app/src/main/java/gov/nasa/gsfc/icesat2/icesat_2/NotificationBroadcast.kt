@@ -13,9 +13,11 @@ import androidx.core.app.NotificationManagerCompat
 const val INTENT_TIME_REQUEST_CODE = "IntentRequestCode"
 const val INTENT_LAT_LNG_STRING = "IntentLatLngString"
 const val INTENT_TIME_STRING = "IntentTimeString"
+const val INTENT_TIME = "IntentTime"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 const val NOTIFICATION_LAT = "NotificationLat"
 const val NOTIFICATION_LONG = "NotificationLong"
+const val NOTIFICATION_TIME = "NotificationTime"
 private const val CHANNEL_ID = "NotificationsTest"
 private const val DESCRIPTION = "lorem ipsum de description foes here"
 var notificationId = 1
@@ -60,10 +62,11 @@ class NotificationBroadcast : BroadcastReceiver() {
         val latParam = splitLatLngString?.get(0)?.toDouble()
         val longParam = splitLatLngString?.get(1)?.toDouble()
 
-        val time = intent?.getStringExtra(INTENT_TIME_STRING)
+        val timeString = intent?.getStringExtra(INTENT_TIME_STRING)
+        val time = intent?.getLongExtra(INTENT_TIME, -1L)
 
         if (context != null) {
-            createNotification(context, latParam, longParam, time)
+            createNotification(context, latParam, longParam, timeString, time!!)
         }
 
         Log.d(TAG, "--------------------------")
@@ -79,7 +82,7 @@ class NotificationBroadcast : BroadcastReceiver() {
     }
 
     companion object {
-        fun createNotification(context: Context, lat: Double?, long: Double?, time: String?) {
+        fun createNotification(context: Context, lat: Double?, long: Double?, timeString: String?, time: Long) {
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -96,12 +99,14 @@ class NotificationBroadcast : BroadcastReceiver() {
                 notificationManager.createNotificationChannel(channel)
             }
 
+            Log.d(TAG, "createNotification. time is $time")
             // Create an explicit intent for an Activity in your app
             val intent = Intent(context, MainActivity::class.java).apply {
                 //todo: pass in real values for these
-                if (lat != null && long != null) {
+                if (lat != null && long != null && time != -1L) {
                     putExtra(NOTIFICATION_LAT, lat)
                     putExtra(NOTIFICATION_LONG, long)
+                    putExtra(NOTIFICATION_TIME, time)
                     putExtra(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY, true)
                 }
                 flags = Intent.FLAG_ACTIVITY_NEW_TASK or Intent.FLAG_ACTIVITY_SINGLE_TOP
@@ -109,10 +114,10 @@ class NotificationBroadcast : BroadcastReceiver() {
             }
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            val infoMessage = if (time == null) {
+            val infoMessage = if (timeString == null) {
                 context.getString(R.string.flyoverNotification, "today")
             } else {
-                context.getString(R.string.flyoverNotification, "at $time")
+                context.getString(R.string.flyoverNotification, "at $timeString")
             }
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)

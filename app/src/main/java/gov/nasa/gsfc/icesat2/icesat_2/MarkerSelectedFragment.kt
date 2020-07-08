@@ -155,6 +155,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
         intent.putExtra(INTENT_TIME_REQUEST_CODE, time)
         intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
         intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
+        intent.putExtra(INTENT_TIME, selectedPoint.dateObject.time)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), time.toInt(), intent, 0)
 
 

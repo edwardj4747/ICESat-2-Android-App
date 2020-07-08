@@ -70,10 +70,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         Log.d(TAG, "Main Activity onCreate with $savedInstanceState")
 
 
+        //Getting values for when activity launched by clicking on event
         val bundle = intent.extras
         val res = bundle?.getBoolean(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY)
         val lat = intent.extras?.getDouble(NOTIFICATION_LAT)
         val long = bundle?.getDouble(NOTIFICATION_LONG)
+        val time = bundle?.getLong(NOTIFICATION_TIME)
         Log.d(TAG, "notication launched Main activity $res")
         Log.d(TAG, "lat is $lat; long is $long")
 
@@ -120,7 +122,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
 
-    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long) {
+
+        Log.d(TAG, "searchButtonPressed. Time is $time")
 
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
