@@ -99,6 +99,7 @@ GoogleMap.OnPolylineClickListener {
             if (notificationTime!= null && notificationTime != -1L) {
                 //search launched by clicking on notification. Only want to show the track with the notification
                 pointList = ArrayList()
+                textViewSeeAll.visibility = View.VISIBLE
                 for (i in 0 until it.size) {
                     if (onSameChain(it[i], notificationTime)) {
                         pointList.add(it[i])
@@ -113,6 +114,21 @@ GoogleMap.OnPolylineClickListener {
                 addChainPolyline(it)
             }
         })
+
+        textViewSeeAll.setOnClickListener {
+            textViewSeeAll.visibility = View.INVISIBLE
+            pointList = mainActivityViewModel?.allPointsList?.value!!
+            //clear everything and redraw everything
+            count = 0
+            markerList.clear()
+            polylineList.clear()
+            Log.d(TAG, "markerLIst is ${markerList.size}")
+            Log.d(TAG, "polyline list is ${polylineList.size}")
+
+            laserBeamList.clear()
+            flyoverDatesAndTimes.clear()
+            addChainPolyline(pointList)
+        }
 
         mainActivityViewModel?.getSearchCenter()?.observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "MapFragment searchCenterObserved to be ${it.latitude}, ${it.longitude}")

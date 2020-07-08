@@ -66,6 +66,7 @@
     <string name="markers">Markers</string>
     <string name="tracks">Tracks</string>
     <string name="laserBeams">Laser Beams</string>
+    <string name="seeAll"><u>See All</u></string>
 
     <string name="selectALocation">Please Choose a Location to add to Calendar</string>
 
