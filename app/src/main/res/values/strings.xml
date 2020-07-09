@@ -84,6 +84,10 @@
     <string name="dateDisplay">%1$s, %2$s, %3$s</string>
     <string name="timeDisplay">%1$s %2$s %3$s</string>
     <string name="trackBeginsAt">Track Begins on:\n%1$s, %2$s</string>
+    <string-array name="hoursDaysSelector">
+        <item>Hours</item>
+        <item>Days</item>
+    </string-array>
 
     <!--    ListFrag RecyclerView-->
     <string name="dateYearString">%1$s, %2$s</string>

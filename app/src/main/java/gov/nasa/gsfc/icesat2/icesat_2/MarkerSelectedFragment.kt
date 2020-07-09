@@ -16,6 +16,7 @@ import androidx.lifecycle.ViewModelProviders
 import gov.nasa.gsfc.icesat2.icesat_2.favoritesdb.FavoritesEntry
 import gov.nasa.gsfc.icesat2.icesat_2.ui.favorites.FavoritesViewModel
 import kotlinx.android.synthetic.main.fragment_marker_selected.*
+import java.util.*
 
 private const val TAG = "MarkerSelectedFragment"
 private const val ARG_PARAM3 = "param3"
@@ -26,7 +27,7 @@ private const val ARG_PARAM4 = "param4"
  * Use the [MarkerSelectedFragment.newInstance] factory method to
  * create an instance of this fragment.
  */
-class MarkerSelectedFragment : Fragment(), IGeocoding {
+class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
     private lateinit var selectedPoint: Point
@@ -112,9 +113,21 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
             notificationsSharedPref.printAll()
 
             btnNotify.setOnClickListener {
-                Log.d(TAG, "notify button clicked")
 
                 val selectedPointTime = selectedPoint.dateObject.time
+                val calendar = Calendar.getInstance()
+                calendar.timeZone = TimeZone.getTimeZone("UTC")
+                calendar.timeInMillis = selectedPointTime
+
+                val datePickerFragment = DatePickerFragment(requireActivity())
+                datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+
+                datePickerFragment.show(childFragmentManager, "DatePicker")
+
+
+                Log.d(TAG, "notify button clicked")
+
+                //val selectedPointTime = selectedPoint.dateObject.time
 
                 if (notificationsSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
@@ -147,6 +160,18 @@ class MarkerSelectedFragment : Fragment(), IGeocoding {
             val listener = requireParentFragment() as MapFragment
             listener.closeButtonPressed()
         }
+    }
+
+    override fun datePicked(year: Int, month: Int, day: Int) {
+
+        val timePickerFragment = TimePickerFragment(requireActivity())
+        timePickerFragment.setListener(this)
+
+        timePickerFragment.show(childFragmentManager, "My Message")
+    }
+
+    override fun timePicked(hour: Int, minute: Int) {
+        TODO("Not yet implemented")
     }
 
     private fun createAlarm(time: Long) {
