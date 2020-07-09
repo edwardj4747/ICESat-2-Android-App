@@ -196,12 +196,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         intent.putExtra(INTENT_TIME_REQUEST_CODE, timeForKey)
         intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
         intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
-        intent.putExtra(INTENT_TIME, selectedPoint.dateObject.time)
+        //I think? this is the same as INTENT_FLYOVER_TIME
+        intent.putExtra(INTENT_FLYOVER_TIME, selectedPoint.dateObject.time)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.toInt(), intent, 0)
 
 
-        //1) add to the list of alarms
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
+        //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString
+        //notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, ${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         /*//show the alert about 8 hrs
