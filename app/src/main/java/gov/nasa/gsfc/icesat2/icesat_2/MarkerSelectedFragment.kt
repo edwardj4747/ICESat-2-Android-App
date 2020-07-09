@@ -109,21 +109,13 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             } else {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
             }
+            Log.d(TAG, "SelectedPointTime si ${selectedPoint.dateObject.time}")
             Log.d(TAG, "OnActivity Created notifications are")
             notificationsSharedPref.printAll()
 
             btnNotify.setOnClickListener {
-                val selectedPointTime = selectedPoint.dateObject.time
-                val calendar = getCalendarForSelectedPoint()
-                calendar.timeZone = TimeZone.getTimeZone("UTC")
-
-                val datePickerFragment = DatePickerFragment(requireActivity())
-                datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-
-                datePickerFragment.show(childFragmentManager, "DatePicker")
-
-
                 Log.d(TAG, "notify button clicked")
+                val selectedPointTime = selectedPoint.dateObject.time
 
                 //val selectedPointTime = selectedPoint.dateObject.time
 
@@ -134,6 +126,12 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                     notificationsSharedPref.printAll()
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+                    val calendar = getCalendarForSelectedPoint()
+                    //calendar.timeZone = TimeZone.getTimeZone("UTC")
+
+                    val datePickerFragment = DatePickerFragment(requireActivity())
+                    datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                    datePickerFragment.show(childFragmentManager, "DatePicker")
 
                     //createAlarm(System.currentTimeMillis() + 1000)
                     //createAlarm(System.currentTimeMillis() + 5000)
@@ -181,28 +179,34 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         calendar.set(year, month, day, hour, minute)
         //calendar.timeZone = TimeZone.getTimeZone("UTC")
         val time = calendar.timeInMillis
-        createAlarm(time)
+        createAlarm(time, selectedPoint.dateObject.time)
         Log.d(TAG, "Creating alarm at $time")
         Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()
     }
 
-    private fun createAlarm(time: Long) {
+    /**
+     * Alarms are stored in shared preferences using the timeInMillis of the actual flyover NOT the key
+     * for when the alarm is actually set
+     * @param timeForAlarm when the alarm will go off
+     * @param timeForKey the time of the flyover
+     */
+    private fun createAlarm(timeForAlarm: Long, timeForKey: Long) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)
         //adding the request code to the intent, so that we can delete it after we show it
-        intent.putExtra(INTENT_TIME_REQUEST_CODE, time)
+        intent.putExtra(INTENT_TIME_REQUEST_CODE, timeForKey)
         intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
         intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
         intent.putExtra(INTENT_TIME, selectedPoint.dateObject.time)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), time.toInt(), intent, 0)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.toInt(), intent, 0)
 
 
         //1) add to the list of alarms
-        notificationsSharedPref.addToNotificationSharedPref(time)
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey)
         //2) set the alarm
-        Log.d(TAG, "alarm set to go off in ${(time - System.currentTimeMillis()) / 1000}s")
+        Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         /*//show the alert about 8 hrs
         alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)*/
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm, pendingIntent)
 
     }
 
