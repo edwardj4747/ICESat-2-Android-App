@@ -1,11 +1,13 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
-import android.app.*
+import android.app.AlarmManager
+import android.app.NotificationChannel
+import android.app.NotificationManager
+import android.app.PendingIntent
 import android.content.BroadcastReceiver
 import android.content.Context
 import android.content.Intent
 import android.os.Build
-import android.os.IBinder
 import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
@@ -26,35 +28,44 @@ private const val TAG = "NotificationBroadcast"
 
 class NotificationBroadcast : BroadcastReceiver() {
     override fun onReceive(context: Context?, intent: Intent?) {
+
+        Log.d(TAG, "************************************")
         Log.d(TAG, "onReceive Called")
 
         val nm = NotificationsSharedPref(context!!)
+
 
         if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
             Log.d(TAG, "onBootReceived")
             /*val mServiceIntent = Intent(context, BootService::class.java)
             context?.startService(mServiceIntent)*/
 
-            Log.d(TAG, "the values in sharedPreferences are----------")
+            Log.d(TAG, "the keys in sharedPreferences are--(flyover, alarm)--------")
+            Log.d(TAG, "size is ${nm.getSharedPrefValues().size}")
+            nm.printAll()
 
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
             val myIntent = Intent(context, NotificationBroadcast::class.java)
-            val pendingIntent = PendingIntent.getBroadcast(context, 0, myIntent, 0)
+            //add all of the extra information to the notification
+            //todo
 
             val notificationValues = nm.getSharedPrefValues()
             notificationValues.forEach {
                 Log.d(TAG, "in shared pref $it")
+                val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
                 alarmManager.set(AlarmManager.RTC_WAKEUP, it as Long, pendingIntent)
             }
+            Log.d(TAG, "after notificationsValues for loop")
 
-
+            Log.d(TAG, "end on BOOT_COMPLETED")
+            return
             /*if (context != null) {
                 createNotification(context)
             }*/
         }
 
 
-
+        Log.d(TAG, "did not enter boot completed")
         val requestCodeToDelete = intent?.getLongExtra(INTENT_TIME_REQUEST_CODE, -1)
         val latLngString = intent?.getStringExtra(INTENT_LAT_LNG_STRING)
         val splitLatLngString = latLngString?.split(",")
@@ -69,16 +80,12 @@ class NotificationBroadcast : BroadcastReceiver() {
             createNotification(context, latParam, longParam, timeString, time!!)
         }
 
-        Log.d(TAG, "--------------------------")
-        Log.d(TAG, "onReceive intent request code is${requestCodeToDelete}.}")
+        Log.d(TAG, "onReceive intent request code is ${requestCodeToDelete}.}")
 
         //delete the notification with the request code passed in the intent
         nm.delete(requestCodeToDelete!!)
 
-        Log.d(TAG, "After deleting $requestCodeToDelete; all values are")
-        nm.printAll()
-
-
+        Log.d(TAG, "After deleting $requestCodeToDelete; size is ${nm.getSharedPrefValues().size}")
     }
 
     companion object {
@@ -138,15 +145,3 @@ class NotificationBroadcast : BroadcastReceiver() {
 
 }
 
-class BootService : Service() {
-    override fun onBind(intent: Intent?): IBinder? {
-        Log.d(TAG, "onBind")
-        return null
-    }
-
-    override fun onCreate() {
-        super.onCreate()
-        Log.d(TAG, "onCreate")
-    }
-
-}

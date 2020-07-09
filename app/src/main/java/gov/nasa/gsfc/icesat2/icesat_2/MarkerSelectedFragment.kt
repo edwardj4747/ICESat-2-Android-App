@@ -201,7 +201,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
 
         //1) add to the list of alarms
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey)
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         /*//show the alert about 8 hrs

@@ -13,10 +13,10 @@ class NotificationsSharedPref(context: Context) {
     //private val sharedPreferences = activity.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
     private val sharedPreferences = context.getSharedPreferences(NOTIFICATION_SHARED_PREF, Context.MODE_PRIVATE)
 
-    fun addToNotificationSharedPref(timestamp: Long) {
-        Log.d(TAG, "Adding $timestamp to sharedPref")
+    fun addToNotificationSharedPref(timestampOfFlyover: Long, timeStampOfAlarm: Long) {
+        Log.d(TAG, "Adding $timestampOfFlyover to sharedPref")
         with(sharedPreferences.edit()) {
-            putLong(timestamp.toString(), timestamp)
+            putLong(timestampOfFlyover.toString(), timeStampOfAlarm)
             apply()
         }
     }
@@ -41,14 +41,12 @@ class NotificationsSharedPref(context: Context) {
     }
 
     fun printAll() {
-        Log.d(TAG, "print all called")
+        Log.d(TAG, "print all keys called")
         val allEntries = sharedPreferences.all
+        val keys = allEntries.keys
         Log.d(TAG, "allEntriesSize is ${allEntries.size}")
-        for (element in allEntries.keys) {
-            Log.d(TAG, "key is $element")
-        }
-        for ((key, value) in allEntries) {
-            Log.d("map values", key + ": " + value.toString())
+        for (element in keys) {
+            Log.d(TAG, "key is: $element value is: ${sharedPreferences.getLong(element, -1L)}")
         }
     }
 
