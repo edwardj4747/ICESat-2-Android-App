@@ -103,12 +103,11 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
             }
 
-            //set the fill/ non fill of btnNotify on create
+            //if there is already a notification for this time; display the filled in icon
             if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
-            } else {
-                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
             }
+
             Log.d(TAG, "SelectedPointTime si ${selectedPoint.dateObject.time}")
             Log.d(TAG, "OnActivity Created notifications are")
             notificationsSharedPref.printAll()
@@ -126,17 +125,12 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                     notificationsSharedPref.printAll()
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+                    //launch the date picker
                     val calendar = getCalendarForSelectedPoint()
                     //calendar.timeZone = TimeZone.getTimeZone("UTC")
-
                     val datePickerFragment = DatePickerFragment(requireActivity())
                     datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
                     datePickerFragment.show(childFragmentManager, "DatePicker")
-
-                    //createAlarm(System.currentTimeMillis() + 1000)
-                    //createAlarm(System.currentTimeMillis() + 5000)
-                    //createAlarm(selectedPointTime)
-                    //notificationsSharedPref.printAll()
                 }
 
 
@@ -165,15 +159,23 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         return calendar
     }
 
+    /**
+     * called when a date has been selected from the date picker.
+     * @param year, month, day are the respective year, month, and day choosen from the datepicker
+     */
     override fun datePicked(year: Int, month: Int, day: Int) {
         val calendar = getCalendarForSelectedPoint()
         calendar.timeZone = TimeZone.getDefault()
 
+        //launch the timer picker
         val timePickerFragment = TimePickerFragment(requireActivity())
         timePickerFragment.setListener(this, year, month, day, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
         timePickerFragment.show(childFragmentManager, "My Message")
     }
 
+    /**
+     * Called once a time has been picked. Create an alarm to go off at the chosen time
+     */
     override fun timePicked(year: Int, month: Int, day: Int, hour: Int, minute: Int) {
         val calendar = Calendar.getInstance()
         calendar.set(year, month, day, hour, minute)
@@ -185,10 +187,15 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     }
 
     /**
-     * Alarms are stored in shared preferences using the timeInMillis of the actual flyover NOT the key
-     * for when the alarm is actually set
+     * Does two things
+     * 1) creates a pendingIntent to call [NotificationBroadcast] when alarm is triggered with, notification
+     * specific extras (lat, long, time...etc)
+     * 2) stores the details of the alarm in sharedPreferences, so the alarm can be recreated after device turns back on
+     * Alarms are stored in shared preferences using the following format
+     * key: timeOfFlyover; value: timeForAlarm, lat, long, timeString
+     *
      * @param timeForAlarm when the alarm will go off
-     * @param timeForKey the time of the flyover
+     * @param timeForKey the time of the flyover (can be the same, but almost always timeForAlarm will be first)
      */
     private fun createAlarm(timeForAlarm: Long, timeForKey: Long) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)

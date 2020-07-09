@@ -12,6 +12,10 @@ import androidx.fragment.app.DialogFragment
 
 private const val TAG = "TimePickerFragment"
 
+/**
+ * Launches the Time Picker. Only gets launched if a date was chosen from [DatePickerFragment] and
+ * is called from the datePicked() method in [MarkerSelectedFragment]
+ */
 class TimePickerFragment(private val activity: Activity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var listener: ITimePickerCallback
@@ -40,6 +44,9 @@ class TimePickerFragment(private val activity: Activity) : DialogFragment(), Tim
     }
 }
 
+/**
+ * Creates the date picker object. Called when user is adding a new notification
+ */
 class DatePickerFragment(private val activity: Activity) : DialogFragment(), DatePickerDialog.OnDateSetListener {
 
     private lateinit var listener: ITimePickerCallback
@@ -60,7 +67,7 @@ class DatePickerFragment(private val activity: Activity) : DialogFragment(), Dat
 
     override fun onDateSet(view: DatePicker, year: Int, month: Int, day: Int) {
         Log.d(TAG, "Date set as $year $month $day")
-
+        //callback to MarkerSelectedFragment to which will launch the TimePicker
         listener.datePicked(year, month, day)
     }
 

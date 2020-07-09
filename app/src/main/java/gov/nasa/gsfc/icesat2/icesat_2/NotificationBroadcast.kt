@@ -35,6 +35,12 @@ class NotificationBroadcast : BroadcastReceiver() {
         val nm = NotificationsSharedPref(context!!)
 
 
+        /**
+         * When the device restarts all the notifictions are lost. This method adds all the notifications
+         * back when it detects that the device has powered back on. It retreives the information about
+         * the notifications from [NotificationsSharedPref] and recreates them all with the appropriate
+         * alarm manager
+         */
         if (intent?.action == "android.intent.action.BOOT_COMPLETED") {
             Log.d(TAG, "onBootReceived")
             /*val mServiceIntent = Intent(context, BootService::class.java)
@@ -69,6 +75,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, it as Long, pendingIntent)
             }*/
 
+            //go through all the elements in sharedPreferences and add alarms for all the notifications
             val notificationKeys = nm.getSharedPrefKeys()
             notificationKeys.forEach {
                 val myIntent = Intent(context, NotificationBroadcast::class.java)
@@ -93,17 +100,8 @@ class NotificationBroadcast : BroadcastReceiver() {
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeOfAlarm, pendingIntent)
             }
 
-
-
-
-
-            Log.d(TAG, "after notificationsValues for loop")
-
             Log.d(TAG, "end on BOOT_COMPLETED")
             return
-            /*if (context != null) {
-                createNotification(context)
-            }*/
         }
 
 
@@ -158,7 +156,6 @@ class NotificationBroadcast : BroadcastReceiver() {
             Log.d(TAG, "createNotification. time is $time")
             // Create an explicit intent for an Activity in your app
             val intent = Intent(context, MainActivity::class.java).apply {
-                //todo: pass in real values for these
                 if (lat != null && long != null && time != -1L) {
                     putExtra(NOTIFICATION_LAT, lat)
                     putExtra(NOTIFICATION_LONG, long)
