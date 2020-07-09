@@ -113,11 +113,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             notificationsSharedPref.printAll()
 
             btnNotify.setOnClickListener {
-
                 val selectedPointTime = selectedPoint.dateObject.time
-                val calendar = Calendar.getInstance()
+                val calendar = getCalendarForSelectedPoint()
                 calendar.timeZone = TimeZone.getTimeZone("UTC")
-                calendar.timeInMillis = selectedPointTime
 
                 val datePickerFragment = DatePickerFragment(requireActivity())
                 datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
@@ -139,8 +137,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
                     //createAlarm(System.currentTimeMillis() + 1000)
                     //createAlarm(System.currentTimeMillis() + 5000)
-                    createAlarm(selectedPointTime)
-                    notificationsSharedPref.printAll()
+                    //createAlarm(selectedPointTime)
+                    //notificationsSharedPref.printAll()
                 }
 
 
@@ -162,16 +160,30 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         }
     }
 
+    private fun getCalendarForSelectedPoint(): Calendar {
+        val selectedPointTime = selectedPoint.dateObject.time
+        val calendar = Calendar.getInstance()
+        calendar.timeInMillis = selectedPointTime
+        return calendar
+    }
+
     override fun datePicked(year: Int, month: Int, day: Int) {
+        val calendar = getCalendarForSelectedPoint()
+        calendar.timeZone = TimeZone.getDefault()
 
         val timePickerFragment = TimePickerFragment(requireActivity())
-        timePickerFragment.setListener(this)
-
+        timePickerFragment.setListener(this, year, month, day, calendar.get(Calendar.HOUR_OF_DAY), calendar.get(Calendar.MINUTE))
         timePickerFragment.show(childFragmentManager, "My Message")
     }
 
-    override fun timePicked(hour: Int, minute: Int) {
-        TODO("Not yet implemented")
+    override fun timePicked(year: Int, month: Int, day: Int, hour: Int, minute: Int) {
+        val calendar = Calendar.getInstance()
+        calendar.set(year, month, day, hour, minute)
+        //calendar.timeZone = TimeZone.getTimeZone("UTC")
+        val time = calendar.timeInMillis
+        createAlarm(time)
+        Log.d(TAG, "Creating alarm at $time")
+        Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()
     }
 
     private fun createAlarm(time: Long) {
@@ -188,8 +200,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         notificationsSharedPref.addToNotificationSharedPref(time)
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(time - System.currentTimeMillis()) / 1000}s")
-        //show the alert about 8 hrs
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)
+        /*//show the alert about 8 hrs
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)*/
+        alarmManager.set(AlarmManager.RTC_WAKEUP, time, pendingIntent)
 
     }
 

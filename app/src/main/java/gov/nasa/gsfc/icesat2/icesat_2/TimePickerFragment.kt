@@ -9,31 +9,34 @@ import android.util.Log
 import android.widget.DatePicker
 import android.widget.TimePicker
 import androidx.fragment.app.DialogFragment
-import java.util.*
 
 private const val TAG = "TimePickerFragment"
 
 class TimePickerFragment(private val activity: Activity) : DialogFragment(), TimePickerDialog.OnTimeSetListener {
 
     private lateinit var listener: ITimePickerCallback
+    private var year = 0
+    private var month = 0
+    private var day = 0
+    private var hourOfDay = 0
+    private var minute = 0
 
-
-    fun setListener(listener: ITimePickerCallback) {
+    fun setListener(listener: ITimePickerCallback, year: Int, month: Int, day: Int, hourOfDay: Int, minute: Int) {
         this.listener = listener
+        this.year = year
+        this.month = month
+        this.day = day
+        this.hourOfDay = hourOfDay
+        this.minute = minute
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val c = Calendar.getInstance()
-        val hour = c.get(Calendar.HOUR_OF_DAY)
-        val minute = c.get(Calendar.MINUTE)
-
-        // Create a new instance of TimePickerDialog and return it
-        return TimePickerDialog(activity, this, hour, minute, false)
+        return TimePickerDialog(activity, this, hourOfDay, minute, false)
     }
 
     override fun onTimeSet(view: TimePicker?, hourOfDay: Int, minute: Int) {
         Log.d(TAG, "Time set as $hourOfDay: $minute")
-        listener.timePicked(hourOfDay, minute)
+        listener.timePicked(year, month, day, hourOfDay, minute)
     }
 }
 
@@ -52,9 +55,6 @@ class DatePickerFragment(private val activity: Activity) : DialogFragment(), Dat
     }
 
     override fun onCreateDialog(savedInstanceState: Bundle?): Dialog {
-        val c = Calendar.getInstance()
-
-        // Create a new instance of DatePickerDialog and return it
         return DatePickerDialog(activity, this, year, month, day)
     }
 
