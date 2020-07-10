@@ -12,10 +12,10 @@ import android.util.Log
 import androidx.core.app.NotificationCompat
 import androidx.core.app.NotificationManagerCompat
 
-const val INTENT_TIME_REQUEST_CODE = "IntentRequestCode"
+
 const val INTENT_LAT_LNG_STRING = "IntentLatLngString"
 const val INTENT_TIME_STRING = "IntentTimeString"
-const val INTENT_FLYOVER_TIME = "IntentTime"
+const val INTENT_FLYOVER_TIME_KEY = "IntentTime"
 const val INTENT_SEARCH_STRING = "IntentSearchString"
 const val INTENT_DATE_STRING = "IntentDateString"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
@@ -95,10 +95,10 @@ class NotificationBroadcast : BroadcastReceiver() {
                 Log.d(TAG, "for key $it: value is ${nm.get(it)}")
 
                 Log.d(TAG, "putting $it into INTENT_TIME_REQUEST_CODE")
-                myIntent.putExtra(INTENT_TIME_REQUEST_CODE, it) //key
+                //myIntent.putExtra(INTENT_TIME_REQUEST_CODE, it) //key
                 myIntent.putExtra(INTENT_LAT_LNG_STRING, "$lat, $long")
                 myIntent.putExtra(INTENT_TIME_STRING, timeString)
-                myIntent.putExtra(INTENT_FLYOVER_TIME, it.toLong()) //flyover time
+                myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, it.toLong()) //flyover time
                 myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
                 myIntent.putExtra(INTENT_DATE_STRING, dateString)
 
@@ -113,11 +113,6 @@ class NotificationBroadcast : BroadcastReceiver() {
 
         Log.d(TAG, "did not enter boot completed")
 
-        val requestCodeToDelete = intent?.getLongExtra(INTENT_TIME_REQUEST_CODE, -1)
-        Log.d(TAG, "RequestCode To delete is $requestCodeToDelete")
-
-
-
         val latLngString = intent?.getStringExtra(INTENT_LAT_LNG_STRING)
         val splitLatLngString = latLngString?.split(",")
 
@@ -125,7 +120,7 @@ class NotificationBroadcast : BroadcastReceiver() {
         val longParam = splitLatLngString?.get(1)?.toDouble()
 
         val timeString = intent?.getStringExtra(INTENT_TIME_STRING)
-        val time = intent?.getLongExtra(INTENT_FLYOVER_TIME, -1L)
+        val flyoverTimeKey = intent?.getLongExtra(INTENT_FLYOVER_TIME_KEY, -1L)
         val searchString = intent?.getStringExtra(INTENT_SEARCH_STRING)
         var dateString = intent?.getStringExtra(INTENT_DATE_STRING) // has form "Sep 1"
         if (dateString != null) {
@@ -141,16 +136,17 @@ class NotificationBroadcast : BroadcastReceiver() {
             }
         }
 
+
         if (context != null) {
-            createNotification(context, latParam, longParam, timeString, time!!, searchString, dateString)
+            createNotification(context, latParam, longParam, timeString, flyoverTimeKey!!, searchString, dateString)
         }
 
-        Log.d(TAG, "onReceive intent request code is ${requestCodeToDelete}.}")
+        Log.d(TAG, "onReceive intent request code is ${flyoverTimeKey}.}")
 
         //delete the notification with the request code passed in the intent
-        nm.delete(requestCodeToDelete!!)
+        nm.delete(flyoverTimeKey!!)
 
-        Log.d(TAG, "After deleting $requestCodeToDelete; size is ${nm.getSharedPrefValues().size}")
+        Log.d(TAG, "After deleting $flyoverTimeKey; size is ${nm.getSharedPrefValues().size}")
     }
 
     companion object {

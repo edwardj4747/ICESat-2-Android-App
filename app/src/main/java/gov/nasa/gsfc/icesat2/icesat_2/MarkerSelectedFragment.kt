@@ -212,7 +212,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
      * specific extras (lat, long, time...etc)
      * 2) stores the details of the alarm in sharedPreferences, so the alarm can be recreated after device turns back on
      * Alarms are stored in shared preferences using the following format
-     * key: timeOfFlyover; value: timeForAlarm, lat, long, timeString
+     * key: timeOfFlyover; value: timeForAlarm, lat, long, timeString, searchString, dateString
      *
      * @param timeForAlarm when the alarm will go off
      * @param timeForKey the time of the flyover (can be the same, but almost always timeForAlarm will be first)
@@ -220,31 +220,24 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     private fun createAlarm(timeForAlarm: Long, timeForKey: Long) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)
 
+        val latLngString = "${selectedPoint.latitude}, ${selectedPoint.longitude}"
         val timeString = "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm} ${selectedPoint.timezone}"
-        val dateString = selectedPoint.date
-        //adding the request code to the intent, so that we can delete it after we show it
-        intent.putExtra(INTENT_TIME_REQUEST_CODE, timeForKey)
-        intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
-        intent.putExtra(INTENT_TIME_STRING, timeString)
         val searchString = MainActivity.getMainViewModel()?.searchString?.value
+        val dateString = selectedPoint.date
+        //add the values as extras to the intent
+        intent.putExtra(INTENT_FLYOVER_TIME_KEY, selectedPoint.dateObject.time) //flyoverTime
+        intent.putExtra(INTENT_LAT_LNG_STRING, latLngString)
+        intent.putExtra(INTENT_TIME_STRING, timeString)
         intent.putExtra(INTENT_SEARCH_STRING, searchString)
-        Log.d(TAG, "put searchString ${searchString} into intent")
-        //I think? this is the same as INTENT_FLYOVER_TIME
-        intent.putExtra(INTENT_FLYOVER_TIME, selectedPoint.dateObject.time)
         intent.putExtra(INTENT_DATE_STRING, dateString)
-        Log.d(TAG, "haschode is ${timeForKey.hashCode()}")
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
+        Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
 
-
-        //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString, searchString, dateString
-        //notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, $timeString, $searchString, $dateString")
+        //1) add to the list of alarms with a formattedString of format timeStampOfAlarm, lat, long, timeString, searchString, dateString
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
-        /*//show the alert about 8 hrs
-        alarmManager.set(AlarmManager.RTC_WAKEUP, time - timeBeforeAlert, pendingIntent)*/
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm, pendingIntent)
-
     }
 
     companion object {
