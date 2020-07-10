@@ -106,12 +106,10 @@ class NotificationBroadcast : BroadcastReceiver() {
 
 
         Log.d(TAG, "did not enter boot completed")
-        //val requestCodeToDelete = intent?.getStringExtra(INTENT_TIME_REQUEST_CODE)?.toLong()
-        var requestCodeToDelete = -1L
-        Log.d(TAG, "value of INTENT_REQUEST_CODE is ${intent?.getStringExtra(INTENT_TIME_REQUEST_CODE)?.toLong()}")
-        if (intent?.getStringExtra(INTENT_TIME_REQUEST_CODE)?.toLong() != null) {
-            requestCodeToDelete = intent.getStringExtra(INTENT_TIME_REQUEST_CODE)?.toLong()!!
-        }
+
+        val requestCodeToDelete = intent?.getLongExtra(INTENT_TIME_REQUEST_CODE, -1)
+        Log.d(TAG, "RequestCode To delete is $requestCodeToDelete")
+
 
 
         val latLngString = intent?.getStringExtra(INTENT_LAT_LNG_STRING)

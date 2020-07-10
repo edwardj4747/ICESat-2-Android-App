@@ -120,9 +120,17 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
                 if (notificationsSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
+                    //remove the notification from storage in SharedPreferences
                     notificationsSharedPref.delete(selectedPointTime)
                     Log.d(TAG, "after deleting resulting notifications are")
                     notificationsSharedPref.printAll()
+                    //actually cancel the alarm
+                    //create a pending intent with the same properties
+                    Log.d(TAG, "Attempting to cancel a pending intent")
+                    val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+                    val pendingIntent = PendingIntent.getBroadcast(requireContext(), selectedPointTime.hashCode(), intent, 0)
+                    pendingIntent.cancel()
+                    alarmManager.cancel(pendingIntent)
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                     //launch the date picker
@@ -205,7 +213,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
         //I think? this is the same as INTENT_FLYOVER_TIME
         intent.putExtra(INTENT_FLYOVER_TIME, selectedPoint.dateObject.time)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.toInt(), intent, 0)
+        Log.d(TAG, "haschode is ${timeForKey.hashCode()}")
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
 
 
         //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString
