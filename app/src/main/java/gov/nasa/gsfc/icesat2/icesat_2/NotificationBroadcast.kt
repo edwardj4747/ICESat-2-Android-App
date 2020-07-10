@@ -180,6 +180,8 @@ class NotificationBroadcast : BroadcastReceiver() {
                 .setContentTitle(context.getString(R.string.icesatFlyover))
                 .setContentText(infoMessage)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
+                .setStyle(NotificationCompat.BigTextStyle()
+                    .bigText(infoMessage))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
 

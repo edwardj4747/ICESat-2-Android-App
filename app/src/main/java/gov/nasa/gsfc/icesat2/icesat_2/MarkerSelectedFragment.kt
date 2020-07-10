@@ -234,7 +234,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
         //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString, searchString
         //notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, ${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}, $searchString")
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, ${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm} ${selectedPoint.ampm}, $searchString")
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         /*//show the alert about 8 hrs
