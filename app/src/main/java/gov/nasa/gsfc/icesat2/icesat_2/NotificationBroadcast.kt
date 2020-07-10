@@ -17,6 +17,7 @@ const val INTENT_LAT_LNG_STRING = "IntentLatLngString"
 const val INTENT_TIME_STRING = "IntentTimeString"
 const val INTENT_FLYOVER_TIME = "IntentTime"
 const val INTENT_SEARCH_STRING = "IntentSearchString"
+const val INTENT_DATE_STRING = "IntentDateString"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 const val NOTIFICATION_LAT = "NotificationLat"
 const val NOTIFICATION_LONG = "NotificationLong"
@@ -89,6 +90,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                 val long = splitInfoString[2].toDouble()
                 val timeString = splitInfoString[3]
                 val searchString = splitInfoString[4]
+                val dateString = splitInfoString[5]
 
                 Log.d(TAG, "for key $it: value is ${nm.get(it)}")
 
@@ -98,6 +100,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                 myIntent.putExtra(INTENT_TIME_STRING, timeString)
                 myIntent.putExtra(INTENT_FLYOVER_TIME, it.toLong()) //flyover time
                 myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
+                myIntent.putExtra(INTENT_DATE_STRING, dateString)
 
                 val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
                 alarmManager.set(AlarmManager.RTC_WAKEUP, timeOfAlarm, pendingIntent)
@@ -124,9 +127,22 @@ class NotificationBroadcast : BroadcastReceiver() {
         val timeString = intent?.getStringExtra(INTENT_TIME_STRING)
         val time = intent?.getLongExtra(INTENT_FLYOVER_TIME, -1L)
         val searchString = intent?.getStringExtra(INTENT_SEARCH_STRING)
+        var dateString = intent?.getStringExtra(INTENT_DATE_STRING) // has form "Sep 1"
+        if (dateString != null) {
+            val number = dateString.split(" ")[1]
+            dateString += if (number == "1" || number == "21" || number == "31") {
+                "st"
+            } else if (number == "2" || number == "22") {
+                "nd"
+            } else if(number == "3" || number == "23") {
+                "rd"
+            } else {
+                "th"
+            }
+        }
 
         if (context != null) {
-            createNotification(context, latParam, longParam, timeString, time!!, searchString)
+            createNotification(context, latParam, longParam, timeString, time!!, searchString, dateString)
         }
 
         Log.d(TAG, "onReceive intent request code is ${requestCodeToDelete}.}")
@@ -138,7 +154,7 @@ class NotificationBroadcast : BroadcastReceiver() {
     }
 
     companion object {
-        fun createNotification(context: Context, lat: Double?, long: Double?, timeString: String?, time: Long, searchString: String?) {
+        fun createNotification(context: Context, lat: Double?, long: Double?, timeString: String?, time: Long, searchString: String?, dateString: String?) {
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -170,9 +186,9 @@ class NotificationBroadcast : BroadcastReceiver() {
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
             val infoMessage = if (timeString == null) {
-                context.getString(R.string.flyoverNotification, "your area", "UNKNOWN")
+                context.getString(R.string.flyoverNotification, "your area", "UNKNOWN", "Unknown")
             } else {
-                context.getString(R.string.flyoverNotification, searchString, timeString)
+                context.getString(R.string.flyoverNotification, searchString, timeString, dateString)
             }
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
