@@ -223,15 +223,18 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         intent.putExtra(INTENT_TIME_REQUEST_CODE, timeForKey)
         intent.putExtra(INTENT_LAT_LNG_STRING, "${selectedPoint.latitude}, ${selectedPoint.longitude}")
         intent.putExtra(INTENT_TIME_STRING, "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
+        val searchString = MainActivity.getMainViewModel()?.searchString?.value
+        intent.putExtra(INTENT_SEARCH_STRING, searchString)
+        Log.d(TAG, "put searchString ${searchString} into intent")
         //I think? this is the same as INTENT_FLYOVER_TIME
         intent.putExtra(INTENT_FLYOVER_TIME, selectedPoint.dateObject.time)
         Log.d(TAG, "haschode is ${timeForKey.hashCode()}")
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
 
 
-        //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString
+        //1) add to the list of alarms with a fancy formattedString of format timeStampOfAlarm, lat, long, timeString, searchString
         //notificationsSharedPref.addToNotificationSharedPref(timeForKey, timeForAlarm)
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, ${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}")
+        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, ${selectedPoint.latitude}, ${selectedPoint.longitude}, ${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm}, $searchString")
         //2) set the alarm
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         /*//show the alert about 8 hrs

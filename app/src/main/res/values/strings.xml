@@ -141,6 +141,6 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
 <!--    notifications-->
     <string name="channel_name">ICESat-2 Notifications</string>
     <string name="channel_description">Reminders about when the satellite will be passing over</string>
-    <string name="flyoverNotification">ICESat-2 will be in your area %1$s</string>
+    <string name="flyoverNotification">ICESat-2 will be near %1$s at %2$s</string>
 
 </resources>
