@@ -103,9 +103,16 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
             }
 
-            //if there is already a notification for this time; display the filled in icon
-            if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())) {
+            //if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
+            if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())
+                && notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+                Log.d(TAG, "second condition ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()}")
+                Log.d(TAG, "current time     ${System.currentTimeMillis()}")
+                Log.d(TAG, "subtract ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis()}")
+            } else if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())) {
+                //notification there but already passed
+                deleteNotificationFromSPAndAlarmMangager(selectedPoint.dateObject.time)
             }
 
             Log.d(TAG, "SelectedPointTime si ${selectedPoint.dateObject.time}")
@@ -120,17 +127,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
                 if (notificationsSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
-                    //remove the notification from storage in SharedPreferences
-                    notificationsSharedPref.delete(selectedPointTime)
-                    Log.d(TAG, "after deleting resulting notifications are")
-                    notificationsSharedPref.printAll()
-                    //actually cancel the alarm
-                    //create a pending intent with the same properties
-                    Log.d(TAG, "Attempting to cancel a pending intent")
-                    val intent = Intent(requireContext(), NotificationBroadcast::class.java)
-                    val pendingIntent = PendingIntent.getBroadcast(requireContext(), selectedPointTime.hashCode(), intent, 0)
-                    pendingIntent.cancel()
-                    alarmManager.cancel(pendingIntent)
+                    deleteNotificationFromSPAndAlarmMangager(selectedPointTime)
+                    Toast.makeText(requireContext(), "Notification Cancelled", Toast.LENGTH_SHORT).show()
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                     //launch the date picker
@@ -158,6 +156,20 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             val listener = requireParentFragment() as MapFragment
             listener.closeButtonPressed()
         }
+    }
+
+    private fun deleteNotificationFromSPAndAlarmMangager(selectedPointTime: Long) {
+        //remove the notification from storage in SharedPreferences
+        notificationsSharedPref.delete(selectedPointTime)
+        Log.d(TAG, "after deleting resulting notifications are")
+        notificationsSharedPref.printAll()
+        //actually cancel the alarm
+        //create a pending intent with the same properties
+        Log.d(TAG, "Attempting to cancel a pending intent")
+        val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+        val pendingIntent = PendingIntent.getBroadcast(requireContext(), selectedPointTime.hashCode(), intent, 0)
+        pendingIntent.cancel()
+        alarmManager.cancel(pendingIntent)
     }
 
     private fun getCalendarForSelectedPoint(): Calendar {
