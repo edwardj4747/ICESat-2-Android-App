@@ -54,29 +54,6 @@ class NotificationBroadcast : BroadcastReceiver() {
 
             val alarmManager = context.getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
-            /*val notificationValues = nm.getSharedPrefValues()
-            notificationValues.forEach {
-                val myIntent = Intent(context, NotificationBroadcast::class.java)
-
-                //add all of the extra information to the notification
-                //Format is: timeStampOfAlarm, lat, long, timeString
-                val splitInfoString = (it as String).split(",")
-                val timeOfAlarm = splitInfoString[0].toLong()
-                val lat = splitInfoString[1].toDouble()
-                val long = splitInfoString[2].toDouble()
-                val timeString = splitInfoString[3]
-
-                intent.putExtra(INTENT_TIME_REQUEST_CODE, timeForKey) //key
-                intent.putExtra(INTENT_LAT_LNG_STRING, "$lat, $long")
-                intent.putExtra(INTENT_TIME_STRING, "$timeString")
-                intent.putExtra(INTENT_FLYOVER_TIME, flyoverTime) //flyover time
-
-
-                Log.d(TAG, "in shared pref $it")
-                val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
-                alarmManager.set(AlarmManager.RTC_WAKEUP, it as Long, pendingIntent)
-            }*/
-
             //go through all the elements in sharedPreferences and add alarms for all the notifications
             val notificationKeys = nm.getSharedPrefKeys()
             notificationKeys.forEach {
@@ -86,24 +63,32 @@ class NotificationBroadcast : BroadcastReceiver() {
                 //Format is: timeStampOfAlarm, lat, long, timeString
                 val splitInfoString = (nm.get(it) as String).split(",")
                 val timeOfAlarm = splitInfoString[0].toLong()
-                val lat = splitInfoString[1].toDouble()
-                val long = splitInfoString[2].toDouble()
-                val timeString = splitInfoString[3]
-                val searchString = splitInfoString[4]
-                val dateString = splitInfoString[5]
+                if (timeOfAlarm < System.currentTimeMillis()) {
+                    //alarm has already passed, just remove it.
+                    Log.d(TAG, "deleting $it from sp")
+                    nm.delete(it.toLong())
+                    nm.printAll()
+                } else {
+                    val lat = splitInfoString[1].toDouble()
+                    val long = splitInfoString[2].toDouble()
+                    val timeString = splitInfoString[3]
+                    val searchString = splitInfoString[4]
+                    val dateString = splitInfoString[5]
 
-                Log.d(TAG, "for key $it: value is ${nm.get(it)}")
+                    Log.d(TAG, "for key $it: value is ${nm.get(it)}")
 
-                Log.d(TAG, "putting $it into INTENT_TIME_REQUEST_CODE")
-                //myIntent.putExtra(INTENT_TIME_REQUEST_CODE, it) //key
-                myIntent.putExtra(INTENT_LAT_LNG_STRING, "$lat, $long")
-                myIntent.putExtra(INTENT_TIME_STRING, timeString)
-                myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, it.toLong()) //flyover time
-                myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
-                myIntent.putExtra(INTENT_DATE_STRING, dateString)
+                    Log.d(TAG, "putting $it into INTENT_TIME_REQUEST_CODE")
+                    //myIntent.putExtra(INTENT_TIME_REQUEST_CODE, it) //key
+                    myIntent.putExtra(INTENT_LAT_LNG_STRING, "$lat, $long")
+                    myIntent.putExtra(INTENT_TIME_STRING, timeString)
+                    myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, it.toLong()) //flyover time
+                    myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
+                    myIntent.putExtra(INTENT_DATE_STRING, dateString)
 
-                val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
-                alarmManager.set(AlarmManager.RTC_WAKEUP, timeOfAlarm, pendingIntent)
+                    val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
+                    //show the alarm 1m earlier than scheduled bc they sometimes run late
+                    alarmManager.set(AlarmManager.RTC_WAKEUP, timeOfAlarm - 60000, pendingIntent)
+                }
             }
 
             Log.d(TAG, "end on BOOT_COMPLETED")

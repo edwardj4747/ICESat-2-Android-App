@@ -235,9 +235,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
         //1) add to the list of alarms with a formattedString of format timeStampOfAlarm, lat, long, timeString, searchString, dateString
         notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")
-        //2) set the alarm
+        //2) set the alarm. Alarms tend to run a little late, so show them 1 minute (60000ms) before
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm, pendingIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm - 60000, pendingIntent)
     }
 
     companion object {
