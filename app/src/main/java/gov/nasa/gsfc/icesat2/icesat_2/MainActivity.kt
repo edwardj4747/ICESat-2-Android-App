@@ -39,7 +39,7 @@ const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
 private const val LOCATION_REQUEST_CODE = 6
 
-class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
+class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadDataErrorCallback {
 
     private lateinit var navController: NavController
     private var currentlySearching = false //to make sure only one search is running at a time
@@ -50,6 +50,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
     private var currentDestination: NavDestination? = null
     private var previousDestination: NavDestination? = null
     private var searchFragmentDestination: NavDestination? = null
+    private val searchErrorSet = HashSet<SearchError>()
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -105,12 +106,22 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
 
+
+
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
 
         Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
 
         var searchResultsFound = false
+
+
+        /*val u = URL(serverLocation)
+        val dd = DownloadData(u, this)
+        CoroutineScope(Dispatchers.IO).launch {
+            dd.startDownloadDataProcess()
+        }*/
+
 
         /**
          * If there is not a current search happening and user is connected to a network THEN
@@ -120,38 +131,68 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback {
          * otherwise display a dialog that no results were found
          */
         if (!currentlySearching) {
-            if (isNetworkConnected()) {
-                currentlySearching = true
-                CoroutineScope(Dispatchers.IO).launch {
-                    val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
-                        val downloadData = DownloadData()
-                        val result: Deferred<Boolean> = async {
-                            downloadData.startDownload(serverLocation)
+            try {
+                val url = URL(serverLocation)
+                if (isNetworkConnected()) {
+                    currentlySearching = true
+                    CoroutineScope(Dispatchers.IO).launch {
+                        val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
+                            val downloadData = DownloadData(url, this@MainActivity)
+                            val result: Deferred<Boolean> = async {
+                                //downloadData.startDownload()
+                                downloadData.startDownloadDataProcess()
+                            }
+                            searchResultsFound = result.await()
                         }
-                        searchResultsFound = result.await()
-                    }
 
-                    jobDownloadData.join()
+                        jobDownloadData.join()
 
-                    Log.d(TAG, "searchResultsFound = $searchResultsFound")
-                    if (searchResultsFound) {
-                        Log.d(TAG, "YAY!! Search results found")
-                        if (calledFromSelectOnMap) {
-                            launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
+                        Log.d(TAG, "searchResultsFound = $searchResultsFound")
+                        if (searchResultsFound) {
+                            Log.d(TAG, "YAY!! Search results found")
+                            if (calledFromSelectOnMap) {
+                                launchMapOnMainThread(lat, long, radius, R.id.action_selectOnMapFragment_to_resultsHolderFragment)
+                            } else {
+                                launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                            }
                         } else {
-                            launchMapOnMainThread(lat, long, radius, R.id.action_navigation_search_to_resultsHolderFragment)
+                            Log.d(TAG, "No Search results found")
+                            displayAppropriateDialog()
+                            //showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
                         }
-                    } else {
-                        Log.d(TAG, "No Search results found")
-                        showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+                        currentlySearching = false
                     }
-                    currentlySearching = false
+                } else {
+                    showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
                 }
-            } else {
-                showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
+            } catch (e: Exception) {
+                Log.d(TAG, "error in searching ${e.message}")
             }
         }
     }
+
+
+
+    override fun addErrorToSet(searchError: SearchError) {
+        Log.d(TAG, "addError method. Added $searchError")
+        searchErrorSet.add(searchError)
+    }
+
+    private fun displayAppropriateDialog() {
+        Log.d(TAG, "displayAppropriateDialog starts with searchErrorSet $searchErrorSet")
+        if (searchErrorSet.contains(SearchError.TIMED_OUT)) {
+            CoroutineScope(Dispatchers.Main).launch {
+                showDialog(R.string.searchError, R.string.searchErrorDescription, R.string.ok)
+            }
+        } else if (searchErrorSet.contains(SearchError.NO_RESULTS)) {
+            CoroutineScope(Dispatchers.Main).launch {
+                showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+            }
+        }
+        searchErrorSet.clear()
+        Log.d(TAG, "displayApproriateDialog ends. searchErrorSet is $searchErrorSet")
+    }
+
 
     private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager

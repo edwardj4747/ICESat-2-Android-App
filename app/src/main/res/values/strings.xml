@@ -50,6 +50,11 @@
     <string name="noNetworkDescription">Please connect to a network and then try again</string>
     <string name="ok">OK</string>
 
+<!--    Search Error Dialog-->
+    <string name="searchError">Search Timed Out</string>
+    <string name="searchErrorDescription">We are having trouble connecting to our servers right now.
+        Please check your network connection and try again.</string>
+
     <!--    Location turned off dialog-->
     <string name="locationOffTitle">Location is Turned Off</string>
     <string name="locationOffDescription">Please turn on you location</string>

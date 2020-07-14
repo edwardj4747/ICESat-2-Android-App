@@ -1,11 +1,10 @@
 package gov.nasa.gsfc.icesat2.icesat_2
 
+import android.content.Context
 import android.util.Log
 import kotlinx.coroutines.*
 import org.json.JSONArray
 import org.json.JSONObject
-import java.io.IOException
-import java.net.MalformedURLException
 import java.net.URL
 import java.text.SimpleDateFormat
 import java.util.*
@@ -15,8 +14,12 @@ private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
 //Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
+private const val JOB_TIMEOUT = 4000L
 
-class DownloadData {
+class DownloadData(private val url: URL, context: Context) {
+
+    private lateinit var mainSearchJob: Job
+    private var listener: IDownloadDataErrorCallback = context as MainActivity
 
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
@@ -32,14 +35,32 @@ class DownloadData {
         }
     }
 
+    suspend fun startDownloadDataProcess() : Boolean{
+        var result = false
+        withContext(Dispatchers.IO) {
+            val job = withTimeoutOrNull(JOB_TIMEOUT) {
+                result = startDownload() // wait until job is done
+                Log.d(TAG, "download finished")
+            }
+
+            if(job == null){
+                Log.d(TAG, "Canceling search job")
+                mainSearchJob.cancel()
+
+                listener.addErrorToSet(SearchError.TIMED_OUT)
+            }
+
+        }
+        Log.d(TAG, "start download process result is $result")
+        return result
+    }
 
     //return true if any points meet search criteria. False if no points meet criteria
-    suspend fun startDownload(string: String) : Boolean{
+    suspend fun startDownload(): Boolean{
         Log.d(TAG, "startDownload method begins")
         var resultsFound = false
-        val job = CoroutineScope(Dispatchers.IO).launch {
+        mainSearchJob = CoroutineScope(Dispatchers.IO).launch {
             try {
-                val url = URL(string)
                 val jsonText = url.readText()
                 val jsonObject = JSONObject(jsonText)
 
@@ -98,6 +119,9 @@ class DownloadData {
                     } else {
                         //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
                         mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
+
+                        // todo: no results
+                        listener.addErrorToSet(SearchError.NO_RESULTS)
                         resultsFound = false
                     }
                 } else {
@@ -105,16 +129,15 @@ class DownloadData {
                     //TODO: Handle these cases
                 }
 
-            } catch (e: MalformedURLException) {
-                Log.d(TAG, "Malformed URL Exception ${e.message}")
-            } catch (e: IOException) {
-                Log.d(TAG, "IO Exception ${e.message}")
+            /*} catch (e: IOException) {
+                Log.d(TAG, "IO Exception ${e.message}")*/
             } catch (e: Exception) {
                 Log.d(TAG, "Exception ${e.message}")
+                //listener.searchTimedOut()
             }
         }
 
-        job.join()
+        mainSearchJob.join()
         Log.d(TAG, "startDownload method ends. returning $resultsFound")
         return resultsFound
     }
