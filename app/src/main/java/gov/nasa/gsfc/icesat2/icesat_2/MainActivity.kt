@@ -309,7 +309,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     }
 
     override fun selectOnMapButtonPressed() {
-        navController.navigate(R.id.selectOnMapFragment)
+        if (isNetworkConnected()) {
+            navController.navigate(R.id.selectOnMapFragment)
+        } else {
+            showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
+        }
     }
 
     private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int) {
@@ -364,6 +368,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     override fun trackButtonPressed() {
 
         Log.d(TAG, "Track button pressed")
+        if (!isNetworkConnected()) {
+            showDialog(R.string.noNetworkTitle, R.string.noNetworkDescription, R.string.ok)
+            return
+        }
         val currentTimeInMillis = System.currentTimeMillis()
         val numResults = 30
         val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis&numResults=$numResults"
