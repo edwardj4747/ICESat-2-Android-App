@@ -13,8 +13,8 @@
 
     <!--fragment_search-->
     <string name="enterLatLong">Enter Latitude/Longitude</string>
-    <string name="latHint">Latitude</string>
-    <string name="longHint">Longitude</string>
+    <string name="latHint">Latitude &#xb0;N</string>
+    <string name="longHint">Longitude &#xb0;E</string>
     <string name="enterSearchRadius">Enter Search Radius</string>
     <string name="useCurrentLocation">Use Current Location</string>
     <string name="selectLocationOnMap">Select Location On Map</string>
@@ -86,7 +86,7 @@
 
     <!--    ListFrag RecyclerView-->
     <string name="dateYearString">%1$s, %2$s</string>
-    <string name="latLngDisplayString">%1$s%2$cN %3$s%4$cN</string>
+    <string name="latLngDisplayString">%1$s%2$cN %3$s%4$cE</string>
 
     <!--    Info Fragment-->
 
