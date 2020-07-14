@@ -246,7 +246,6 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
 
     fun downloadMoreData() {
         Log.d(TAG, "Starting Download of newData")
-        val downloadData = DownloadData()
         //val currentTimeInMillis = System.currentTimeMillis()
         val lastTimeInCurrentData = satellitePos[satellitePos.size - 1].timeInMillis + 1
         val numResults = 30
@@ -254,6 +253,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         //0th entry will be the same but all of the following will be different so we can just append the different ones
         try {
             val url = URL(downloadLink)
+            val downloadData = DownloadData(url, requireContext())
             CoroutineScope(Dispatchers.IO).launch {
                 val newData: Deferred<ArrayList<TrackingPoint>> = async {
                     downloadData.downloadTrackingData(url)

@@ -364,13 +364,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     override fun trackButtonPressed() {
 
         Log.d(TAG, "Track button pressed")
-        val downloadData = DownloadData()
         val currentTimeInMillis = System.currentTimeMillis()
         val numResults = 30
         val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis&numResults=$numResults"
-        Log.d(TAG, "downloadlink is $downloadLink")
+        
         try {
             val url = URL(downloadLink)
+            val downloadData = DownloadData(url, this)
             CoroutineScope(Dispatchers.IO).launch {
                 val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                     val trackingData: Deferred<ArrayList<TrackingPoint>> = async {
