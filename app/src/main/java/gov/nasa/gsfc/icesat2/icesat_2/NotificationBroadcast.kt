@@ -85,7 +85,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                     //myIntent.putExtra(INTENT_TIME_REQUEST_CODE, it) //key
                     myIntent.putExtra(INTENT_LAT_LNG_STRING, "$lat, $long")
                     myIntent.putExtra(INTENT_TIME_STRING, timeString)
-                    myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, it.toLong()) //flyover time
+                    myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, "${it}_$hours") //flyover time
                     myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
                     myIntent.putExtra(INTENT_DATE_STRING, dateString)
                     myIntent.putExtra(INTENT_HOURS_REMINDER, hours)
