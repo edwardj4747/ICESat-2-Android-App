@@ -18,6 +18,7 @@ const val INTENT_TIME_STRING = "IntentTimeString"
 const val INTENT_FLYOVER_TIME_KEY = "IntentTime"
 const val INTENT_SEARCH_STRING = "IntentSearchString"
 const val INTENT_DATE_STRING = "IntentDateString"
+const val INTENT_HOURS_REMINDER = "IntentHoursReminder"
 const val NOTIFICATION_LAUNCHED_MAIN_ACTIVITY = "NotificationLaunchedMainActivity"
 const val NOTIFICATION_LAT = "NotificationLat"
 const val NOTIFICATION_LONG = "NotificationLong"
@@ -76,6 +77,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                     val timeString = splitInfoString[3]
                     val searchString = splitInfoString[4]
                     val dateString = splitInfoString[5]
+                    val hours = it.split("_")[1]
 
                     Log.d(TAG, "for key $it: value is ${nm.get(it)}")
 
@@ -86,6 +88,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                     myIntent.putExtra(INTENT_FLYOVER_TIME_KEY, it.toLong()) //flyover time
                     myIntent.putExtra(INTENT_SEARCH_STRING, searchString)
                     myIntent.putExtra(INTENT_DATE_STRING, dateString)
+                    myIntent.putExtra(INTENT_HOURS_REMINDER, hours)
 
                     val pendingIntent = PendingIntent.getBroadcast(context, it.hashCode(), myIntent, 0)
                     //show the alarm 1m earlier than scheduled bc they sometimes run late
@@ -127,9 +130,11 @@ class NotificationBroadcast : BroadcastReceiver() {
             }
         }
 
+        val hours = intent?.getStringExtra(INTENT_HOURS_REMINDER)
+
 
         if (context != null) {
-            createNotification(context, latParam, longParam, timeString, flyoverTimeLong, searchString, dateString)
+            createNotification(context, latParam, longParam, timeString, flyoverTimeLong, searchString, dateString, hours)
         }
 
         Log.d(TAG, "onReceive intent request code is ${flyoverTimeKey}.}")
@@ -142,7 +147,7 @@ class NotificationBroadcast : BroadcastReceiver() {
     }
 
     companion object {
-        fun createNotification(context: Context, lat: Double?, long: Double?, timeString: String?, time: Long, searchString: String?, dateString: String?) {
+        fun createNotification(context: Context, lat: Double?, long: Double?, timeString: String?, time: Long, paramSearchString: String?, dateString: String?, hours:String?) {
 
             // Create the NotificationChannel, but only on API 26+ because
             // the NotificationChannel class is new and not in the support library
@@ -178,8 +183,23 @@ class NotificationBroadcast : BroadcastReceiver() {
             } else {
                 context.getString(R.string.flyoverNotification, searchString, timeString, dateString)
             }*/
-            
-            val infoMessage = context.getString(R.string.notificationReminder, searchString, "876632")
+
+            val searchString = if (paramSearchString == "Your Location" && lat != null && long != null) {
+                context.getString(R.string.latLngDisplayString, String.format("%.2f", lat), 0x00B0.toChar(), String.format("%.2f", long), 0x00B0.toChar())
+            } else {
+                paramSearchString
+            }
+
+            val infoMessage = if (hours != null && hours != "C") {
+                if (hours.toInt() == 1) {
+                    context.getString(R.string.notificationReminderSingle, searchString, context.getString(R.string.one))
+                } else {
+                    context.getString(R.string.notificationReminderMulti, searchString, hours)
+                }
+            } else {
+                context.getString(R.string.customReminder, dateString, timeString)
+            }
+
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)

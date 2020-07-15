@@ -128,7 +128,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                     Toast.makeText(context, "Notifcations Removed", Toast.LENGTH_SHORT).show()
                 } else {
                     val notificationsDialog = NotificationsDialog()
-                    notificationsDialog.setListener(this)
+                    notificationsDialog.setListener(this) //when the user presses ok on the dialog will call notificationsOptionsChosen
                     notificationsDialog.show(childFragmentManager, "hello world")
                 }
 
@@ -290,12 +290,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         val timeString = "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm} ${selectedPoint.timezone}"
         val searchString = MainActivity.getMainViewModel()?.searchString?.value
         val dateString = selectedPoint.date
+        val hours = timeForKey.split("_")[1]
         //add the values as extras to the intent
         intent.putExtra(INTENT_FLYOVER_TIME_KEY, timeForKey) //flyoverTime key
         intent.putExtra(INTENT_LAT_LNG_STRING, latLngString)
         intent.putExtra(INTENT_TIME_STRING, timeString)
         intent.putExtra(INTENT_SEARCH_STRING, searchString)
         intent.putExtra(INTENT_DATE_STRING, dateString)
+        intent.putExtra(INTENT_HOURS_REMINDER, hours)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
         //Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
 
