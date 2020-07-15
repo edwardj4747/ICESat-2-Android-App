@@ -194,13 +194,13 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             when (element) {
                 0 -> {
                     key += "_1"
-                    createAlarm(currentTime + 100000, key)
-                    //createAlarm(flyoverTime - 60 * 60 * 1000, key)
+                    //createAlarm(currentTime + 100000, key)
+                    createAlarm(flyoverTime - 60 * 60 * 1000, key)
                 }
                 1 -> {
                     key += "_24"
-                    createAlarm(currentTime + 90000, key)
-                    //createAlarm(flyoverTime - 24 * 60 * 60 * 1000, key)
+                    //createAlarm(currentTime + 90000, key)
+                    createAlarm(flyoverTime - 24 * 60 * 60 * 1000, key)
                 }
                 2 -> {
                     key += "_C"
