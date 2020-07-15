@@ -143,4 +143,11 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="channel_description">Reminders about when the satellite will be passing over</string>
     <string name="flyoverNotification">ICESat-2 will be near %1$s at %2$s on %3$s</string>
 
+    <string name="remindMe">Remind Me</string>
+    <string-array name="notificationOptions">
+        <item>One hour before</item>
+        <item>24 hours before</item>
+        <item>Set Custom reminder</item>
+    </string-array>
+
 </resources>

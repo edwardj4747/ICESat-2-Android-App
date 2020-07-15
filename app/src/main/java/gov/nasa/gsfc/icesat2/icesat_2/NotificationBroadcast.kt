@@ -63,10 +63,12 @@ class NotificationBroadcast : BroadcastReceiver() {
                 //Format is: timeStampOfAlarm, lat, long, timeString
                 val splitInfoString = (nm.get(it) as String).split(",")
                 val timeOfAlarm = splitInfoString[0].toLong()
+                //todo: fix this
                 if (timeOfAlarm < System.currentTimeMillis()) {
                     //alarm has already passed, just remove it.
                     Log.d(TAG, "deleting $it from sp")
-                    nm.delete(it.toLong())
+                    //nm.delete(it.toLong())
+                    nm.delete(it)
                     nm.printAll()
                 } else {
                     val lat = splitInfoString[1].toDouble()
@@ -129,7 +131,8 @@ class NotificationBroadcast : BroadcastReceiver() {
         Log.d(TAG, "onReceive intent request code is ${flyoverTimeKey}.}")
 
         //delete the notification with the request code passed in the intent
-        nm.delete(flyoverTimeKey!!)
+        //todo: make sure this is good
+        nm.delete(flyoverTimeKey.toString()!!)
 
         Log.d(TAG, "After deleting $flyoverTimeKey; size is ${nm.getSharedPrefValues().size}")
     }

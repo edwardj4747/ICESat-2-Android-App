@@ -123,7 +123,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                 Log.d(TAG, "notify button clicked")
                 val selectedPointTime = selectedPoint.dateObject.time
 
-                //val selectedPointTime = selectedPoint.dateObject.time
+                //create dialog
+                val notificationsDialog = NotificationsDialog()
+                notificationsDialog.setListener(this)
+                notificationsDialog.show(childFragmentManager, "hello world")
+                return@setOnClickListener
+
+
+
 
                 if (notificationsSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
@@ -160,6 +167,37 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         btnClose.setOnClickListener {
             val listener = requireParentFragment() as MapFragment
             listener.closeButtonPressed()
+        }
+    }
+
+    fun notificationOptionsChosen(arr: ArrayList<Int>) {
+        Log.d(TAG, "notification options chosen callback")
+        // 0 -> 1 hrs; 1 -> 24hrs; 2 -> set custom
+        val flyoverTime = selectedPoint.dateObject.time
+        val baseTimeKey = flyoverTime.toString()
+        for (element in arr) {
+            var key = baseTimeKey
+            Log.d(TAG, "Element: $element")
+            when (element) {
+                0 -> {
+                    key += "_1"
+                    //createAlarm(flyoverTime - 60 * 60 * 1000 - 60000, key)
+                }
+                1 -> {
+                    key += "_24"
+                    //createAlarm(flyoverTime - 24 * 60 * 60 * 1000 - 60000, key)
+                }
+                2 -> {
+                    key += "_C"
+                    //launch the date picker
+                    val calendar = getCalendarForSelectedPoint()
+                    //calendar.timeZone = TimeZone.getTimeZone("UTC")
+                    val datePickerFragment = DatePickerFragment(requireActivity())
+                    datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
+                    datePickerFragment.show(childFragmentManager, "DatePicker")
+                }
+            }
+            Log.d(TAG, "create alrarm with key $key")
         }
     }
 
@@ -205,13 +243,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
      * Called once a time has been picked. Create an alarm to go off at the chosen time
      */
     override fun timePicked(year: Int, month: Int, day: Int, hour: Int, minute: Int) {
-        val calendar = Calendar.getInstance()
+        Log.d(TAG, "Time has been picked. NOT doing anything with it")
+        /*val calendar = Calendar.getInstance()
         calendar.set(year, month, day, hour, minute)
         //calendar.timeZone = TimeZone.getTimeZone("UTC")
         val time = calendar.timeInMillis
         createAlarm(time, selectedPoint.dateObject.time.toString())
         Log.d(TAG, "Creating alarm at $time")
-        Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()*/
     }
 
     /**
