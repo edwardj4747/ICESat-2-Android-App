@@ -38,7 +38,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     private var favoritesEntryToRemove: Point? = null
     private lateinit var geocoder: Geocoder
     private var isMarker: Boolean = true
-    private lateinit var notificationsSharedPref: NotificationsSharedPref
+    private lateinit var notifSharedPref: NotificationsSharedPref
     private lateinit var alarmManager: AlarmManager
     private val timeBeforeAlert = 8 * 60 * 60 * 1000 //will be used to display the notification eight hours before
 
@@ -66,7 +66,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
 
         geocoder = Geocoder(context)
-        notificationsSharedPref = NotificationsSharedPref(requireContext())
+        notifSharedPref = NotificationsSharedPref(requireContext())
         alarmManager = requireContext().getSystemService(Context.ALARM_SERVICE) as AlarmManager
 
 
@@ -103,26 +103,26 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
             }
 
-
+            val selectedPointTime = selectedPoint.dateObject.time
             //if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
-            if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")
-                && notificationsSharedPref.get("${selectedPoint.dateObject.time}_1")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L) {
+            if ((notifSharedPref.contains("${selectedPointTime}_1") && notifSharedPref.get("${selectedPointTime}_1")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L)
+                || (notifSharedPref.contains("${selectedPointTime}_24") && notifSharedPref.get("${selectedPointTime}_24")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L)) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                 /*Log.d(TAG, "second condition ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()}")
                 Log.d(TAG, "current time     ${System.currentTimeMillis()}")
                 Log.d(TAG, "subtract ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis()}")*/
-            } else if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")) {
+            } else if (notifSharedPref.contains("${selectedPoint.dateObject.time}_1")) {
                 //notification there but already passed
                 deleteNotificationFromSPAndAlarmMangager(arrayOf("${selectedPoint.dateObject.time}_1", "${selectedPoint.dateObject.time}_24"))
             }
 
             Log.d(TAG, "SelectedPointTime si ${selectedPoint.dateObject.time}")
             Log.d(TAG, "OnActivity Created notifications are")
-            notificationsSharedPref.printAll()
+            notifSharedPref.printAll()
 
             btnNotify.setOnClickListener {
                 Log.d(TAG, "notify button clicked")
-                val selectedPointTime = selectedPoint.dateObject.time
+
 
                 //create dialog
                 val notificationsDialog = NotificationsDialog()
@@ -133,7 +133,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
 
 
-                if (notificationsSharedPref.contains(selectedPointTime.toString())) {
+                if (notifSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
                     deleteNotificationFromSPAndAlarmMangager(arrayOf("$selectedPointTime" + "_24", "$selectedPointTime" + "_1")) //the keys of the 24hr and 1hr alarm
                     Toast.makeText(requireContext(), "Notification Cancelled", Toast.LENGTH_SHORT).show()
@@ -174,7 +174,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     fun notificationOptionsChosen(arr: ArrayList<Int>) {
         //todo: remove this after testing
         Log.d(TAG, "Deleting all previous notifications")
-        notificationsSharedPref.deleteAll()
+        notifSharedPref.deleteAll()
         Log.d(TAG, "notification options chosen callback")
         // 0 -> 1 hrs; 1 -> 24hrs; 2 -> set custom
         val flyoverTime = selectedPoint.dateObject.time
@@ -207,13 +207,13 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             Log.d(TAG, "create alrarm with key $key")
         }
         Log.d(TAG, "After onNotificationReceivedLoop")
-        notificationsSharedPref.printAll()
+        notifSharedPref.printAll()
     }
 
     private fun deleteNotificationFromSPAndAlarmMangager(arraySelectedPointTime: Array<String>) {
         //remove the notification from storage in SharedPreferences
         for (string in arraySelectedPointTime) {
-            notificationsSharedPref.delete(string)
+            notifSharedPref.delete(string)
             //actually cancel the alarm
             //create a pending intent with the same properties
             Log.d(TAG, "Attempting to cancel a pending intent")
@@ -223,7 +223,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             alarmManager.cancel(pendingIntent)
         }
         Log.d(TAG, "after deleting resulting notifications are")
-        notificationsSharedPref.printAll()
+        notifSharedPref.printAll()
 
     }
 
@@ -290,7 +290,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         //Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
 
         //1) add to the list of alarms with a formattedString of format timeStampOfAlarm, lat, long, timeString, searchString, dateString
-        notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")
+        notifSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")
         //2) set the alarm. Alarms tend to run a little late, so show them 1 minute (60000ms) before
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
         alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm - 60000, pendingIntent)

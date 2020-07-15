@@ -173,11 +173,13 @@ class NotificationBroadcast : BroadcastReceiver() {
             }
             val pendingIntent: PendingIntent = PendingIntent.getActivity(context, notificationId, intent, PendingIntent.FLAG_UPDATE_CURRENT)
 
-            val infoMessage = if (timeString == null) {
+            /*val infoMessage = if (timeString == null) {
                 context.getString(R.string.flyoverNotification, "your area", "UNKNOWN", "Unknown")
             } else {
                 context.getString(R.string.flyoverNotification, searchString, timeString, dateString)
-            }
+            }*/
+            
+            val infoMessage = context.getString(R.string.notificationReminder, searchString, "876632")
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
                 .setSmallIcon(R.mipmap.ic_launcher_round)
