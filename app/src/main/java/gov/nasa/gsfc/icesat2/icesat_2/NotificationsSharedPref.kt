@@ -18,7 +18,7 @@ class NotificationsSharedPref(context: Context) {
      * timeStampOfAlarm, lat, long, timeString
      */
     fun addToNotificationSharedPref(timestampOfFlyover: String, notificationInfoString: String) {
-        Log.d(TAG, "Adding $timestampOfFlyover to sharedPref")
+        //Log.d(TAG, "Adding $timestampOfFlyover to sharedPref")
         with(sharedPreferences.edit()) {
             putString(timestampOfFlyover, notificationInfoString)
             apply()

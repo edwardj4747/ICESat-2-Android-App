@@ -103,13 +103,14 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
             }
 
+
             //if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
             if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")
                 && notificationsSharedPref.get("${selectedPoint.dateObject.time}_1")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
-                Log.d(TAG, "second condition ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()}")
+                /*Log.d(TAG, "second condition ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()}")
                 Log.d(TAG, "current time     ${System.currentTimeMillis()}")
-                Log.d(TAG, "subtract ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis()}")
+                Log.d(TAG, "subtract ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis()}")*/
             } else if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")) {
                 //notification there but already passed
                 deleteNotificationFromSPAndAlarmMangager(arrayOf("${selectedPoint.dateObject.time}_1", "${selectedPoint.dateObject.time}_24"))
@@ -171,34 +172,42 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     }
 
     fun notificationOptionsChosen(arr: ArrayList<Int>) {
+        //todo: remove this after testing
+        Log.d(TAG, "Deleting all previous notifications")
+        notificationsSharedPref.deleteAll()
         Log.d(TAG, "notification options chosen callback")
         // 0 -> 1 hrs; 1 -> 24hrs; 2 -> set custom
         val flyoverTime = selectedPoint.dateObject.time
         val baseTimeKey = flyoverTime.toString()
+        val currentTime = System.currentTimeMillis()
         for (element in arr) {
             var key = baseTimeKey
             Log.d(TAG, "Element: $element")
             when (element) {
                 0 -> {
                     key += "_1"
-                    //createAlarm(flyoverTime - 60 * 60 * 1000 - 60000, key)
+                    createAlarm(currentTime + 80000, key)
+                    //createAlarm(flyoverTime - 60 * 60 * 1000, key)
                 }
                 1 -> {
                     key += "_24"
-                    //createAlarm(flyoverTime - 24 * 60 * 60 * 1000 - 60000, key)
+                    createAlarm(currentTime + 70000, key)
+                    //createAlarm(flyoverTime - 24 * 60 * 60 * 1000, key)
                 }
                 2 -> {
                     key += "_C"
                     //launch the date picker
-                    val calendar = getCalendarForSelectedPoint()
+                    /*val calendar = getCalendarForSelectedPoint()
                     //calendar.timeZone = TimeZone.getTimeZone("UTC")
                     val datePickerFragment = DatePickerFragment(requireActivity())
                     datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                    datePickerFragment.show(childFragmentManager, "DatePicker")
+                    datePickerFragment.show(childFragmentManager, "DatePicker")*/
                 }
             }
             Log.d(TAG, "create alrarm with key $key")
         }
+        Log.d(TAG, "After onNotificationReceivedLoop")
+        notificationsSharedPref.printAll()
     }
 
     private fun deleteNotificationFromSPAndAlarmMangager(arraySelectedPointTime: Array<String>) {
@@ -272,13 +281,13 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         val searchString = MainActivity.getMainViewModel()?.searchString?.value
         val dateString = selectedPoint.date
         //add the values as extras to the intent
-        intent.putExtra(INTENT_FLYOVER_TIME_KEY, selectedPoint.dateObject.time) //flyoverTime
+        intent.putExtra(INTENT_FLYOVER_TIME_KEY, timeForKey) //flyoverTime key
         intent.putExtra(INTENT_LAT_LNG_STRING, latLngString)
         intent.putExtra(INTENT_TIME_STRING, timeString)
         intent.putExtra(INTENT_SEARCH_STRING, searchString)
         intent.putExtra(INTENT_DATE_STRING, dateString)
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
-        Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
+        //Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
 
         //1) add to the list of alarms with a formattedString of format timeStampOfAlarm, lat, long, timeString, searchString, dateString
         notificationsSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")

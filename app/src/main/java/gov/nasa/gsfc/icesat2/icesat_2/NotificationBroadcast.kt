@@ -107,7 +107,11 @@ class NotificationBroadcast : BroadcastReceiver() {
         val longParam = splitLatLngString?.get(1)?.toDouble()
 
         val timeString = intent?.getStringExtra(INTENT_TIME_STRING)
-        val flyoverTimeKey = intent?.getLongExtra(INTENT_FLYOVER_TIME_KEY, -1L)
+        val flyoverTimeKey = intent?.getStringExtra(INTENT_FLYOVER_TIME_KEY)
+        val flyoverTimeLong = if (flyoverTimeKey != null && flyoverTimeKey.split("_").isNotEmpty()) {
+            flyoverTimeKey.split("_")[0].toLong()
+        } else { -1L }
+
         val searchString = intent?.getStringExtra(INTENT_SEARCH_STRING)
         var dateString = intent?.getStringExtra(INTENT_DATE_STRING) // has form "Sep 1"
         if (dateString != null) {
@@ -125,7 +129,7 @@ class NotificationBroadcast : BroadcastReceiver() {
 
 
         if (context != null) {
-            createNotification(context, latParam, longParam, timeString, flyoverTimeKey!!, searchString, dateString)
+            createNotification(context, latParam, longParam, timeString, flyoverTimeLong, searchString, dateString)
         }
 
         Log.d(TAG, "onReceive intent request code is ${flyoverTimeKey}.}")
