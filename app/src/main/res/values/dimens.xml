@@ -3,6 +3,8 @@
     <dimen name="activity_horizontal_margin">16dp</dimen>
     <dimen name="activity_vertical_margin">16dp</dimen>
 
-    <dimen name="header_font">24sp</dimen>
-    <dimen name="list_item_font">18sp</dimen>
+    <dimen name="header_font_large">24sp</dimen>
+    <dimen name="list_item_font_large">18sp</dimen>
+
+    <dimen name="list_item_font_medium">15sp</dimen>
 </resources>
