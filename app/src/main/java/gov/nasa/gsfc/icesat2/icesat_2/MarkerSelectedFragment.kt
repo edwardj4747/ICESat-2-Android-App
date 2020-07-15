@@ -104,15 +104,15 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             }
 
             //if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
-            if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())
-                && notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L) {
+            if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")
+                && notificationsSharedPref.get("${selectedPoint.dateObject.time}_1")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                 Log.d(TAG, "second condition ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()}")
                 Log.d(TAG, "current time     ${System.currentTimeMillis()}")
                 Log.d(TAG, "subtract ${notificationsSharedPref.get(selectedPoint.dateObject.time.toString())?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis()}")
-            } else if (notificationsSharedPref.contains(selectedPoint.dateObject.time.toString())) {
+            } else if (notificationsSharedPref.contains("${selectedPoint.dateObject.time}_1")) {
                 //notification there but already passed
-                deleteNotificationFromSPAndAlarmMangager(selectedPoint.dateObject.time)
+                deleteNotificationFromSPAndAlarmMangager(arrayOf("${selectedPoint.dateObject.time}_1", "${selectedPoint.dateObject.time}_24"))
             }
 
             Log.d(TAG, "SelectedPointTime si ${selectedPoint.dateObject.time}")
@@ -127,16 +127,21 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
                 if (notificationsSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
-                    deleteNotificationFromSPAndAlarmMangager(selectedPointTime)
+                    deleteNotificationFromSPAndAlarmMangager(arrayOf("$selectedPointTime" + "_24", "$selectedPointTime" + "_1")) //the keys of the 24hr and 1hr alarm
                     Toast.makeText(requireContext(), "Notification Cancelled", Toast.LENGTH_SHORT).show()
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                     //launch the date picker
-                    val calendar = getCalendarForSelectedPoint()
+                    /*val calendar = getCalendarForSelectedPoint()
                     //calendar.timeZone = TimeZone.getTimeZone("UTC")
                     val datePickerFragment = DatePickerFragment(requireActivity())
                     datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                    datePickerFragment.show(childFragmentManager, "DatePicker")
+                    datePickerFragment.show(childFragmentManager, "DatePicker")*/
+
+                    //set notifications for 24 hrs before and 1hr before
+
+                    createAlarm(selectedPointTime - 24 * 60 * 60 * 1000 - 60000, "$selectedPointTime" + "_24") //24hrs in advance
+                    createAlarm(selectedPointTime - 60 * 60 * 1000 - 60000, "$selectedPointTime" + "_1") //1 hr in advance
                 }
 
 
@@ -158,18 +163,21 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         }
     }
 
-    private fun deleteNotificationFromSPAndAlarmMangager(selectedPointTime: Long) {
+    private fun deleteNotificationFromSPAndAlarmMangager(arraySelectedPointTime: Array<String>) {
         //remove the notification from storage in SharedPreferences
-        notificationsSharedPref.delete(selectedPointTime)
+        for (string in arraySelectedPointTime) {
+            notificationsSharedPref.delete(string)
+            //actually cancel the alarm
+            //create a pending intent with the same properties
+            Log.d(TAG, "Attempting to cancel a pending intent")
+            val intent = Intent(requireContext(), NotificationBroadcast::class.java)
+            val pendingIntent = PendingIntent.getBroadcast(requireContext(), string.hashCode(), intent, 0)
+            pendingIntent.cancel()
+            alarmManager.cancel(pendingIntent)
+        }
         Log.d(TAG, "after deleting resulting notifications are")
         notificationsSharedPref.printAll()
-        //actually cancel the alarm
-        //create a pending intent with the same properties
-        Log.d(TAG, "Attempting to cancel a pending intent")
-        val intent = Intent(requireContext(), NotificationBroadcast::class.java)
-        val pendingIntent = PendingIntent.getBroadcast(requireContext(), selectedPointTime.hashCode(), intent, 0)
-        pendingIntent.cancel()
-        alarmManager.cancel(pendingIntent)
+
     }
 
     private fun getCalendarForSelectedPoint(): Calendar {
@@ -201,7 +209,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         calendar.set(year, month, day, hour, minute)
         //calendar.timeZone = TimeZone.getTimeZone("UTC")
         val time = calendar.timeInMillis
-        createAlarm(time, selectedPoint.dateObject.time)
+        createAlarm(time, selectedPoint.dateObject.time.toString())
         Log.d(TAG, "Creating alarm at $time")
         Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()
     }
@@ -217,7 +225,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
      * @param timeForAlarm when the alarm will go off
      * @param timeForKey the time of the flyover (can be the same, but almost always timeForAlarm will be first)
      */
-    private fun createAlarm(timeForAlarm: Long, timeForKey: Long) {
+    private fun createAlarm(timeForAlarm: Long, timeForKey: String) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)
 
         val latLngString = "${selectedPoint.latitude}, ${selectedPoint.longitude}"

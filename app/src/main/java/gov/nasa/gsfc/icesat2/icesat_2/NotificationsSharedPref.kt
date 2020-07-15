@@ -17,10 +17,10 @@ class NotificationsSharedPref(context: Context) {
      * 2nd param is string of
      * timeStampOfAlarm, lat, long, timeString
      */
-    fun addToNotificationSharedPref(timestampOfFlyover: Long, notificationInfoString: String) {
+    fun addToNotificationSharedPref(timestampOfFlyover: String, notificationInfoString: String) {
         Log.d(TAG, "Adding $timestampOfFlyover to sharedPref")
         with(sharedPreferences.edit()) {
-            putString(timestampOfFlyover.toString(), notificationInfoString)
+            putString(timestampOfFlyover, notificationInfoString)
             apply()
         }
     }
@@ -36,10 +36,10 @@ class NotificationsSharedPref(context: Context) {
         }
     }
 
-    fun delete(timestamp: Long) {
+    fun delete(timeKey: String) {
         with(sharedPreferences.edit()) {
             try {
-                remove(timestamp.toString())
+                remove(timeKey.toString())
                 apply()
             } catch (e: Exception) {
                 Log.d(TAG, "element not in sharedPreferences")
