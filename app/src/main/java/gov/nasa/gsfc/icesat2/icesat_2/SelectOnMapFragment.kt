@@ -92,8 +92,10 @@ class SelectOnMapFragment : Fragment(), IGeocoding, OnMapReadyCallback, GoogleMa
         })
 
         btnSearch.setOnClickListener {
-            listener.searchButtonPressed(chosenLocation.latitude, chosenLocation.longitude, seekBarValue, true)
-            MainActivity.getMainViewModel()?.searchString?.value = stringLocation
+            if (seekBar.isEnabled) {
+                listener.searchButtonPressed(chosenLocation.latitude, chosenLocation.longitude, seekBarValue, true)
+                MainActivity.getMainViewModel()?.searchString?.value = stringLocation
+            }
         }
     }
 
