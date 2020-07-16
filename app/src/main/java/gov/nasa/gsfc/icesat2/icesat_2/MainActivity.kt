@@ -346,7 +346,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private fun showMap(navigationActionID: Int) {
         //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
         Log.d(TAG, "Show map called ${Random.nextInt(10)}")
-        if (getFrag() is SearchFragment) {
+        val frag = getFrag()
+        if (frag is SearchFragment || frag is SelectOnMapFragment) {
             navController.navigate(navigationActionID)
         } else {
             Log.d(TAG, "NOT AN INSTANCE OF SEARCHFRAG :((--- ${Random.nextInt(10)}")
