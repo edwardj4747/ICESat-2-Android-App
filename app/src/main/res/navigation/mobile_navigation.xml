@@ -79,7 +79,11 @@
         tools:layout="@layout/fragment_select_on_map" >
         <action
             android:id="@+id/action_selectOnMapFragment_to_resultsHolderFragment"
-            app:destination="@id/resultsHolderFragment" />
+            app:destination="@id/resultsHolderFragment"
+            app:enterAnim="@anim/slide_in_right"
+            app:exitAnim="@anim/slide_out_left"
+            app:popEnterAnim="@anim/slide_in_left"
+            app:popExitAnim="@anim/slide_out_right"/>
     </fragment>
     <fragment
         android:id="@+id/navigation_gallery"
