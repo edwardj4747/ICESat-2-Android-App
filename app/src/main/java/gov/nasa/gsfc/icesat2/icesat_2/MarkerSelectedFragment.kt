@@ -132,31 +132,24 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                     notificationsDialog.show(childFragmentManager, "hello world")
                 }
 
-                return@setOnClickListener
-
-
-
-
-                if (notifSharedPref.contains(selectedPointTime.toString())) {
+                /*if (notifSharedPref.contains(selectedPointTime.toString())) {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_none_24)
                     deleteNotificationFromSPAndAlarmMangager(arrayOf("$selectedPointTime" + "_24", "$selectedPointTime" + "_1")) //the keys of the 24hr and 1hr alarm
                     Toast.makeText(requireContext(), "Notification Cancelled", Toast.LENGTH_SHORT).show()
                 } else {
                     btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
                     //launch the date picker
-                    /*val calendar = getCalendarForSelectedPoint()
+                    *//*val calendar = getCalendarForSelectedPoint()
                     //calendar.timeZone = TimeZone.getTimeZone("UTC")
                     val datePickerFragment = DatePickerFragment(requireActivity())
                     datePickerFragment.setListener(this, calendar.get(Calendar.YEAR), calendar.get(Calendar.MONTH), calendar.get(Calendar.DAY_OF_MONTH))
-                    datePickerFragment.show(childFragmentManager, "DatePicker")*/
+                    datePickerFragment.show(childFragmentManager, "DatePicker")*//*
 
                     //set notifications for 24 hrs before and 1hr before
 
                     createAlarm(selectedPointTime - 24 * 60 * 60 * 1000 - 60000, "$selectedPointTime" + "_24") //24hrs in advance
                     createAlarm(selectedPointTime - 60 * 60 * 1000 - 60000, "$selectedPointTime" + "_1") //1 hr in advance
-                }
-
-
+                }*/
             }
 
         } else {
@@ -167,6 +160,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             textViewDate.layoutParams = params*/
             textViewTime.visibility = View.GONE
             btnFavorite.visibility= View.INVISIBLE
+            btnNotify.visibility = View.INVISIBLE
         }
 
         btnClose.setOnClickListener {
