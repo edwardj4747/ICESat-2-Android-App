@@ -34,6 +34,7 @@ import kotlinx.android.synthetic.main.activity_main_nav.*
 import kotlinx.android.synthetic.main.fragment_search.*
 import kotlinx.coroutines.*
 import java.net.URL
+import kotlin.random.Random
 
 const val DEFAULT_SEARCH_RADIUS = 25.0
 private const val TAG = "MainActivity"
@@ -51,6 +52,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private var previousDestination: NavDestination? = null
     private var searchFragmentDestination: NavDestination? = null
     private val searchErrorSet = HashSet<SearchError>()
+    private var waitingForLocation = false
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -102,6 +104,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         navHostFragment= supportFragmentManager.findFragmentById(R.id.nav_host_fragment)
 
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
+    }
+
+    override fun onResume() {
+        super.onResume()
+        Log.d(TAG, "MA: onResume ${Random.nextInt()}")
+        waitingForLocation = false
     }
 
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
@@ -225,39 +233,46 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
             frag.setAddressValue(getString(R.string.yourLocation))
         }
 
-        locationManager.requestLocationUpdates("gps", 100, 50F, object : LocationListener {
-            override fun onLocationChanged(location: Location?) {
-                if (location != null) {
-                    Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
-                    updateEditTextWithLocation(location.latitude.toString(), location.longitude.toString())
+        if (!waitingForLocation) {
+            waitingForLocation = true
+            locationManager.requestLocationUpdates("gps", 100, 50F, object : LocationListener {
+                override fun onLocationChanged(location: Location?) {
+                    if (location != null) {
+                        Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
+                        updateEditTextWithLocation(location.latitude.toString(), location.longitude.toString())
 
 
-                    Log.d(TAG, "frag is $frag")
-                    if (frag is SearchFragment) {
-                        Log.d(TAG, "YAY! Frag is Search Frag")
-                        frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
+                        Log.d(TAG, "frag is $frag")
+                        if (frag is SearchFragment) {
+                            Log.d(TAG, "YAY! Frag is Search Frag")
+                            frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
 
-                        //automatically start searching if simpleSearch
-                        if (simpleSearch) {
-                            searchButtonPressed(location.latitude, location.longitude, DEFAULT_SEARCH_RADIUS, false)
+                            //automatically start searching if simpleSearch
+                            if (simpleSearch) {
+                                searchButtonPressed(location.latitude, location.longitude, DEFAULT_SEARCH_RADIUS, false)
+                            }
+                            locationManager.removeUpdates(this)
+                            waitingForLocation = false
                         }
-                        locationManager.removeUpdates(this)
+                    } else {
+                        Log.d(TAG, "onLocationCHanged but location is null")
                     }
-                } else {
-                    Log.d(TAG, "onLocationCHanged but location is null")
                 }
-            }
 
-            override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
+                override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
 
-            override fun onProviderEnabled(provider: String?) {
-                Log.d(TAG, "onProvider enabled with $provider")
-            }
+                override fun onProviderEnabled(provider: String?) {
+                    Log.d(TAG, "onProvider enabled with $provider")
+                }
 
-            override fun onProviderDisabled(provider: String?) {
-                Log.d(TAG, "provider is disabled $provider")
-            }
-        })
+                override fun onProviderDisabled(provider: String?) {
+                    Log.d(TAG, "provider is disabled $provider")
+                }
+            })
+        } else {
+            Log.d(TAG, "Waiting for location updates ${Random.nextInt(20)}")
+        }
+
     }
 
     private fun getFrag(): Fragment? {
@@ -330,7 +345,12 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
 
     private fun showMap(navigationActionID: Int) {
         //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
-        navController.navigate(navigationActionID)
+        Log.d(TAG, "Show map called ${Random.nextInt(10)}")
+        if (getFrag() is SearchFragment) {
+            navController.navigate(navigationActionID)
+        } else {
+            Log.d(TAG, "NOT AN INSTANCE OF SEARCHFRAG :((--- ${Random.nextInt(10)}")
+        }
     }
 
     private fun launchMapNoAnimation() {
