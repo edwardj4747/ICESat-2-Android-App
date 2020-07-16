@@ -184,7 +184,7 @@ class NotificationBroadcast : BroadcastReceiver() {
                 context.getString(R.string.flyoverNotification, searchString, timeString, dateString)
             }*/
 
-            val searchString = if (paramSearchString == "Your Location" && lat != null && long != null) {
+            val searchString = if ((paramSearchString == "Your Location" || paramSearchString == "custom") && lat != null && long != null) {
                 context.getString(R.string.latLngDisplayString, String.format("%.2f", lat), 0x00B0.toChar(), String.format("%.2f", long), 0x00B0.toChar())
             } else {
                 paramSearchString
