@@ -176,9 +176,9 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     }
 
     fun notificationOptionsChosen(arr: ArrayList<Int>) {
-        //todo: remove this after testing
+        /*//todo: remove this after testing
         Log.d(TAG, "Deleting all previous notifications")
-        notifSharedPref.deleteAll()
+        notifSharedPref.deleteAll()*/
         Log.d(TAG, "notification options chosen callback")
 
         btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
