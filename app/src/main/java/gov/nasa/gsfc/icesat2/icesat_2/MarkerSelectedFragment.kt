@@ -104,14 +104,20 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             }
 
             val selectedPointTime = selectedPoint.dateObject.time
-            //if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
+            if (notifSharedPref.contains("${selectedPointTime}_1") || notifSharedPref.contains("${selectedPointTime}_24") || notifSharedPref.contains("${selectedPointTime}_C")) {
+                btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
+            }
+
+            /*//if there is already a notification for this time && notification is in future (occasionally they don't display and thus don't delete); display the filled in icon
             if ((notifSharedPref.contains("${selectedPointTime}_1") && notifSharedPref.get("${selectedPointTime}_1")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L)
-                || (notifSharedPref.contains("${selectedPointTime}_24") && notifSharedPref.get("${selectedPointTime}_24")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L)) {
+                || (notifSharedPref.contains("${selectedPointTime}_24") && notifSharedPref.get("${selectedPointTime}_24")?.split(",")?.get(0)?.toLong()!! - System.currentTimeMillis() > 0L)
+                || (notifSharedPref.contains("${selectedPointTime}_C") && notifSharedPref.get("${selectedPointTime}_C")?.split(",").get())) {
                 btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
             } else if (notifSharedPref.contains("${selectedPointTime}_1") || notifSharedPref.contains("${selectedPointTime}_24")) {
                 //notification there but already passed
+                Log.d(TAG, "DELETING NOTIFICATIONS. AHHHH???")
                 deleteNotificationFromSPAndAlarmMangager(arrayOf("${selectedPoint.dateObject.time}_1", "${selectedPoint.dateObject.time}_24"))
-            }
+            }*/
 
             Log.d(TAG, "OnActivity Created notifications are")
             notifSharedPref.printAll()
@@ -178,6 +184,8 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
 
 
+        //testFilterEquals()
+
         // 0 -> 1 hrs; 1 -> 24hrs; 2 -> set custom
         val flyoverTime = selectedPoint.dateObject.time
         val baseTimeKey = flyoverTime.toString()
@@ -189,15 +197,18 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                 0 -> {
                     key += "_1"
                     //createAlarm(currentTime + 100000, key)
+                    Log.d(TAG, "Create 1 hr alram with key $key")
                     createAlarm(flyoverTime - 60 * 60 * 1000, key)
                 }
                 1 -> {
                     key += "_24"
+                    Log.d(TAG, "Create24hr alram with key $key")
                     //createAlarm(currentTime + 90000, key)
                     createAlarm(flyoverTime - 24 * 60 * 60 * 1000, key)
                 }
                 2 -> {
                     key += "_C"
+                    Log.d(TAG, "Create custom alarm with key $key")
                     //launch the date picker
                     val calendar = getCalendarForSelectedPoint()
                     //calendar.timeZone = TimeZone.getTimeZone("UTC")
@@ -206,9 +217,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
                     datePickerFragment.show(childFragmentManager, "DatePicker")
                 }
             }
-            Log.d(TAG, "create alrarm with key $key")
         }
-        Log.d(TAG, "After onNotificationReceivedLoop")
         notifSharedPref.printAll()
     }
 
@@ -280,18 +289,25 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     private fun createAlarm(timeForAlarm: Long, timeForKey: String) {
         val intent = Intent(requireContext(), NotificationBroadcast::class.java)
 
+        //keeps the alarms unique
+        intent.addCategory(timeForKey)
+
         val latLngString = "${selectedPoint.latitude}, ${selectedPoint.longitude}"
         val timeString = "${selectedPoint.time.substring(0,5)} ${selectedPoint.ampm} ${selectedPoint.timezone}"
         val searchString = MainActivity.getMainViewModel()?.searchString?.value
         val dateString = selectedPoint.date
+        val splitKey = timeForKey.split("_")
         val hours = timeForKey.split("_")[1]
         //add the values as extras to the intent
+        Log.d(TAG, "Adding timeForKey $timeForKey to intent")
         intent.putExtra(INTENT_FLYOVER_TIME_KEY, timeForKey) //flyoverTime key
         intent.putExtra(INTENT_LAT_LNG_STRING, latLngString)
         intent.putExtra(INTENT_TIME_STRING, timeString)
         intent.putExtra(INTENT_SEARCH_STRING, searchString)
         intent.putExtra(INTENT_DATE_STRING, dateString)
         intent.putExtra(INTENT_HOURS_REMINDER, hours)
+//        Log.d(TAG, "hashLike is ${hashLike(splitKey[0], hours)}")
+        Log.d(TAG, "hashcode is ${timeForKey.hashCode()}")
         val pendingIntent = PendingIntent.getBroadcast(requireContext(), timeForKey.hashCode(), intent, 0)
         //Log.d(TAG, "PendingIntent hashcode is ${timeForKey.hashCode()}")
 
@@ -299,8 +315,43 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         notifSharedPref.addToNotificationSharedPref(timeForKey, "$timeForAlarm, $latLngString, $timeString, $searchString, $dateString")
         //2) set the alarm. Alarms tend to run a little late, so show them 1 minute (60000ms) before
         Log.d(TAG, "alarm set to go off in ${(timeForAlarm - System.currentTimeMillis()) / 1000}s")
-        alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm - 60000, pendingIntent)
+        alarmManager.set(AlarmManager.RTC_WAKEUP, timeForAlarm, pendingIntent)
     }
+
+    private fun testFilterEquals() {
+        val timeForKey1 = "1595009351000_1"
+        val intent1 = Intent(requireContext(), NotificationBroadcast::class.java)
+
+        val pendingIntent1 = PendingIntent.getBroadcast(requireContext(), timeForKey1.hashCode(), intent1, 0)
+
+        val timeForKey2 = "1595009351000_2"
+        val intent2 = Intent(requireContext(), NotificationBroadcast::class.java)
+        val pendingIntent2 = PendingIntent.getBroadcast(requireContext(), timeForKey2.hashCode(), intent2, 0)
+
+        Log.d(TAG, "FILTER EQUALS INTENT ${intent1.filterEquals(intent2)}")
+
+        intent1.addCategory("Hour 1")
+        intent2.addCategory("Hour 24")
+        Log.d(TAG, "FILTER EQUALS INTENT ${intent1.filterEquals(intent2)}")
+    }
+
+    /*private fun hashLike(base: String, end: String): Int {
+        Log.d(TAG, "base $base with end $end")
+        var baseHashLike = base.hashCode()
+        when (end) {
+            "_1" -> {
+                baseHashLike += 1
+            }
+            "_24" -> {
+                baseHashLike += 24
+            }
+            "_C" -> {
+                baseHashLike += 7
+            }
+        }
+        Log.d(TAG, "$baseHashLike")
+        return baseHashLike
+    }*/
 
     companion object {
         @JvmStatic

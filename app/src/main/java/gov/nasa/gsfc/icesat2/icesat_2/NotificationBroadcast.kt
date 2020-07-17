@@ -111,6 +111,7 @@ class NotificationBroadcast : BroadcastReceiver() {
 
         val timeString = intent?.getStringExtra(INTENT_TIME_STRING)
         val flyoverTimeKey = intent?.getStringExtra(INTENT_FLYOVER_TIME_KEY)
+        Log.d(TAG, "notiticationBraodcast flyoverTimeKey is $flyoverTimeKey")
         val flyoverTimeLong = if (flyoverTimeKey != null && flyoverTimeKey.split("_").isNotEmpty()) {
             flyoverTimeKey.split("_")[0].toLong()
         } else { -1L }
