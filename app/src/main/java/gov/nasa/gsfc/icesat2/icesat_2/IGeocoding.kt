@@ -20,8 +20,13 @@ interface IGeocoding {
     fun getGeographicInfo(geocoder: Geocoder, lat: Double, long: Double): String {
         val address = geocoder.getFromLocation(lat, long, 1)
 
+        if (address.size == 0) {
+            return "Unknown Location"
+        }
+
         //returns {locality, 'state', country}
         var locationString = ""
+
 
         if (!address[0].locality.isNullOrEmpty()) {
             locationString += "${address[0].locality}, "
