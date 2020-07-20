@@ -73,11 +73,23 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
                 override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
                     try {
                         val pos = viewHolder.adapterPosition
-                        val deletedFavorite = favoritesList[pos]
+                        val element = favoritesList[pos]
+                        favoritesViewModel.delete(element.dateObjectTime)
+
+                        Snackbar.make(snackbarCoordinator, R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.undo) {
+                                favoritesViewModel.insert(element)
+                                displayNoFavoritesTextIfNecessary()
+                            }
+                            .show()
+
+                        /*Log.d(TAG, "pos is $pos")
+                        val deletedFavorite = favoritesList.removeAt(pos)
                         localDeletedFavorites.add(deletedFavorite.dateObjectTime)
-                        favoritesList.removeAt(pos)
+
                         adapter.notifyItemRemoved(pos)
                         displayNoFavoritesTextIfNecessary()
+                        Log.d(TAG, "After removing, new size is ${favoritesList.size}")
                         Snackbar.make(snackbarCoordinator, R.string.itemDeleted, Snackbar.LENGTH_LONG)
                             .setAction(R.string.undo) {
                                 favoritesList.add(pos, deletedFavorite)
@@ -85,7 +97,7 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
                                 adapter.notifyItemInserted(pos)
                                 displayNoFavoritesTextIfNecessary()
                             }
-                            .show()
+                            .show()*/
                     } catch (e: Exception) { Log.d(TAG, "error in onSwiped ${e.message}") }
                 }
             }).attachToRecyclerView(favoriteRecyclerView)
