@@ -59,7 +59,7 @@ class NotificationBroadcast : BroadcastReceiver() {
             val notificationKeys = nm.getSharedPrefKeys()
             notificationKeys.forEach {
                 val myIntent = Intent(context, NotificationBroadcast::class.java)
-
+                myIntent.addCategory(it)
                 //add all of the extra information to the notification
                 //Format is: timeStampOfAlarm, lat, long, timeString
                 val splitInfoString = (nm.get(it) as String).split(",")
