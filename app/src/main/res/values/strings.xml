@@ -71,6 +71,7 @@
     <string name="markers">Markers</string>
     <string name="tracks">Tracks</string>
     <string name="laserBeams">Laser Beams</string>
+    <string name="seeAll"><u>See All</u></string>
 
     <string name="selectALocation">Please Choose a Location to add to Calendar</string>
 
@@ -88,10 +89,15 @@
     <string name="dateDisplay">%1$s, %2$s, %3$s</string>
     <string name="timeDisplay">%1$s %2$s %3$s</string>
     <string name="trackBeginsAt">Track Begins on:\n%1$s, %2$s</string>
+    <string-array name="hoursDaysSelector">
+        <item>Hours</item>
+        <item>Days</item>
+    </string-array>
 
     <!--    ListFrag RecyclerView-->
     <string name="dateYearString">%1$s, %2$s</string>
     <string name="latLngDisplayString">%1$s%2$cN, %3$s%4$cE</string>
+
 
     <!--    Info Fragment-->
 
@@ -137,5 +143,21 @@ Please leave us feedback on the app store. We are excited about the ICESat-2 mis
     <string name="undo">Undo</string>
     <string name="noFavoritesYet">No Favorites Yet</string>
     <string name="geoLatLng"><i>%1$s</i>\n%2$s%3$cN %4$s%5$cE</string>
+
+<!--    notifications-->
+    <string name="channel_name">ICESat-2 Notifications</string>
+    <string name="channel_description">Reminders about when the satellite will be passing over</string>
+    <string name="flyoverNotification">ICESat-2 will be near %1$s at %2$s on %3$s</string>
+    <string name="notificationReminderSingle">Reminder: ICESat-2 will be near %1$s in %2$s hour</string>
+    <string name="notificationReminderMulti">Reminder: ICESat-2 will be near %1$s in %2$s hours</string>
+    <string name="customReminder">This is your custom reminder for the ICESat-2 flyover on %1$s at %2$s</string>
+    <string name="one">one</string>
+
+    <string name="remindMe">Remind Me</string>
+    <string-array name="notificationOptions">
+        <item>One hour before</item>
+        <item>24 hours before</item>
+        <item>Set Custom reminder</item>
+    </string-array>
 
 </resources>

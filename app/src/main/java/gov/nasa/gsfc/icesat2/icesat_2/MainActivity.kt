@@ -70,6 +70,25 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         super.onCreate(savedInstanceState)
         setContentView(R.layout.activity_main_nav)
 
+        Log.d(TAG, "Main Activity onCreate with $savedInstanceState")
+
+
+        //Getting values for when activity launched by clicking on event
+        val bundle = intent.extras
+        val res = bundle?.getBoolean(NOTIFICATION_LAUNCHED_MAIN_ACTIVITY)
+        val lat = intent.extras?.getDouble(NOTIFICATION_LAT)
+        val long = bundle?.getDouble(NOTIFICATION_LONG)
+        val time = bundle?.getLong(NOTIFICATION_TIME)
+        Log.d(TAG, "notication launched Main activity $res")
+        Log.d(TAG, "lat is $lat; long is $long")
+
+        //if launched from a notification
+        if (res != null && res && lat != null && long != null && time != null) {
+            searchButtonPressed(lat, long, DEFAULT_SEARCH_RADIUS, false, time)
+        }
+
+
+
         //setSupportActionBar(toolbar)
         //val appBarConfiguration = AppBarConfiguration(navController.graph)
         //toolbar.setupWithNavController(navController, appBarConfiguration)
@@ -106,14 +125,15 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         mainViewModel = ViewModelProviders.of(this).get(MainViewModel::class.java)
     }
 
+
     override fun onResume() {
         super.onResume()
         Log.d(TAG, "MA: onResume ${Random.nextInt()}")
         waitingForLocation = false
     }
 
-    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean) {
-
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long) {
+        Log.d(TAG, "searchButtonPressed. Time is $time")
 
 
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
@@ -166,7 +186,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                         } else {
                             Log.d(TAG, "No Search results found")
                             displayAppropriateDialog()
-                            //showDialogOnMainThread(R.string.noResults, R.string.noResultsDetails, R.string.backToSearch)
+
                         }
                         currentlySearching = false
                     }
@@ -331,9 +351,11 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         }
     }
 
-    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int) {
+    private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int, time: Long = -1L) {
         GlobalScope.launch(Dispatchers.Main) {
             showMap(navigationActionID)
+
+            mainViewModel.notificationTime.value = time
             mainViewModel.searchCenter.value = LatLng(lat, long)
             mainViewModel.searchRadius.value = radius
             val frag = getFrag()
