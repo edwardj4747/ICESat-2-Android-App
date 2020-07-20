@@ -34,11 +34,9 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
                 ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_favorite, container, false)
 
-
         favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "OBSERVED. size is ${it.size}")
             favoritesList = it as ArrayList<FavoritesEntry>
-
             initRV()
         })
 
@@ -47,13 +45,11 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
     }
 
     private fun initRV() {
-
         val adapter = FavoritesAdapter(requireContext(), favoritesList)
         adapter.setListener(this)
         favoriteRecyclerView.adapter = adapter
         favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
         displayNoFavoritesTextIfNecessary()
-
 
             ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
                 override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
