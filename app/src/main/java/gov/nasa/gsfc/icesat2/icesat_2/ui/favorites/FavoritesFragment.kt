@@ -23,7 +23,8 @@ private const val TAG = "FavoritesFragment"
 class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
 
     private lateinit var favoritesViewModel: FavoritesViewModel
-    private lateinit var favoritesList: List<FavoritesEntry>
+    //private lateinit var favoritesList: List<FavoritesEntry>
+    private lateinit var favoritesList: ArrayList<FavoritesEntry>
     private var swipeListenerAttached = false
     private var recyclerViewInitialized = false
     private lateinit var localFavoritesList: ArrayList<FavoritesEntry>
@@ -38,17 +39,59 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
                 ViewModelProviders.of(this).get(FavoritesViewModel::class.java)
         val root = inflater.inflate(R.layout.fragment_favorite, container, false)
 
-        favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
+      /*  favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
             Log.d(TAG, "allFavorites size is ${it.size}: $it")
             favoritesList = it
             initializeRecyclerView()
+        })*/
+
+        favoritesViewModel.getAllFavorites().observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "OBSERVED. size is ${it.size}")
+            favoritesList = it as ArrayList<FavoritesEntry>
+
+            initRV()
         })
 
         setHasOptionsMenu(true)
         return root
     }
 
-   private fun initializeRecyclerView() {
+    private fun initRV() {
+
+        val adapter = FavoritesAdapter(requireContext(), favoritesList)
+        adapter.setListener(this)
+        favoriteRecyclerView.adapter = adapter
+        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
+        displayNoFavoritesTextIfNecessary()
+
+
+            ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
+                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
+                    return false
+                }
+
+                override fun onSwiped(viewHolder: RecyclerView.ViewHolder, direction: Int) {
+                    try {
+                        val pos = viewHolder.adapterPosition
+                        val deletedFavorite = favoritesList[pos]
+                        localDeletedFavorites.add(deletedFavorite.dateObjectTime)
+                        favoritesList.removeAt(pos)
+                        adapter.notifyItemRemoved(pos)
+                        displayNoFavoritesTextIfNecessary()
+                        Snackbar.make(snackbarCoordinator, R.string.itemDeleted, Snackbar.LENGTH_LONG)
+                            .setAction(R.string.undo) {
+                                favoritesList.add(pos, deletedFavorite)
+                                localDeletedFavorites.removeAt(localDeletedFavorites.size - 1)
+                                adapter.notifyItemInserted(pos)
+                                displayNoFavoritesTextIfNecessary()
+                            }
+                            .show()
+                    } catch (e: Exception) { Log.d(TAG, "error in onSwiped ${e.message}") }
+                }
+            }).attachToRecyclerView(favoriteRecyclerView)
+    }
+
+   /*private fun initializeRecyclerView() {
        recyclerViewInitialized = true
        //todo: this is kind of inefficient
        localFavoritesList = ArrayList(favoritesList)
@@ -61,8 +104,8 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
        favoriteRecyclerView.layoutManager = LinearLayoutManager(requireContext())
 
 
-           /*Log.d(TAG, "Attaching swipe listener")
-           swipeListenerAttached = true*/
+           *//*Log.d(TAG, "Attaching swipe listener")
+           swipeListenerAttached = true*//*
            //delete swiping
            ItemTouchHelper(object : ItemTouchHelper.SimpleCallback(0, ItemTouchHelper.LEFT or ItemTouchHelper.RIGHT) {
                override fun onMove(recyclerView: RecyclerView, viewHolder: RecyclerView.ViewHolder, target: RecyclerView.ViewHolder): Boolean {
@@ -98,10 +141,10 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
            }).attachToRecyclerView(favoriteRecyclerView)
 
 
-   }
+   }*/
 
     private fun displayNoFavoritesTextIfNecessary() {
-        if (localFavoritesList.isEmpty()) {
+        if (favoritesList.isEmpty()) {
             textViewNoFavorites.visibility = View.VISIBLE
         } else {
             textViewNoFavorites.visibility = View.INVISIBLE
@@ -132,6 +175,7 @@ class FavoritesFragment : Fragment(), ILaunchSingleMarkerMap {
             ?.setNegativeButton(negative) {dialog, which ->  }
         alertBuilder.show()
     }
+
 
     //delete items from the database
     override fun onStop() {
