@@ -3,6 +3,7 @@ package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
+import android.content.pm.ActivityInfo
 import android.os.Build
 import android.os.Bundle
 import android.util.Log
@@ -56,6 +57,16 @@ class SearchFragment : Fragment() {
         btnSelectOnMap.setOnClickListener {
             navController.navigate(R.id.action_navigation_home_to_mapFragment2)
         }
+    }
+
+    override fun onResume() {
+        super.onResume()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_PORTRAIT
+    }
+
+    override fun onStop() {
+        super.onStop()
+        requireActivity().requestedOrientation = ActivityInfo.SCREEN_ORIENTATION_FULL_SENSOR
     }
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
