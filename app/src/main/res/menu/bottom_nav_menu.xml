@@ -11,10 +11,10 @@
         android:icon="@drawable/ic_star_border_black_24dp"
         android:title="@string/favorites" />
 
-    <item
+    <!--<item
         android:id="@+id/navigation_gallery"
         android:icon="@drawable/ic_baseline_photo_24"
-        android:title="@string/gallery" />
+        android:title="@string/gallery" />-->
     <item
         android:id="@+id/navigation_info"
         android:icon="@drawable/ic_info"
