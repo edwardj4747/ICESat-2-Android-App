@@ -172,7 +172,8 @@ class SearchFragment : Fragment() {
         if (address != null && address != "") {
             textViewEnterLocation.visibility = View.INVISIBLE
             textViewAdress.visibility = View.VISIBLE
-            textViewAdress.text = "Searching for: $address"
+            //textViewAdress.text = "Searching for: $address"
+            textViewAdress.text = getString(R.string.searchingFor, address)
         } else {
             textViewAdress.text = ""
             textViewEnterLocation.visibility = View.VISIBLE

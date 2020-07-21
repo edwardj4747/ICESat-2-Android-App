@@ -38,6 +38,7 @@
 
     <string name="yourLocation">Your Location</string>
     <string name="clearSearch">Clear Search</string>
+    <string name="searchingFor">Searching for %1$s</string>
 
     <string name="latInputError">Please Enter Latitude between -86.0 and 86.0 %1$cN</string>
     <string name="longInputError">Please Enter Longitude between -180.0 and 180.0 %1$cE</string>
