@@ -234,8 +234,8 @@ class SearchFragment : Fragment() {
 
         //valid radius in kilometers -> convert it to miles
         if (radiusSelection == "Kilometers") {
-            val KILO_TO_MILES = 0.621371
-            radius *= KILO_TO_MILES
+            val kiloToMiles = 0.621371
+            radius *= kiloToMiles
         }
         return doubleArrayOf(lat, long, radius)
     }
@@ -282,7 +282,7 @@ class SearchFragment : Fragment() {
         // Start the autocomplete intent for the search.
         val intent = Autocomplete.IntentBuilder(
             AutocompleteActivityMode.FULLSCREEN, fields)
-            .build(requireContext());
+            .build(requireContext())
         startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
