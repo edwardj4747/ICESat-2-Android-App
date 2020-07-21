@@ -417,8 +417,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         }
         val currentTimeInMillis = System.currentTimeMillis()
         val numResults = 30
-        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis&numResults=$numResults"
-        
+        //val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis&numResults=$numResults"
+        val downloadLink = "http://trackingsatellite-env.eba-wwq38sdd.us-east-1.elasticbeanstalk.com/find?time=$currentTimeInMillis&numResults=$numResults"
+
         try {
             val url = URL(downloadLink)
             val downloadData = DownloadData(url, this)

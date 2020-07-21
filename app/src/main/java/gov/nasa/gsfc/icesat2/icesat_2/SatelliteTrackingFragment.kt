@@ -226,7 +226,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         }
         val lng = lngDelta * fraction + a.longitude
         try {
-            textViewDisplayCoords.text = String.format("Lat: %.2f\nLon: %.2f", lat, lng)
+            textViewDisplayCoords.text = String.format("Lat: %.2f${0x00B0.toChar()}N\nLon: %.2f${0x00B0.toChar()}E", lat, lng)
             when {
                 lat > 83 -> {
                     textViewNearPole.text = getString(R.string.nearNorthPole)
@@ -249,7 +249,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         //val currentTimeInMillis = System.currentTimeMillis()
         val lastTimeInCurrentData = satellitePos[satellitePos.size - 1].timeInMillis + 1
         val numResults = 30
-        val downloadLink = "http://iwantthistoworkplease-env.eba-hrx22muq.us-east-1.elasticbeanstalk.com/find?time=$lastTimeInCurrentData&numResults=$numResults"
+        val downloadLink = "http://trackingsatellite-env.eba-wwq38sdd.us-east-1.elasticbeanstalk.com/find?time=$lastTimeInCurrentData&numResults=$numResults"
         //0th entry will be the same but all of the following will be different so we can just append the different ones
         try {
             val url = URL(downloadLink)
