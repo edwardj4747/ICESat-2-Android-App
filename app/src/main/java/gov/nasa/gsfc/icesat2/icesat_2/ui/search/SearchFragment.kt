@@ -27,7 +27,7 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 
 private const val TAG = "SearchFragment"
-private const val AUTOCOMPLETE_REQUEST_CODE = 1;
+private const val AUTOCOMPLETE_REQUEST_CODE = 1
 
 private lateinit var navController:NavController
 
@@ -42,8 +42,7 @@ class SearchFragment : Fragment() {
         container: ViewGroup?,
         savedInstanceState: Bundle?
     ): View? {
-        val root = inflater.inflate(R.layout.fragment_search, container, false)
-        return root
+        return inflater.inflate(R.layout.fragment_search, container, false)
     }
 
     override fun onViewCreated(view: View, savedInstanceState: Bundle?) {
@@ -100,33 +99,13 @@ class SearchFragment : Fragment() {
         }
 
         textViewAdvancedSearch.setOnClickListener {
-            /*if (editTextLat.visibility == View.GONE) {
-                textViewAdvancedSearch.text = getString(R.string.simpleSearch)
-
-                editTextLat.visibility = View.VISIBLE
-                editTextLon.visibility = View.VISIBLE
-                textViewEnterLatLng.visibility = View.VISIBLE
-                unitSpinner.visibility = View.VISIBLE
-                editTextRadius.visibility = View.VISIBLE
-            } else {
-                textViewAdvancedSearch.text = getString(R.string.advancedSearch)
-
-                editTextLat.visibility = View.GONE
-                editTextLon.visibility = View.GONE
-                textViewEnterLatLng.visibility = View.GONE
-                unitSpinner.visibility = View.GONE
-                editTextRadius.visibility = View.GONE
-            }*/
-
             //hide advanced search text + show advanced search fields
             simpleSearch = false
             textViewAdvancedSearch.visibility = View.GONE
-            //btnSearch2.visibility = View.GONE
 
             textViewSimpleSearch.visibility = View.VISIBLE
             editTextLat.visibility = View.VISIBLE
             editTextLon.visibility = View.VISIBLE
-            //textViewEnterLatLng.visibility = View.VISIBLE
             unitSpinner.visibility = View.VISIBLE
             editTextRadius.visibility = View.VISIBLE
             btnSearch.visibility = View.VISIBLE
@@ -135,12 +114,10 @@ class SearchFragment : Fragment() {
         textViewSimpleSearch.setOnClickListener {
             simpleSearch = true
             textViewAdvancedSearch.visibility = View.VISIBLE
-            //btnSearch2.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
 
             editTextLat.visibility = View.GONE
             editTextLon.visibility = View.GONE
-            //textViewEnterLatLng.visibility = View.GONE
             unitSpinner.visibility = View.GONE
             editTextRadius.visibility = View.GONE
             btnSearch.visibility = View.GONE
