@@ -27,7 +27,6 @@ GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointList: ArrayList<Point>
-    private lateinit var pointChains: ArrayList<ArrayList<Point>>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
     private lateinit var fm: FragmentManager
@@ -56,7 +55,6 @@ GoogleMap.OnPolylineClickListener {
         setHasOptionsMenu(true)
         fm = childFragmentManager
 
-
         // Obtain the SupportMapFragment and get notified when the map is ready to be used.
         val mapFragment = childFragmentManager
             .findFragmentById(R.id.map) as SupportMapFragment
@@ -64,33 +62,6 @@ GoogleMap.OnPolylineClickListener {
 
         val mainActivityViewModel = MainActivity.getMainViewModel()
 
-        /*mainActivityViewModel?.getAllPointsChain()?.observe(viewLifecycleOwner, Observer {
-            Log.d(TAG, "=======Split into Chains Array===========")
-            Log.d(TAG, "number of chains ${it.size}")
-            for (i in 0 until it.size) {
-                Log.d(TAG, "chain $i. size of chain ${it[i].size}: ${it[i]}")
-            }
-
-            //if no results show a dialog explaining that there are no results
-            if (it.size == 0) {
-               val alertBuilder = AlertDialog.Builder(requireContext())
-                alertBuilder.setMessage(R.string.noResultsDetails)
-                    ?.setTitle(R.string.noResults)
-                    ?.setPositiveButton(R.string.backToSearch) { dialog, which -> Log.d(TAG, "Dialog positive button clicked") }
-                alertBuilder.show()
-            }
-
-
-            pointChains = it
-            if (this::mMap.isInitialized) {
-                Log.d(TAG, "Add polylines from inside observer")
-                for (i in 0 until it.size) {
-                    addChainPolyline(it[i])
-                }
-            }
-        })*/
-
-        //use allPointsList instead of allPointsChain
         mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
             Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
@@ -106,6 +77,7 @@ GoogleMap.OnPolylineClickListener {
                     }
                 }
             } else {
+                //want to show all the points
                 pointList = it
             }
             if (this::mMap.isInitialized && !markersPlotted) {
@@ -224,12 +196,6 @@ GoogleMap.OnPolylineClickListener {
             addChainPolyline(pointList)
         }
 
-        /*if (this::pointChains.isInitialized) {
-            Log.d(TAG, "Adding polyline from inside onMapReady")
-            for (i in 0 until pointChains.size) {
-                addChainPolyline(pointChains[i])
-            }
-        }*/
     }
 
     private fun addChainPolyline(chain: ArrayList<Point>) {
@@ -291,8 +257,8 @@ GoogleMap.OnPolylineClickListener {
     }
 
     private fun addCircleRadius(radius: Double) {
-        val MILES_TO_METERS = 1609.34
-        val circleOptions = CircleOptions().radius(radius * MILES_TO_METERS).center(searchCenter)
+        val milesToMeters = 1609.34
+        val circleOptions = CircleOptions().radius(radius * milesToMeters).center(searchCenter)
         mMap.addCircle(circleOptions)
         //mMap.addMarker(MarkerOptions().position(LatLng(10.0, 10.0)))
 
@@ -384,16 +350,14 @@ GoogleMap.OnPolylineClickListener {
     private fun calculateLaserBeams() {
         Log.d(TAG, "Calculating laser beams")
 
-        //val offsets = arrayOf(-3460, 3460)
-
         var laserBeamListIndex = -1 // will be incremented to zero on the first pass through the loop
         //calculating all the left sides
 
         for (element in offsets) {
             for (count in 0 until pointList.size) {
-                val lat_n = pointList[count].latitude
+                val latN = pointList[count].latitude
                 val long = pointList[count].longitude
-                val newLong = degreesOfLong(element, lat_n)
+                val newLong = degreesOfLong(element, latN)
 
                 if (count == 0 || !onSameChain(pointList[count], pointList[count - 1])) {
                     //Log.d(TAG, "count = $count creating a new polyline for the laser beams")
@@ -401,13 +365,8 @@ GoogleMap.OnPolylineClickListener {
                     laserBeamListIndex++
                 }
 
-                //Log.d(TAG, "for input lat $lat_n calculated long of ${long + newLong}")
                 laserBeamList[laserBeamListIndex] =
-                    laserBeamList[laserBeamListIndex].add(LatLng(lat_n, long + newLong))
-/*
-                if (count < 2) {
-                    mMap.addCircle(CircleOptions().radius(3300.0).center(LatLng(lat_n, long)))
-                }*/
+                    laserBeamList[laserBeamListIndex].add(LatLng(latN, long + newLong))
             }
         }
     }
@@ -416,35 +375,6 @@ GoogleMap.OnPolylineClickListener {
     private fun degreesOfLong(distance: Int, lat: Double): Double {
         return  distance / (kotlin.math.cos(Math.toRadians(lat)) * 111000)
     }
-
-    /* private fun userLocation() {
-         try {
-             val locationResult = fusedLocationClient.lastLocation
-             locationResult.addOnCompleteListener {
-                 Log.d(TAG, "location result complete")
-                 if (it.isSuccessful) {
-                     Log.d(TAG, "was successful: $it")
-                     val lastKnownLocation = it.result
-                     val lat = lastKnownLocation?.latitude
-                     val long = lastKnownLocation?.longitude
-                     Log.d(TAG, "lat $lat and long $long")
-                     if (lat != null && long != null) {
-                         mMap.moveCamera(CameraUpdateFactory.newLatLngZoom(LatLng(lat, long), ZOOM_LEVEL))
-                         mMap.isMyLocationEnabled = true
-                     }
-                 } else {
-                     Log.d(TAG, "location result listener failed ${it.exception}")
-                 }
-             }
-         } catch (e: SecurityException) {
-             Log.d(TAG, "Security exception e: ${e.message}")
-         }
-     }*/
-
-
-
-
-
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
         inflater.inflate(R.menu.main_menu, menu)
