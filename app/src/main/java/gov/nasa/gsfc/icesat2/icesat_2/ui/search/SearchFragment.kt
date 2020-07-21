@@ -1,6 +1,5 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 
-import android.app.Activity.RESULT_CANCELED
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.ActivityInfo
@@ -276,15 +275,14 @@ class SearchFragment : Fragment() {
     }
 
     private fun useSearchBar() {
-        // Set the fields to specify which types of place data to
-        // return after the user has made a selection.
-        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS);
+        // Set the fields to specify which types of place data to return after the user has made a selection.
+        val fields = listOf(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS)
 
-        // Start the autocomplete intent.
+        // Start the autocomplete intent for the search.
         val intent = Autocomplete.IntentBuilder(
             AutocompleteActivityMode.FULLSCREEN, fields)
             .build(requireContext());
-        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE);
+        startActivityForResult(intent, AUTOCOMPLETE_REQUEST_CODE)
     }
     override fun onActivityResult(requestCode: Int, resultCode: Int, data: Intent?) {
         if (requestCode == AUTOCOMPLETE_REQUEST_CODE) {
@@ -304,12 +302,8 @@ class SearchFragment : Fragment() {
                         }
                     }
                     AutocompleteActivity.RESULT_ERROR -> {
-                        // TODO: Handle the error.
                         val status = Autocomplete.getStatusFromIntent(data)
                         Log.i(TAG, "${status.statusMessage}")
-                    }
-                    RESULT_CANCELED -> {
-                        // The user canceled the operation.
                     }
                 }
             } else {
