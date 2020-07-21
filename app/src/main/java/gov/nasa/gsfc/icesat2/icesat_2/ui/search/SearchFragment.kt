@@ -28,10 +28,6 @@ import kotlinx.android.synthetic.main.fragment_search.*
 
 private const val TAG = "SearchFragment"
 private const val AUTOCOMPLETE_REQUEST_CODE = 1;
-private const val LAT_INPUT_ERROR = "Please Enter Latitude between -86.0 and 86.0 ${0x00B0.toChar()}N"
-private const val LONG_INPUT_ERROR = "Please Enter Longitude between -180.0 and 180.0 ${0x00B0.toChar()}E"
-private const val RADIUS_INPUT_ERROR_MILES = "Please Enter Radius between 1.1 and 25.0 Miles"
-private const val RADIUS_INPUT_ERROR_KILOMETERS = "Please Enter Radius between 1.1 and 40.2 Kilometers"
 
 private lateinit var navController:NavController
 
@@ -245,42 +241,42 @@ class SearchFragment : Fragment() {
     private fun allInputsValid(): DoubleArray? {
         //lat range -86, 86; lon range -180 180
         if (editTextLat.text.toString() == "") {
-            createSnackBar(LAT_INPUT_ERROR)
+            createSnackBar(getString(R.string.latInputError, 0x00B0.toChar()))
             return null
         }
         val lat = editTextLat.text.toString().toDouble()
         if (lat < - 86 || lat > 86) {
-            createSnackBar(LAT_INPUT_ERROR)
+            createSnackBar(getString(R.string.latInputError, 0x00B0.toChar()))
             return null
         }
 
         if (editTextLon.text.toString() == "") {
-            createSnackBar(LONG_INPUT_ERROR)
+            createSnackBar(getString(R.string.longInputError, 0x00B0.toChar()))
             return null
         }
         val long = editTextLon.text.toString().toDouble()
         if (long < -180 || long > 180) {
-            createSnackBar(LONG_INPUT_ERROR)
+            createSnackBar(getString(R.string.longInputError, 0x00B0.toChar()))
             return null
         }
 
         val radiusSelection = unitSpinner.selectedItem.toString()
         //No radius entered
         if (radiusSelection == "Miles" && editTextRadius.text.toString() == "") {
-            createSnackBar(RADIUS_INPUT_ERROR_MILES)
+            createSnackBar(getString(R.string.radiusInputErrorMiles))
             return null
         } else if (radiusSelection == "Kilometers" && editTextRadius.text.toString() == "") {
-            createSnackBar(RADIUS_INPUT_ERROR_KILOMETERS)
+            createSnackBar(getString(R.string.radiusInputErrorKilometers))
             return null
         }
 
         //invalid value for radius
         var radius = editTextRadius.text.toString().toDouble()
         if (radiusSelection == "Miles" && (radius < 1.1 || radius > 25)) {
-            createSnackBar(RADIUS_INPUT_ERROR_MILES)
+            createSnackBar(getString(R.string.radiusInputErrorMiles))
             return null
         } else if (radiusSelection == "Kilometers" && (radius < 1.1 || radius > 40.2)) {
-            createSnackBar(RADIUS_INPUT_ERROR_KILOMETERS)
+            createSnackBar(getString(R.string.radiusInputErrorKilometers))
             return null
         }
 
