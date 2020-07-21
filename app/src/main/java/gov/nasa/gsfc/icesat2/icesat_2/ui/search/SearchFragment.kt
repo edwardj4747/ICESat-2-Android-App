@@ -148,40 +148,15 @@ class SearchFragment : Fragment() {
         adapter.setDropDownViewResource(android.R.layout.simple_spinner_dropdown_item)
         unitSpinner.adapter = adapter
 
-        //initialize dependencies and such to have an address searcher
+        //initialize dependencies and such to be able to use address searchbar
         Places.initialize(requireContext(), getString(R.string.google_maps_key))
-        val placesClient = Places.createClient(requireContext())
-
-        /*//TODO: Look into search billing + remove this and UI component if not useful
-        //searching
-        val autocompleteFragment = childFragmentManager.findFragmentById(R.id.autocomplete_fragment) as AutocompleteSupportFragment
-        autocompleteFragment.setHint(getString(R.string.searchForLocation))
-
-        autocompleteFragment.setPlaceFields(Arrays.asList(Place.Field.NAME, Place.Field.LAT_LNG, Place.Field.ADDRESS))
-        autocompleteFragment.setOnPlaceSelectedListener(object : PlaceSelectionListener {
-            override fun onPlaceSelected(place: Place) {
-                Log.d(TAG, "Place: " + place.getName());
-                Log.d(TAG, "Lat Lng is ${place.latLng}")
-                Log.d(TAG, "Address is ${place.address}")
-                setLatLngTextViews(place.latLng)
-            }
-
-            override fun onError(status: Status) {
-                Log.d(TAG, "An error occurred: " + status);
-            }
-        })*/
+        Places.createClient(requireContext())
 
     }
 
     fun setLatLngTextViews(lat: String, long: String) {
         editTextLat.setText(lat)
         editTextLon.setText(long)
-    }
-
-    fun clearLatLngTextViews() {
-        editTextLat.setText("")
-        editTextLon.setText("")
-        editTextRadius.setText("")
     }
 
     private fun setLatLngTextViews(value: LatLng?) {
@@ -288,7 +263,8 @@ class SearchFragment : Fragment() {
             R.id.menuClearSearch -> {
                 address = ""
                 setAddressTextView()
-                clearLatLngTextViews()
+                //clearLatLngTextViews()
+                setLatLngTextViews("", "")
             }
 
             R.id.menuSearch -> {
