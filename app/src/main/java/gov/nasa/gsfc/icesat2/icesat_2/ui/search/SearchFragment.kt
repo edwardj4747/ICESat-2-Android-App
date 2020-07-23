@@ -168,6 +168,10 @@ class SearchFragment : Fragment() {
         }
     }
 
+    private fun clearRadiusTextView() {
+        editTextRadius.setText("")
+    }
+
     private fun setAddressTextView() {
         if (address != null && address != "") {
             textViewEnterLocation.visibility = View.INVISIBLE
@@ -265,6 +269,7 @@ class SearchFragment : Fragment() {
                 setAddressTextView()
                 //clearLatLngTextViews()
                 setLatLngTextViews("", "")
+                clearRadiusTextView()
             }
 
             R.id.menuSearch -> {
