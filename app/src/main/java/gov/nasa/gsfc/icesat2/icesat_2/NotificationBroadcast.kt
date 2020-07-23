@@ -203,7 +203,7 @@ class NotificationBroadcast : BroadcastReceiver() {
 
 
             val builder = NotificationCompat.Builder(context, CHANNEL_ID)
-                //.setSmallIcon(R.mipmap.ic_launcher_round)
+                .setSmallIcon(R.mipmap.ic_launcher_round)
                 .setContentTitle(context.getString(R.string.icesatFlyover))
                 .setContentText(infoMessage)
                 .setPriority(NotificationCompat.PRIORITY_DEFAULT)
@@ -211,13 +211,6 @@ class NotificationBroadcast : BroadcastReceiver() {
                     .bigText(infoMessage))
                 .setContentIntent(pendingIntent)
                 .setAutoCancel(true)
-
-            if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.LOLLIPOP) {
-                builder.setSmallIcon(R.drawable.icon_transparent);
-                builder.setColor(context.resources.getColor(R.color.blue_500))
-            } else {
-                builder.setSmallIcon(R.mipmap.ic_launcher_round);
-            }
 
             with(NotificationManagerCompat.from(context)) {
                 // notificationId is a unique int for each notification that you must define
