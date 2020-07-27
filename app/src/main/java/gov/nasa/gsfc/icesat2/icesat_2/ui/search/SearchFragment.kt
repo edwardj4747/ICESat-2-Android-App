@@ -244,7 +244,8 @@ class SearchFragment : Fragment() {
     }
 
     private fun createSnackBar(text: String) {
-        Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
+        //Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
+        Snackbar.make(searchFragSnackCoordinator, text, Snackbar.LENGTH_LONG)
             .setAction(R.string.ok) {  }
             .show()
     }
