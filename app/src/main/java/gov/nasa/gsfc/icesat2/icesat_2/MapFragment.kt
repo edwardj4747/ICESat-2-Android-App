@@ -21,6 +21,7 @@ import kotlin.math.abs
 
 
 private const val TAG = "MapFragment"
+private const val T2 = "EdwardSecondTag"
 private const val BUNDLE_MAP_OPTIONS = "BundleMapOptions"
 
 class MapFragment : Fragment(), IShareAndCalendar, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
@@ -37,9 +38,11 @@ GoogleMap.OnPolylineClickListener {
     private var markerList = ArrayList<Marker>()
     private val polylineList = ArrayList<Polyline>()
     private val laserBeamList = ArrayList<PolylineOptions>()
+    private lateinit var laserPolylines: ArrayList<Polyline>
     private val flyoverDatesAndTimes = ArrayList<String>()
     private var markersPlotted = false //have the markers already been added to the map
     private val offsets = arrayOf(-3390, -3300, -47, 47, 3300, 3390) //for calculating the position of the laser beam
+    private var bundleString: String? = null
 
 
     override fun onCreateView(
@@ -138,28 +141,13 @@ GoogleMap.OnPolylineClickListener {
             }
         }
 
-        val laserPolylines = ArrayList<Polyline>()
-        val colorsArr = requireContext().resources.getStringArray(R.array.greenColors)
-        val dash: PatternItem = Dash(30F)
-        val gap: PatternItem = Gap(20F)
-        val dashedPolyline: List<PatternItem> = listOf(gap, dash)
+        laserPolylines = ArrayList<Polyline>()
+
 
         checkBoxLasers.setOnClickListener {
             if (checkBoxLasers.isChecked && laserBeamList.isEmpty()) {
                 calculateLaserBeams()
-                val indo = laserBeamList.size / offsets.size //diving by the number of entries in offset
-                Log.d(TAG, "indo is $indo. laserBeamLIst size ${laserBeamList.size} offsets.size = ${offsets.size}")
-                if (this::mMap.isInitialized) {
-                    for (i in laserBeamList.indices) {
-                        if (indo < colorsArr.size) {
-                            Log.d(TAG, "plotting color i % indo ${i % indo}")
-                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo])).pattern(dashedPolyline)))
-                        } else {
-                            Log.d(TAG, "plotting color sie - 1 :(")
-                            laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[(i % indo) % colorsArr.size])).pattern(dashedPolyline)))
-                        }
-                    }
-                }
+                populateLaserPolylines()
             }
             if (checkBoxLasers.isChecked) {
                 laserPolylines.forEach {
@@ -179,22 +167,7 @@ GoogleMap.OnPolylineClickListener {
         Log.d(TAG, "onViewstate restored called with $savedInstanceState")
 
         //if exists of form true, false, false for marker, tracks, laser beams
-        val bundleString = savedInstanceState?.getString(BUNDLE_MAP_OPTIONS)
-        Log.d(TAG, "bundleString is $bundleString")
-        if (bundleString != null) {
-            Log.d(TAG, "string is $bundleString")
-            val splitString = bundleString.split(",")
-            val markers = splitString[0]
-            val tracks = splitString[1]
-            val lasers = splitString[2]
-
-            checkBoxMarker.isChecked = markers == "true"
-            if (!checkBoxMarker.isChecked) { checkBoxMarker.performClick() }
-            checkBoxPath.isChecked = tracks == "true"
-            if (!checkBoxPath.isChecked){ checkBoxPath.performClick() }
-            checkBoxLasers.isChecked = lasers == "true"
-            if (checkBoxLasers.isChecked) { checkBoxLasers.performClick() }
-        }
+        bundleString = savedInstanceState?.getString(BUNDLE_MAP_OPTIONS)
     }
 
 
@@ -250,6 +223,50 @@ GoogleMap.OnPolylineClickListener {
         }
         drawPolyline(polylineOptions, polylineTag)
         addCircleRadius(searchRadius)
+
+        correctForStateIfNeeded()
+    }
+
+    private fun correctForStateIfNeeded() {
+        Log.d(T2, "Starting correct if neededbundleString is $bundleString")
+        if (bundleString != null) {
+            Log.d(T2, "string is $bundleString")
+            try {
+                val splitString = bundleString!!.split(",")
+                val markers = splitString[0]
+                val tracks = splitString[1]
+                val lasers = splitString[2]
+
+                checkBoxMarker.isChecked = markers == "true"
+                Log.d(T2, "markers ${markers}")
+                if (!checkBoxMarker.isChecked) {
+                    Log.d(T2, "click marker checkbox")
+                    markerList.forEach {
+                        it.isVisible = false
+                    }
+                }
+                checkBoxPath.isChecked = tracks == "true"
+                Log.d(T2, "paths ${tracks}")
+                if (!checkBoxPath.isChecked) {
+                    Log.d(T2, "click path checkbox")
+                    polylineList.forEach {
+                        it.isVisible = false
+                    }
+                }
+                checkBoxLasers.isChecked = lasers == "true"
+
+                Log.d(T2, "lasers ${lasers}")
+                if (checkBoxLasers.isChecked) {
+                    if (laserPolylines.isEmpty()) {
+                        calculateLaserBeams()
+                        populateLaserPolylines()
+                    }
+                }
+
+            } catch (e: Exception) {
+                Log.d(T2, "caught exception ${e.message}")
+            }
+        }
     }
 
     private fun onSameChain(p1: Point, p2: Point): Boolean {
@@ -397,6 +414,27 @@ GoogleMap.OnPolylineClickListener {
         }
     }
 
+    private fun populateLaserPolylines() {
+        val colorsArr = requireContext().resources.getStringArray(R.array.greenColors)
+        val dash: PatternItem = Dash(30F)
+        val gap: PatternItem = Gap(20F)
+        val dashedPolyline: List<PatternItem> = listOf(gap, dash)
+
+        val indo = laserBeamList.size / offsets.size //diving by the number of entries in offset
+        Log.d(TAG, "indo is $indo. laserBeamLIst size ${laserBeamList.size} offsets.size = ${offsets.size}")
+        if (this::mMap.isInitialized) {
+            for (i in laserBeamList.indices) {
+                if (indo < colorsArr.size) {
+                    Log.d(TAG, "plotting color i % indo ${i % indo}")
+                    laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[i % indo])).pattern(dashedPolyline)))
+                } else {
+                    Log.d(TAG, "plotting color sie - 1 :(")
+                    laserPolylines.add(mMap.addPolyline(laserBeamList[i].color(parseColor(colorsArr[(i % indo) % colorsArr.size])).pattern(dashedPolyline)))
+                }
+            }
+        }
+    }
+
 
     private fun degreesOfLong(distance: Int, lat: Double): Double {
         return  distance / (kotlin.math.cos(Math.toRadians(lat)) * 111000)
@@ -436,7 +474,7 @@ GoogleMap.OnPolylineClickListener {
 
     override fun onSaveInstanceState(outState: Bundle) {
         super.onSaveInstanceState(outState)
-        val mapBundleValues = "${checkBoxMarker.isChecked}, ${checkBoxPath.isChecked}, ${checkBoxLasers.isChecked}"
+        val mapBundleValues = "${checkBoxMarker.isChecked},${checkBoxPath.isChecked},${checkBoxLasers.isChecked}"
         Log.d(TAG, "adding to Bundle $mapBundleValues")
         outState.putString(BUNDLE_MAP_OPTIONS, mapBundleValues)
     }
