@@ -3,7 +3,6 @@ package gov.nasa.gsfc.icesat2.icesat_2.ui.search
 import android.app.Activity.RESULT_OK
 import android.content.Intent
 import android.content.pm.ActivityInfo
-import android.os.Build
 import android.os.Bundle
 import android.util.Log
 import android.view.*
@@ -245,17 +244,9 @@ class SearchFragment : Fragment() {
     }
 
     private fun createSnackBar(text: String) {
-        if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
-                .setAction("OK") {  }
-                .setBackgroundTint(resources.getColor(R.color.snackbarColor, null))
-                .show()
-        } else {
-            Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
-                .setAction("OK") {  }
-                .setBackgroundTint(resources.getColor(R.color.snackbarColor))
-                .show()
-        }
+        Snackbar.make(requireActivity().findViewById(android.R.id.content), text, Snackbar.LENGTH_LONG)
+            .setAction(R.string.ok) {  }
+            .show()
     }
 
     override fun onCreateOptionsMenu(menu: Menu, inflater: MenuInflater) {
