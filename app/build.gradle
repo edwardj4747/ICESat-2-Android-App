@@ -10,7 +10,7 @@ android {
 
     defaultConfig {
         applicationId "gov.nasa.gsfc.icesat2.icesat_2"
-        minSdkVersion 17
+        minSdkVersion 21
         targetSdkVersion 29
         versionCode 1
         versionName "1.0"
