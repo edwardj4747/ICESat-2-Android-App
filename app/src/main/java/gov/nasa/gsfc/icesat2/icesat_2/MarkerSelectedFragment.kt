@@ -219,6 +219,11 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
             }
         }
         notifSharedPref.printAll()
+        if (!arr.contains(2) && arr.contains(0) && arr.contains(1)) {
+            Toast.makeText(requireContext(), R.string.notificationSetMultiple, Toast.LENGTH_SHORT).show()
+        } else if (!arr.contains(2) && (arr.contains(0) || arr.contains(1))) {
+            Toast.makeText(requireContext(), R.string.notificationSet, Toast.LENGTH_SHORT).show()
+        }
     }
 
     private fun deleteNotificationFromSPAndAlarmMangager(arraySelectedPointTime: Array<String>) {
@@ -272,7 +277,7 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
         val key = "${selectedPoint.dateObject.time}_C"
         createAlarm(time, key)
         Log.d(TAG, "Creating Custom alarm with key $key")
-        //Toast.makeText(requireContext(), "Notification Set", Toast.LENGTH_SHORT).show()
+        Toast.makeText(requireContext(), R.string.notificationSet, Toast.LENGTH_SHORT).show()
     }
 
     /**
