@@ -21,6 +21,7 @@ import kotlin.math.abs
 
 
 private const val TAG = "MapFragment"
+private const val BUNDLE_MAP_OPTIONS = "BundleMapOptions"
 
 class MapFragment : Fragment(), IShareAndCalendar, OnMapReadyCallback, GoogleMap.OnMarkerClickListener, GoogleMap.OnMapClickListener, IMarkerSelectedCallback,
 GoogleMap.OnPolylineClickListener {
@@ -51,6 +52,7 @@ GoogleMap.OnPolylineClickListener {
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
+        Log.d(TAG, "onActivity created")
 
         setHasOptionsMenu(true)
         fm = childFragmentManager
@@ -80,7 +82,7 @@ GoogleMap.OnPolylineClickListener {
                 //want to show all the points
                 pointList = it
             }
-            if (this::mMap.isInitialized && !markersPlotted) {
+            if (this::mMap.isInitialized && !markersPlotted && markerList.isNotEmpty()) {
                 Log.d(TAG, "Adding polylines from inside observer")
                 markersPlotted = true
                 addChainPolyline(it)
@@ -172,6 +174,30 @@ GoogleMap.OnPolylineClickListener {
 
     }
 
+    override fun onViewStateRestored(savedInstanceState: Bundle?) {
+        super.onViewStateRestored(savedInstanceState)
+        Log.d(TAG, "onViewstate restored called with $savedInstanceState")
+
+        //if exists of form true, false, false for marker, tracks, laser beams
+        val bundleString = savedInstanceState?.getString(BUNDLE_MAP_OPTIONS)
+        Log.d(TAG, "bundleString is $bundleString")
+        if (bundleString != null) {
+            Log.d(TAG, "string is $bundleString")
+            val splitString = bundleString.split(",")
+            val markers = splitString[0]
+            val tracks = splitString[1]
+            val lasers = splitString[2]
+
+            checkBoxMarker.isChecked = markers == "true"
+            if (!checkBoxMarker.isChecked) { checkBoxMarker.performClick() }
+            checkBoxPath.isChecked = tracks == "true"
+            if (!checkBoxPath.isChecked){ checkBoxPath.performClick() }
+            checkBoxLasers.isChecked = lasers == "true"
+            if (checkBoxLasers.isChecked) { checkBoxLasers.performClick() }
+        }
+    }
+
+
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
@@ -190,7 +216,7 @@ GoogleMap.OnPolylineClickListener {
             mMap.isMyLocationEnabled = true
         }
 
-        if (this::pointList.isInitialized && !markersPlotted) {
+        if ((this::pointList.isInitialized && !markersPlotted) || this::pointList.isInitialized && !markersPlotted && markerList.isNotEmpty()) {
             Log.d(TAG, "Adding polylines inside onMapReady")
             markersPlotted = true
             addChainPolyline(pointList)
@@ -406,6 +432,13 @@ GoogleMap.OnPolylineClickListener {
         } else {
             Toast.makeText(requireContext(), getString(R.string.selectALocation), Toast.LENGTH_LONG).show()
         }
+    }
+
+    override fun onSaveInstanceState(outState: Bundle) {
+        super.onSaveInstanceState(outState)
+        val mapBundleValues = "${checkBoxMarker.isChecked}, ${checkBoxPath.isChecked}, ${checkBoxLasers.isChecked}"
+        Log.d(TAG, "adding to Bundle $mapBundleValues")
+        outState.putString(BUNDLE_MAP_OPTIONS, mapBundleValues)
     }
 
 }
