@@ -169,7 +169,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
                                 //downloadData.startDownload()
-                                downloadData.startDownloadDataProcess()
+                                downloadData.startDownloadDataProcess(pastResults, futureResults)
                             }
                             searchResultsFound = result.await()
                         }
