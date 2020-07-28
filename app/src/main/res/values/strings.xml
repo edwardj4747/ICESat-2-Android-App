@@ -42,6 +42,7 @@
 
     <string name="past">Past</string>
     <string name="future">Future</string>
+    <string name="searchCheckBoxes">At least one of past/future must be selected</string>
 
     <string name="latInputError">Please Enter Latitude between -86.0 and 86.0 %1$cN</string>
     <string name="longInputError">Please Enter Longitude between -180.0 and 180.0 %1$cE</string>

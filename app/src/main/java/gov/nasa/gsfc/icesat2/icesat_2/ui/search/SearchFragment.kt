@@ -80,7 +80,13 @@ class SearchFragment : Fragment() {
             if (inputs != null) {
                 //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
                 //val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=miles"
-                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2], false)
+                Log.d(TAG, "showing past results: ${checkBoxPast.isChecked}")
+                Log.d(TAG, "showing future results: ${checkBoxFuture.isChecked}")
+                if (!checkBoxPast.isChecked && !checkBoxFuture.isChecked) {
+                    createSnackBar(getString(R.string.searchCheckBoxes))
+                    return@setOnClickListener
+                }
+                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2], false, -1L, checkBoxPast.isChecked, checkBoxFuture.isChecked)
             }
         }
 

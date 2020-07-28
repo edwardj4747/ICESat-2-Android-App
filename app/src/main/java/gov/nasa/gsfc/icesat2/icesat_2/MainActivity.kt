@@ -132,7 +132,8 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         waitingForLocation = false
     }
 
-    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long) {
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long,
+                                     pastResults: Boolean, futureResults: Boolean) {
         Log.d(TAG, "searchButtonPressed. Time is $time")
 
 
