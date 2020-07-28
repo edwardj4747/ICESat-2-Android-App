@@ -243,10 +243,13 @@ GoogleMap.OnPolylineClickListener {
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             //add marker to map and markerList
+
+
             val markerAdded = mMap.addMarker(
-                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude))
-                    .title(chain[i].dateString)
-            )
+                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+            if (!futurePoints) {
+                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+            }
             markerAdded.tag = count
             markerList.add(markerAdded)
             count++
