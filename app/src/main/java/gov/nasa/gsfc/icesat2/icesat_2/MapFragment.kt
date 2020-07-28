@@ -27,6 +27,7 @@ GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointList: ArrayList<Point>
+    private lateinit var pastPointList: ArrayList<Point>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
     private lateinit var fm: FragmentManager
@@ -84,6 +85,18 @@ GoogleMap.OnPolylineClickListener {
                 Log.d(TAG, "Adding polylines from inside observer")
                 markersPlotted = true
                 addChainPolyline(it)
+            }
+        })
+
+        //todo check with notiications
+        mainActivityViewModel?.getAllPastPointsList()?.observe(viewLifecycleOwner, Observer {
+            pastPointList = it
+            if (this::mMap.isInitialized) {
+                Log.d(TAG, "Adding Past polylines from inside observer")
+                markersPlotted = true
+                addChainPolyline(pastPointList, false)
+            } else {
+                Log.d(TAG, "NOT Adding past points observer")
             }
         })
 
@@ -190,25 +203,41 @@ GoogleMap.OnPolylineClickListener {
             mMap.isMyLocationEnabled = true
         }
 
+        //future points
         if (this::pointList.isInitialized && !markersPlotted) {
             Log.d(TAG, "Adding polylines inside onMapReady")
             markersPlotted = true
             addChainPolyline(pointList)
         }
 
+        //past points
+        if (this::mMap.isInitialized) {
+            Log.d(TAG, "Adding Past polylines from inside observer")
+            markersPlotted = true
+            addChainPolyline(pastPointList, false)
+        } else {
+            Log.d(TAG, "NOT Adding past points onMapReady")
+        }
     }
 
-    private fun addChainPolyline(chain: ArrayList<Point>) {
+    private fun addChainPolyline(chain: ArrayList<Point>, futurePoints: Boolean = true) {
         Log.d(TAG, "addChainPolyLine Starts")
         var polylineTag = 0
         var polylineOptions = PolylineOptions()
 
+        val pastColor = 0xff320002.toInt()
+
+        count = 0
         //adding a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             //check if the point is on the same chain as the previous point
             if (i != 0 && !onSameChain(chain[i - 1], chain[i])) {
-                drawPolyline(polylineOptions, polylineTag)
+                if (futurePoints) {
+                    drawPolyline(polylineOptions, polylineTag)
+                } else {
+                    drawPolyline(polylineOptions, polylineTag, pastColor)
+                }
                 polylineTag = count
                 polylineOptions = PolylineOptions()
             }
@@ -222,7 +251,11 @@ GoogleMap.OnPolylineClickListener {
             markerList.add(markerAdded)
             count++
         }
-        drawPolyline(polylineOptions, polylineTag)
+        if (futurePoints) {
+            drawPolyline(polylineOptions, polylineTag)
+        } else {
+            drawPolyline(polylineOptions, polylineTag, pastColor)
+        }
         addCircleRadius(searchRadius)
     }
 
@@ -237,11 +270,11 @@ GoogleMap.OnPolylineClickListener {
         return abs(p1.dateObject.time - time) < timingThreshold * 1000
     }
 
-    private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
+    private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int, lineColor: Int = 0xff32CD32.toInt() ) {
         Log.d(TAG, "Adding polyline with tag $tagValue")
         polylineList.add(mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
-            color = (0xff32CD32.toInt())
+            color = lineColor
             isClickable = true
             tag = tagValue
         })
