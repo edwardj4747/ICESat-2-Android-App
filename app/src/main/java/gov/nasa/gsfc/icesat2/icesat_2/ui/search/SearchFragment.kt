@@ -101,6 +101,8 @@ class SearchFragment : Fragment() {
             simpleSearch = false
             textViewAdvancedSearch.visibility = View.GONE
 
+            checkBoxPast.visibility = View.VISIBLE
+            checkBoxFuture.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.VISIBLE
             editTextLat.visibility = View.VISIBLE
             editTextLon.visibility = View.VISIBLE
@@ -114,6 +116,8 @@ class SearchFragment : Fragment() {
             textViewAdvancedSearch.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
 
+            checkBoxPast.visibility = View.GONE
+            checkBoxFuture.visibility = View.GONE
             editTextLat.visibility = View.GONE
             editTextLon.visibility = View.GONE
             unitSpinner.visibility = View.GONE
@@ -262,6 +266,8 @@ class SearchFragment : Fragment() {
                 //clearLatLngTextViews()
                 setLatLngTextViews("", "")
                 clearRadiusTextView()
+                checkBoxPast.isChecked = false
+                checkBoxFuture.isChecked = true
             }
 
             R.id.menuSearch -> {

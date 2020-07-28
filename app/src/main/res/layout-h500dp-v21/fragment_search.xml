@@ -177,6 +177,7 @@
         android:layout_weight="1"
         android:text="@string/future"
         android:visibility="invisible"
+        android:checked="true"
         app:layout_constraintBaseline_toBaselineOf="@+id/checkBoxPast"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
