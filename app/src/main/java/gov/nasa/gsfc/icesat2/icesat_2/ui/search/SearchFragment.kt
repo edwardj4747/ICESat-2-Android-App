@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -70,6 +71,8 @@ class SearchFragment : Fragment() {
 
         //will display a menu
         setHasOptionsMenu(true)
+
+        simpleSearch = textViewAdvancedSearch.isVisible
 
         btnTrack.setOnClickListener {
             listener.trackButtonPressed()
@@ -300,7 +303,7 @@ class SearchFragment : Fragment() {
                 when (resultCode) {
                     RESULT_OK -> {
                         val place = Autocomplete.getPlaceFromIntent(data)
-                        Log.i(TAG, "Place: " + place.name)
+                        Log.i(TAG, "Place: " + place.name + " simple search is $simpleSearch")
                         val latLng = place.latLng
                         setLatLngTextViews(latLng)
                         address = place.name
