@@ -12,7 +12,6 @@ import kotlin.collections.ArrayList
 
 private const val TAG = "DownloadData"
 private const val DATE_ALREADY_PASSED = "DATE_ALREADY_PASSED"
-//Todo:test this for dates way far away in the future
 private const val DATE_DIVISOR = 1000
 private const val JOB_TIMEOUT = 4000L
 
@@ -24,10 +23,18 @@ class DownloadData(private val url: URL, context: Context) {
     private val currentTime = Calendar.getInstance(TimeZone.getTimeZone("UTC")).time
 
     private val comparator = object : Comparator<Point> {
+        /**
+         * used for sorting the points downloaded based on the time of the flyover. Used when
+         * Collections.sort() is called
+         * @param o1 first point
+         * @param o2 second
+         * @return a negative value if o1 < o2 and a positive value if o1 > o2
+         */
         override fun compare(o1: Point?, o2: Point?): Int {
             if (o1 != null && o2 != null) {
-                return ((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()
-                //return ((o1.dateObject.time - twoToTheTenth) - (o2.dateObject.time - twoToTheTenth)).toInt()
+                //return ((o1.dateObject.time - o2.dateObject.time) / DATE_DIVISOR).toInt()
+
+                return o1.dateObject.compareTo(o2.dateObject)
             } else {
                 Log.d(TAG, "Error in comparator method")
                 throw IllegalArgumentException("Passed a null date into the comparator")
