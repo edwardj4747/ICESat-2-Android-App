@@ -306,7 +306,7 @@ GoogleMap.OnPolylineClickListener {
         return zoomLevel.toFloat()
     }
 
-    //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
+
     override fun onMarkerClick(p0: Marker?): Boolean {
         marker = p0
         val markerTag = marker?.tag as Int

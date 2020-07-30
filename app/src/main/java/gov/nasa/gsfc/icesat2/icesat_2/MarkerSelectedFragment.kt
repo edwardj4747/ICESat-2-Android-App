@@ -71,9 +71,6 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
 
 
         if (isMarker) {
-            //textViewDate.text = "${selectedPoint.dayOfWeek}, ${selectedPoint.date}, ${selectedPoint.year}"
-            //textViewTime.text = "${selectedPoint.time} ${selectedPoint.ampm} ${selectedPoint.timezone}"
-            //todo: not sure this is going to work in other localities
             textViewDate.text = getString(R.string.dateDisplay, selectedPoint.dayOfWeek, selectedPoint.date, selectedPoint.year)
             textViewTime.text = getString(R.string.timeDisplay, selectedPoint.time, selectedPoint.ampm, selectedPoint.timezone)
 
@@ -176,9 +173,6 @@ class MarkerSelectedFragment : Fragment(), IGeocoding, ITimePickerCallback {
     }
 
     fun notificationOptionsChosen(arr: ArrayList<Int>) {
-        /*//todo: remove this after testing
-        Log.d(TAG, "Deleting all previous notifications")
-        notifSharedPref.deleteAll()*/
         Log.d(TAG, "notification options chosen callback")
 
         btnNotify.setImageResource(R.drawable.ic_baseline_notifications_active_24)
