@@ -18,7 +18,7 @@
     <ImageView
         android:id="@+id/banner"
         android:layout_width="wrap_content"
-        android:layout_height="90dp"
+        android:layout_height="82dp"
         android:layout_marginTop="4dp"
         android:background="@color/indigo_50"
         android:contentDescription="@string/icesatBanner"
@@ -32,7 +32,7 @@
         android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:textAlignment="center"
         android:textSize="20sp"
         app:layout_constraintEnd_toEndOf="parent"
@@ -44,7 +44,7 @@
         android:id="@+id/textViewEnterLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="6dp"
         android:text="@string/enterLocation"
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
@@ -55,7 +55,7 @@
         android:id="@+id/btnSelectOnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="12dp"
+        android:layout_marginTop="8dp"
         android:layout_marginEnd="8dp"
         android:drawableStart="@drawable/ic_baseline_map_60"
         android:text="@string/useMap"
@@ -110,7 +110,7 @@
         android:id="@+id/editTextLat"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="4dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
@@ -139,7 +139,7 @@
         android:id="@+id/editTextRadius"
         android:layout_width="150dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="2dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
@@ -210,18 +210,10 @@
         android:id="@+id/searchFragSnackCoordinator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
-        android:translationZ="1dp"
+        android:translationZ="5dp"
         app:layout_constraintBottom_toBottomOf="parent"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent" />
-
-    <TextView
-        android:id="@+id/textView3"
-        android:layout_width="wrap_content"
-        android:layout_height="wrap_content"
-        android:text="600"
-        tools:layout_editor_absoluteX="153dp"
-        tools:layout_editor_absoluteY="543dp" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>
