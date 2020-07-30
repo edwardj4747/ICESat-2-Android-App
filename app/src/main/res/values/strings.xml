@@ -3,8 +3,6 @@
 
     <!--    nav bar-->
     <string name="title_home">Home</string>
-    <string name="title_dashboard">Dashboard</string>
-    <string name="title_notifications">Notifications</string>
     <string name="search">Search</string>
     <string name="favorites">Favorites</string>
     <string name="info">Info</string>
@@ -67,9 +65,6 @@
     <!--    Location turned off dialog-->
     <string name="locationOffTitle">Location is Turned Off</string>
     <string name="locationOffDescription">Please turn on you location</string>
-
-    <!-- TODO: Remove or change this placeholder text -->
-    <string name="hello_blank_fragment">Hello blank fragment</string>
 
     <!--    ResultsHolderFragment-->
     <string name="map">Map</string>
