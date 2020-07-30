@@ -45,7 +45,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private lateinit var navController: NavController
     private var currentlySearching = false //to make sure only one search is running at a time
     private var navHostFragment: Fragment? = null
-    private var gpsEnabled = false
     private lateinit var locationManager: LocationManager
     private var simpleSearch = true
     private var currentDestination: NavDestination? = null
@@ -57,6 +56,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     companion object {
         private lateinit var mainViewModel: MainViewModel
 
+        /**
+         * @return the [MainViewModel] object used by the entire application
+         */
         fun getMainViewModel(): MainViewModel? {
             if (this::mainViewModel.isInitialized) {
                 return mainViewModel
@@ -87,18 +89,13 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
             searchButtonPressed(lat, long, DEFAULT_SEARCH_RADIUS, false, time)
         }
 
-
-
-        //setSupportActionBar(toolbar)
-        //val appBarConfiguration = AppBarConfiguration(navController.graph)
-        //toolbar.setupWithNavController(navController, appBarConfiguration)
-
+        //configure the bottom nav bar
         navController = findNavController(R.id.nav_host_fragment)
         val appBarConfiguration = AppBarConfiguration(setOf(R.id.navigation_search, R.id.navigation_favorites, R.id.navigation_gallery, R.id.navigation_info))
-
         setupActionBarWithNavController(navController, appBarConfiguration)
         bottom_nav_view.setupWithNavController(navController)
 
+        //monitoring destinations so that if the user searches, goes somewhere else, and then comes back the search is still displayed
         currentDestination = navController.currentDestination
 
         navController.addOnDestinationChangedListener(object : NavController.OnDestinationChangedListener {
@@ -132,9 +129,18 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         waitingForLocation = false
     }
 
+    /**
+     * Starts the searching
+     * @param lat the latitude to search for
+     * @param long the longitude to search for
+     * @param radius the radius of the search (always in miles. If entered in km it was converted)
+     * @param calledFromSelectOnMap whether the search was started by the user choosing a location on the map
+     * Changes where the user navigates from so we need to keep track of it
+     * @param time -1 unless called from the user clicking on a notification
+     *
+     */
     override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long) {
         Log.d(TAG, "searchButtonPressed. Time is $time")
-
 
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
         Log.d(TAG, "MainActivity: starting download from $serverLocation")
@@ -142,13 +148,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         Log.d(TAG, "isNetworkConnected ${isNetworkConnected()}")
 
         var searchResultsFound = false
-
-
-        /*val u = URL(serverLocation)
-        val dd = DownloadData(u, this)
-        CoroutineScope(Dispatchers.IO).launch {
-            dd.startDownloadDataProcess()
-        }*/
 
 
         /**
@@ -200,12 +199,19 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     }
 
 
-
+    /**
+     * Keeps track of errors that occurred during searching, so that they can be displayed to the user
+     * after the search. Possible errors are of type [SearchError] and include TIMED_OUT and NO_RESULTS
+     */
     override fun addErrorToSet(searchError: SearchError) {
         Log.d(TAG, "addError method. Added $searchError")
         searchErrorSet.add(searchError)
     }
 
+    /**
+     * At the end of the search, if there are errors display them and then clear the set. If there
+     * are both TIMED_OUT and NO_RESULTS errors, just show the timed out message
+     */
     private fun displayAppropriateDialog() {
         Log.d(TAG, "displayAppropriateDialog starts with searchErrorSet $searchErrorSet")
         if (searchErrorSet.contains(SearchError.TIMED_OUT)) {
@@ -221,7 +227,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         Log.d(TAG, "displayApproriateDialog ends. searchErrorSet is $searchErrorSet")
     }
 
-
+    /**
+     * @return whether the user is connected to a network. This gets checked before starting a search
+     */
     private fun isNetworkConnected(): Boolean {
         val cm = getSystemService(Context.CONNECTIVITY_SERVICE) as ConnectivityManager
         if (Build.VERSION.SDK_INT >= Build.VERSION_CODES.M) {
@@ -230,39 +238,46 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         return cm.activeNetworkInfo != null
     }
 
+    /**
+     * Get the location of the user using a locationManager object.
+     * @param simpleSearch If true starts the search immediately after getting the location, otherwise
+     * fills the editText latitude and longitude boxes
+     */
     override fun useCurrentLocationButtonPressed(simpleSearch: Boolean) {
         this.simpleSearch = simpleSearch
+
+        //check that the user has granted location permissions. If not, launch permission dialogs
         if (ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_FINE_LOCATION) != PackageManager.PERMISSION_GRANTED
             && ActivityCompat.checkSelfPermission(this, Manifest.permission.ACCESS_COARSE_LOCATION) != PackageManager.PERMISSION_GRANTED) {
-
             requestLocationPermissionDialog()
             return
         }
 
         locationManager = getSystemService(Context.LOCATION_SERVICE) as LocationManager
 
-        Log.d(TAG, "gps provider enabled ${locationManager.isProviderEnabled("gps")}")
-        //todo: maybe add internet or other providers to this
+        //check if the user's location is turned on
         if (!locationManager.isProviderEnabled("gps")) {
             showDialogOnMainThread(R.string.locationOffTitle, R.string.locationOffDescription, R.string.ok)
             return
         }
 
+        //should always be true. Setting the "Searching for: " message
         val frag = getFrag()
         if (frag != null && frag is SearchFragment) {
             frag.setAddressValue(getString(R.string.yourLocation))
         }
 
+        //the waitingForLocation variable used to so that the listener only gets set up once
         if (!waitingForLocation) {
             waitingForLocation = true
             locationManager.requestLocationUpdates("gps", 100, 50F, object : LocationListener {
+
+                //when we get the location either start the searching or add it to the editTexts
                 override fun onLocationChanged(location: Location?) {
                     if (location != null) {
                         Log.d(TAG, "lat is ${location.latitude}, long is ${location.longitude}")
                         updateEditTextWithLocation(location.latitude.toString(), location.longitude.toString())
 
-
-                        Log.d(TAG, "frag is $frag")
                         if (frag is SearchFragment) {
                             Log.d(TAG, "YAY! Frag is Search Frag")
                             frag.setLatLngTextViews(location.latitude.toString(), location.longitude.toString())
@@ -274,51 +289,45 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             locationManager.removeUpdates(this)
                             waitingForLocation = false
                         }
-                    } else {
-                        Log.d(TAG, "onLocationCHanged but location is null")
                     }
                 }
 
                 override fun onStatusChanged(provider: String?, status: Int, extras: Bundle?) {}
-
-                override fun onProviderEnabled(provider: String?) {
-                    Log.d(TAG, "onProvider enabled with $provider")
-                }
-
-                override fun onProviderDisabled(provider: String?) {
-                    Log.d(TAG, "provider is disabled $provider")
-                }
+                override fun onProviderEnabled(provider: String?) {}
+                override fun onProviderDisabled(provider: String?) {}
             })
-        } else {
-            Log.d(TAG, "Waiting for location updates ${Random.nextInt(20)}")
         }
-
     }
 
+    /**
+     * @return the current fragment in the navController
+     */
     private fun getFrag(): Fragment? {
         return navHostFragment?.childFragmentManager?.fragments?.get(0)
     }
 
-    override fun onRequestPermissionsResult(
-        requestCode: Int,
-        permissions: Array<out String>,
-        grantResults: IntArray
-    ) {
+    /**
+     * Called when user clicks on accept or deny from the location permission dialog. If the clicked allow,
+     * call the useLocationButtonPressed method which will get passed the location checks this time
+     */
+    override fun onRequestPermissionsResult(requestCode: Int, permissions: Array<out String>, grantResults: IntArray) {
         Log.d(TAG, "onRequestPermission Callback")
         if (grantResults[0] == PackageManager.PERMISSION_GRANTED && requestCode == LOCATION_REQUEST_CODE) {
             //clicked accept
-            //todo: need to store value for simple search somehow
             useCurrentLocationButtonPressed(simpleSearch)
         } else {
             //clicked deny
             Log.d(TAG, "Permission Denied in Callback")
-            //grantAccessSnackbar()
+            //if clicked 'Do Not ask again' on permissions dialog
             if (!ActivityCompat.shouldShowRequestPermissionRationale(this, Manifest.permission.ACCESS_FINE_LOCATION)) {
                 grantAccessSnackbar()
             }
         }
     }
 
+    /**
+     * Creates the dialog box for asking for users location
+     */
     private fun requestLocationPermissionDialog() {
         ActivityCompat.requestPermissions(
             this,
@@ -327,6 +336,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         )
     }
 
+    /**
+     * Snackbar that shows up when location permissions have been permanently denied. Clicking on
+     * Grant Access takes the user into settings to give the app permission to change their settings
+     */
     private fun grantAccessSnackbar() {
         Snackbar.make(findViewById(R.id.constraintLayout), R.string.locationSnackbar, Snackbar.LENGTH_LONG)
             .setAction(R.string.grantAccess) {
@@ -338,11 +351,17 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
             .show()
     }
 
+    /**
+     * update the Latitude and Longitude editTexts in [SearchFragment]
+     */
     private fun updateEditTextWithLocation(lat: String, long: String) {
         editTextLat.setText(lat)
         editTextLon.setText(long)
     }
 
+    /**
+     * Navigate to [SelectOnMapFragment] or show dialog explaining that the user doesn't have a network connection
+     */
     override fun selectOnMapButtonPressed() {
         if (isNetworkConnected()) {
             navController.navigate(R.id.selectOnMapFragment)
@@ -351,6 +370,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         }
     }
 
+    /**
+     * If running on a background thread, switch back to the main thread
+     * publish lat, long, radius, and searchString values to [MainViewModel]
+     */
     private fun launchMapOnMainThread(lat: Double, long: Double, radius: Double, navigationActionID: Int, time: Long = -1L) {
         GlobalScope.launch(Dispatchers.Main) {
             showMap(navigationActionID)
@@ -365,6 +388,10 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         }
     }
 
+    /**
+     * navigate to the map
+     * @param navigationActionID the ID of the fragment we are navigating to
+     */
     private fun showMap(navigationActionID: Int) {
         //navController.navigate(R.id.action_navigation_home_to_mapFragment2)
         Log.d(TAG, "Show map called ${Random.nextInt(10)}")
@@ -398,16 +425,22 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         alertBuilder.show()
     }
 
+    /**
+     * when the arrow (back) button on the top action bar is clicked, do the normal backwards progression
+     */
     override fun onOptionsItemSelected(item: MenuItem): Boolean {
         when (item.itemId) {
             android.R.id.home -> {
-                //TODO: This feels like a very bad solution
                 onBackPressed()
             }
         }
         return super.onOptionsItemSelected(item)
     }
 
+
+    /**
+     * Download tracking data and then launch [SatelliteTrackingFragment]
+     */
     override fun trackButtonPressed() {
 
         Log.d(TAG, "Track button pressed")
