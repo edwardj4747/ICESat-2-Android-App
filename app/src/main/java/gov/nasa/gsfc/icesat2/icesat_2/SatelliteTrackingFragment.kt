@@ -167,7 +167,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
         Log.d(TAG, "beginLat ${satellitePos[startingIndex].lat} endLat ${satellitePos[startingIndex + 1].lat}, resLat $startLat")
         Log.d(TAG, "beginLong ${satellitePos[startingIndex].long} endlong ${satellitePos[startingIndex + 1].long}, resLat $startLong")
 
-        //TODO: check for when crosses over from -88 to 88 or 180 degrees
+
         return arrayOf(LatLng(startLat, startLong), percentage)
     }
 

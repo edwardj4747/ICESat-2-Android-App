@@ -3,7 +3,6 @@ package gov.nasa.gsfc.icesat2.icesat_2
 import android.content.Context
 import android.util.Log
 
-//todo: if package name changes, have to change this too
 private const val NOTIFICATION_SHARED_PREF = "gov.nasa.gsfc.icesat2.icesat_2.NotificationSharedPref"
 private const val TAG = "NotificationsSharedPref"
 
