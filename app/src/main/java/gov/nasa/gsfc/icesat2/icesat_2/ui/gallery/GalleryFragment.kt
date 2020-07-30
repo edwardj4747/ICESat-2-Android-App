@@ -25,7 +25,7 @@ class GalleryFragment : Fragment(), View.OnClickListener {
         return inflater.inflate(R.layout.fragment_gallery, container, false)
     }
 
-    //TODO: resize the image to have multiple version
+
 
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)

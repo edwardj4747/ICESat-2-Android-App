@@ -76,7 +76,6 @@ class DownloadData(private val url: URL, context: Context) {
                         val lat = individualPoint.getDouble("lat")
 
 
-                        //TODO: refactor according to new properties specified in convertDateTimeMethod
                         //convert date + time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
                         val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
                             convertDateTime(date, time)
@@ -84,8 +83,6 @@ class DownloadData(private val url: URL, context: Context) {
 
                         //Wait until conversion is completed. Add the point only if it is in future
                         if (convertedDateTime.await()[0] != DATE_ALREADY_PASSED) {
-                            //val newPoint = Point(date, time, lon, lat, convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as Date)
-                            //TODO: build in a second constructor in case this one fails
                             val newPoint = Point(convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as String,
                                 convertedDateTime.await()[2] as String, convertedDateTime.await()[3] as String, convertedDateTime.await()[4] as String,
                             convertedDateTime.await()[5] as String, convertedDateTime.await()[6] as String, lon, lat, convertedDateTime.await()[7] as Date)
@@ -110,7 +107,6 @@ class DownloadData(private val url: URL, context: Context) {
                         }*/
 
                         if (mainActivityViewModel != null) {
-                            //TODO: remove allPointsList in ViewModel?
                             Log.d(TAG, "Posting all points list to viewmodel")
                             mainActivityViewModel.allPointsList.postValue(pointsArrayList)
                             //mainActivityViewModel.allPointsChain.postValue(allPointChains.await())
@@ -120,17 +116,12 @@ class DownloadData(private val url: URL, context: Context) {
                         //if we don't find any results post an empty list. Removes carryovers from displaying in searches that have no result
                         mainActivityViewModel?.allPointsChain?.postValue(ArrayList<ArrayList<Point>>())
 
-                        // todo: no results
+                        // No Results
                         listener.addErrorToSet(SearchError.NO_RESULTS)
                         resultsFound = false
                     }
-                } else {
-                    Log.d(TAG, "state is not true $state")
-                    //TODO: Handle these cases
                 }
 
-            /*} catch (e: IOException) {
-                Log.d(TAG, "IO Exception ${e.message}")*/
             } catch (e: Exception) {
                 Log.d(TAG, "Exception ${e.message}")
                 //listener.searchTimedOut()
@@ -172,7 +163,7 @@ class DownloadData(private val url: URL, context: Context) {
     }
 
     private fun splitPointsByDate(allPointsList: ArrayList<Point>): ArrayList<ArrayList<Point>> {
-        val timingThreshold = 60 //TODO: check with tom that this is a good threshold
+        val timingThreshold = 60
         var chainIndex = 0
         val splitByDateArrayList = ArrayList<ArrayList<Point>>()
         splitByDateArrayList.add(ArrayList<Point>())
