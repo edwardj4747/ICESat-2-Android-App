@@ -20,20 +20,8 @@ import com.google.android.gms.maps.model.*
 import gov.nasa.gsfc.icesat2.icesat_2.ui.search.ISearchFragmentCallback
 import kotlinx.android.synthetic.main.fragment_select_on_map.*
 
-
-// TODO: Rename parameter arguments, choose names that match
-// the fragment initialization parameters, e.g. ARG_ITEM_NUMBER
-private const val ARG_PARAM1 = "param1"
-private const val ARG_PARAM2 = "param2"
-
-
 private const val TAG = "SelectOnMapFragment"
 
-/**
- * A simple [Fragment] subclass.
- * Use the [SelectOnMapFragment.newInstance] factory method to
- * create an instance of this fragment.
- */
 class SelectOnMapFragment : Fragment(), IGeocoding, OnMapReadyCallback, GoogleMap.OnMapLongClickListener {
 
     private lateinit var mMap: GoogleMap
