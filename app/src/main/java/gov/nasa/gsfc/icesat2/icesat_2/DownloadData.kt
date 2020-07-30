@@ -193,7 +193,7 @@ class DownloadData(private val url: URL, context: Context) {
     }
 
 
-    fun downloadTrackingData(url: URL) : ArrayList<TrackingPoint> {
+    fun downloadTrackingData(url: URL, listener: MainActivity) : ArrayList<TrackingPoint> {
         Log.d(TAG, "downloadTracking data Starts")
         val trackingData = ArrayList<TrackingPoint>()
         try {
@@ -213,6 +213,7 @@ class DownloadData(private val url: URL, context: Context) {
             Log.d(TAG, "trackingData \n $trackingData")
         } catch (e: java.lang.Exception) {
             Log.d(TAG, "Downloading Tracking data exception ${e.message}")
+            listener.showDialogOnMainThread(R.string.serverError, R.string.serverErrorDescription, R.string.ok)
         }
         return trackingData
     }

@@ -382,7 +382,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     }
 
 
-    private fun showDialogOnMainThread(title: Int, message: Int, buttonMessage: Int) {
+    fun showDialogOnMainThread(title: Int, message: Int, buttonMessage: Int) {
         GlobalScope.launch(Dispatchers.Main) {
             showDialog(title, message, buttonMessage)
         }
@@ -426,7 +426,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
             CoroutineScope(Dispatchers.IO).launch {
                 val jobDownloadData = CoroutineScope(Dispatchers.IO).launch {
                     val trackingData: Deferred<ArrayList<TrackingPoint>> = async {
-                        downloadData.downloadTrackingData(url)
+                        downloadData.downloadTrackingData(url, this@MainActivity)
                     }
                     if (trackingData.await().isNotEmpty()) {
                         Log.d(TAG, "Tracking data is NOT emmpty")

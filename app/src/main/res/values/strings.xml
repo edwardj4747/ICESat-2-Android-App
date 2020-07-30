@@ -93,6 +93,8 @@
     <string name="moreData"><u>More Data</u></string>
     <string name="nearNorthPole">Near North Pole</string>
     <string name="nearSouthPole">Near South Pole</string>
+    <string name="serverError">Servers Not Updated</string>
+    <string name="serverErrorDescription">Please try again later. We are working hard to update our servers.</string>
 
     <!--    MarkerSelectedFragment-->
     <string name="dateDisplay">%1$s, %2$s, %3$s</string>

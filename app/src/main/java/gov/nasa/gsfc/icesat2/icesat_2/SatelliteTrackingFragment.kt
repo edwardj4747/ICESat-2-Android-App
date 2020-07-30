@@ -256,7 +256,7 @@ class SatelliteTrackingFragment : Fragment(), OnMapReadyCallback {
             val downloadData = DownloadData(url, requireContext())
             CoroutineScope(Dispatchers.IO).launch {
                 val newData: Deferred<ArrayList<TrackingPoint>> = async {
-                    downloadData.downloadTrackingData(url)
+                    downloadData.downloadTrackingData(url, requireActivity() as MainActivity)
                 }
 
                 if (newData.await().isNotEmpty()) {
