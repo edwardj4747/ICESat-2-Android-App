@@ -35,7 +35,7 @@
         android:checked="true"
         android:text="@string/markers"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toTopOf="@+id/map" />
+        app:layout_constraintTop_toBottomOf="@+id/textViewPastFuture" />
 
     <CheckBox
         android:id="@+id/checkBoxPath"
@@ -71,11 +71,12 @@
         android:id="@+id/textViewPastFuture"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
         android:layout_marginTop="4dp"
-        android:layout_marginEnd="4dp"
         android:text="@string/pastFutureLegend"
-        android:textSize="16sp"
-        app:layout_constraintEnd_toEndOf="parent"
+        android:textSize="14sp"
+        android:visibility="gone"
+        app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>

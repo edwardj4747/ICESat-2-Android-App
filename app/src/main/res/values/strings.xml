@@ -86,7 +86,7 @@
     <string name="laserBeams">Laser Beams</string>
     <string name="seeAll"><u>See All</u></string>
 
-    <string name="pastFutureLegend"><font fgcolor='#FF0000b3'><b>Past</b></font> <font fgcolor='#FFFF3B30'><b>Future</b></font></string>
+    <string name="pastFutureLegend"><font fgcolor='#FF0000b3'><b>Past</b></font> <b>:</b> <font fgcolor='#FFFF3B30'><b>Future</b></font></string>
 
     <string name="selectALocation">Please Choose a Location to add to Calendar</string>
 

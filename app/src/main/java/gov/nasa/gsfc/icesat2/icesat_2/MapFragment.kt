@@ -82,6 +82,11 @@ GoogleMap.OnPolylineClickListener {
             addChainPolyline(pointList)
         }
 
+        //check if there are both future and past points
+        if (pastFutureThreshold != -1 && pastFutureThreshold + 1 < pointList.size) {
+            textViewPastFuture.visibility = View.VISIBLE
+        }
+
         /*mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
             Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
