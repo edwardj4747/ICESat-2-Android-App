@@ -77,28 +77,28 @@ class DownloadData(private val url: URL, context: Context) {
                         val lon = individualPoint.getDouble("lon")
                         val lat = individualPoint.getDouble("lat")
 
-
-                        //TODO: refactor according to new properties specified in convertDateTimeMethod
-                        //convert date + time to users timezone. Returns an array with format {stringRepresentation of Date, dateObject}
-                        val convertedDateTime: Deferred<Array<Any?>> = async(Dispatchers.IO) {
-                            convertDateTime(date, time, keepPastResults)
+                        val convertedDateTime: Deferred<Array<Any?>?> = async(Dispatchers.IO) {
+                            convertDateTime(date, time, keepPastResults, keepFutureResults)
                         }
 
-                        //Wait until conversion is completed. Add the point only if it is in future
-                        if (keepFutureResults && convertedDateTime.await()[8] == DATE_IN_FUTURE) {
-                            val newPoint = Point(convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as String,
-                                convertedDateTime.await()[2] as String, convertedDateTime.await()[3] as String, convertedDateTime.await()[4] as String,
-                                convertedDateTime.await()[5] as String, convertedDateTime.await()[6] as String, lon, lat, convertedDateTime.await()[7] as Date)
-                            pointsArrayList.add(newPoint)
-                        } else if (keepPastResults && convertedDateTime.await()[8] == DATE_ALREADY_PASSED) {
-                            val oldPoint = Point(convertedDateTime.await()[0] as String, convertedDateTime.await()[1] as String,
-                                convertedDateTime.await()[2] as String, convertedDateTime.await()[3] as String, convertedDateTime.await()[4] as String,
-                                convertedDateTime.await()[5] as String, convertedDateTime.await()[6] as String, lon, lat, convertedDateTime.await()[7] as Date)
-                            pastPointsArrayList.add(oldPoint)
+                        if (convertedDateTime.await() != null) {
+                            //Wait until conversion is completed. Add the point only if it is in future
+                            if (keepFutureResults && convertedDateTime.await()!![8] == DATE_IN_FUTURE) {
+                                val newPoint = Point(
+                                    convertedDateTime.await()!![0] as String, convertedDateTime.await()!![1] as String,
+                                    convertedDateTime.await()!![2] as String, convertedDateTime.await()!![3] as String, convertedDateTime.await()!![4] as String,
+                                    convertedDateTime.await()!![5] as String, convertedDateTime.await()!![6] as String, lon, lat, convertedDateTime.await()!![7] as Date)
+                                pointsArrayList.add(newPoint)
+                            } else if (keepPastResults && convertedDateTime.await()!![8] == DATE_ALREADY_PASSED) {
+                                val oldPoint = Point(convertedDateTime.await()!![0] as String, convertedDateTime.await()!![1] as String,
+                                    convertedDateTime.await()!![2] as String, convertedDateTime.await()!![3] as String, convertedDateTime.await()!![4] as String,
+                                    convertedDateTime.await()!![5] as String, convertedDateTime.await()!![6] as String, lon, lat, convertedDateTime.await()!![7] as Date)
+                                pastPointsArrayList.add(oldPoint)
+                            }
                         }
-
 
                     }
+
                     val mainActivityViewModel = MainActivity.getMainViewModel()
 
                     //if there are any results from the search. Sort them and split them accordingly
@@ -167,17 +167,22 @@ class DownloadData(private val url: URL, context: Context) {
      * If the date has already passed, will return arrayOf(DATE_ALREADY_PASSED, null) otherwise
      * @return arrayOf(convertedDateString, dayOfWeek, date, year, timeString, AM/PM, timezone, dateTimeToConvert, inPast/inFuture)
      */
-    private fun convertDateTime(dateString: String, timeString: String, keepPastResults: Boolean): Array<Any?> {
+    private fun convertDateTime(dateString: String, timeString: String, keepPastResults: Boolean, keepFutureResults: Boolean): Array<Any?>? {
         val inputFormat = SimpleDateFormat("dd-MM-yyyy HH:mm:ss", Locale.getDefault())
         inputFormat.timeZone = TimeZone.getTimeZone("UTC")
         val inputDate = "$dateString $timeString"
         val dateTimeToConvert = inputFormat.parse(inputDate)
-        if (!keepPastResults && dateTimeToConvert.before(currentTime)) {
-            return arrayOf("", "", "", "", "", "", "", "", DATE_ALREADY_PASSED)
+        if (!keepPastResults && dateTimeToConvert!!.before(currentTime)) {
+            //return arrayOf("", "", "", "", "", "", "", "", DATE_ALREADY_PASSED)
+            return null
+        }
+
+        if (!keepFutureResults && !dateTimeToConvert!!.before(currentTime)) {
+            return null
         }
         val outputFormat = SimpleDateFormat("EEE, MMM d, yyyy, hh:mm:ss, aaa, z", Locale.getDefault())
         outputFormat.timeZone = TimeZone.getDefault()
-        val convertedDateString = outputFormat.format(dateTimeToConvert)
+        val convertedDateString = outputFormat.format(dateTimeToConvert!!)
 
         //split up the date string
         val convertedDateStringSplit = convertedDateString.split(",")
