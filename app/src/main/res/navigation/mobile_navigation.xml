@@ -136,5 +136,5 @@
     <fragment
         android:id="@+id/satelliteTrackingFragment"
         android:name="gov.nasa.gsfc.icesat2.icesat_2.SatelliteTrackingFragment"
-        android:label="@string/icesat2" />
+        android:label="@string/icesat2Location" />
 </navigation>
