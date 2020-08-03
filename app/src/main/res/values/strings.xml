@@ -164,6 +164,7 @@
     <string name="one">one</string>
 
     <string name="remindMe">Remind Me</string>
+    <string name="preference_file_key">MainActivitySPICESat</string>
     <string-array name="notificationOptions">
         <item>One hour before</item>
         <item>24 hours before</item>

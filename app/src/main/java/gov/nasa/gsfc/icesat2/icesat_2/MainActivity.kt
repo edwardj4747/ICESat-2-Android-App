@@ -149,6 +149,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
 
         var searchResultsFound = false
 
+        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         /**
          * If there is not a current search happening and user is connected to a network THEN
@@ -167,7 +168,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
                                 //downloadData.startDownload()
-                                downloadData.startDownloadDataProcess()
+                                downloadData.startDownloadDataProcess(sharedPref)
                             }
                             searchResultsFound = result.await()
                         }
