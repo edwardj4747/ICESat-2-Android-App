@@ -4,6 +4,7 @@ import android.Manifest
 import android.app.AlertDialog
 import android.content.Context
 import android.content.Intent
+import android.content.SharedPreferences
 import android.content.pm.PackageManager
 import android.location.Location
 import android.location.LocationListener
@@ -52,6 +53,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private var searchFragmentDestination: NavDestination? = null
     private val searchErrorSet = HashSet<SearchError>()
     private var waitingForLocation = false
+    private lateinit var sharedPref: SharedPreferences
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -74,6 +76,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
 
         Log.d(TAG, "Main Activity onCreate with $savedInstanceState")
 
+        sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         //Getting values for when activity launched by clicking on event
         val bundle = intent.extras
@@ -149,7 +152,6 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
 
         var searchResultsFound = false
 
-        val sharedPref = getSharedPreferences(getString(R.string.preference_file_key), Context.MODE_PRIVATE)
 
         /**
          * If there is not a current search happening and user is connected to a network THEN
