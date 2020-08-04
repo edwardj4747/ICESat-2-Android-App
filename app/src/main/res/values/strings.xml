@@ -112,7 +112,7 @@
     <string name="watchVideo">Watch Video about ICESat-2</string>
 
 
-    <string name="currentData">Current Cycle Data: %!$s</string>
+    <string name="currentData"><b>Current Cycle Data:</b> \n%1$s</string>
     <string name="appInfo1">
         This app allows you to determine when ICESat-2 will be in a particular area using your location, a search
     query, choosing a location on the map, or by entering a latitude and longitude. You have the option of viewing
@@ -132,7 +132,7 @@
         dots menu, or set notification reminders for that point using the bell icon. You can also share the results
         with your friends using the share button on from the search results screen.\n\n
 
-        From the home screen, you can use the \'Where\'s ICESat-2\' button to determine the current position of ICESat-2.
+        From the home screen, you can use the \'Where\'s ICESat-2\' button to determine the current position of ICESat-2.\n
     </string>
 
 

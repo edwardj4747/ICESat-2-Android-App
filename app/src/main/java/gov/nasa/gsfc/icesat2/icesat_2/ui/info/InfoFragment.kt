@@ -28,6 +28,8 @@ class InfoFragment : Fragment() {
     override fun onActivityCreated(savedInstanceState: Bundle?) {
         super.onActivityCreated(savedInstanceState)
 
+        textViewDateRange.text = getString(R.string.currentData, "Date 1, 2020 - Date 2, 2020")
+
         textViewWatchVideo.setOnClickListener {
             val intent = YouTubeStandalonePlayer.createVideoIntent(requireActivity(), getString(R.string.google_maps_key), "ybt5Qy4XaNU", 0, true, false)
             startActivity(intent)
