@@ -109,13 +109,38 @@
 
     <!--    Info Fragment-->
 
-    <string name="watchVideo">Watch Video</string>
+    <string name="watchVideo">Watch Video about ICESat-2</string>
+
+
+    <string name="currentData">Current Cycle Data: %!$s</string>
+    <string name="appInfo1">
+        This app allows you to determine when ICESat-2 will be in a particular area using your location, a search
+    query, choosing a location on the map, or by entering a latitude and longitude. You have the option of viewing
+    just the future results, just the past results, or both of the future and past results for all of the
+    current data available in the app.\n\n
+
+    After searching you will see the Reference Ground Track (RGT) and if you choose, you can select the laser
+    beam checkbox
+    to see the position of the laser beams where measurements are taken for all of the RGTs. Here is an example
+    of what that will look like.\n
+    </string>
+
+    <string name="appInfo2">
+        \nYou may notice that some of the laser beams appear to be different colors. This is
+        just to differentiate the beams for each set of tracks to make it look clearer. For any point
+        of interest, you can save it as a favorite by clicking the star, add it to your calendar from the three
+        dots menu, or set notification reminders for that point using the bell icon. You can also share the results
+        with your friends using the share button on from the search results screen.\n\n
+
+        From the home screen, you can use the \'Where\'s ICESat-2\' button to determine the current position of ICESat-2.
+    </string>
+
 
     <string name="aboutICESat">NASA’s groundbreaking <a href="https://icesat-2.gsfc.nasa.gov/">Ice Cloud and land Elevation Satellite 2 (ICESat-2)</a> measures the Earth’s surface using lasers with amazing
         accuracy. The <a href="https://icesat-2.gsfc.nasa.gov/space-lasers">Advanced Topographic Laser Altimeter System (ATLAS)</a> instrument pulses a green laser 10,000 times per second. With its telescope and array of
         single-photon counting detectors, ATLAS measures the precise travel time of photons from their release from the satellite until they return only
         about 3.3 milliseconds later.\n</string>
-    <string name="aboutICESat2">
+    <!--<string name="aboutICESat2">
     \nThis app will enable you to see where ICESat-2 will pass over an area on the Earth. Given a latitude, longitude and radius you can see the time and date of
         selected points along the satellite’s  <a href="https://icesat-2.gsfc.nasa.gov/science/specs">Reference Ground Track (RGT)</a>. You can also check from your current location or just drop a pin on the map.
 
@@ -123,10 +148,10 @@
 \n\nThe bright green line represents the RGT. The red markers are provided as a convenience and placed approximately
     seven kilometers away from each other to show where the satellite will at a given second. The dark green lines represent the position of the
         laser beams (to +/- 100m). Continuing to zoom in will show all six of the laser beams.
-        </string>
+        </string>-->
 
-
-    <string name="infoUnderstandingMap">Please leave us feedback on the app store. We are excited about the ICESat-2 mission and want to share its results with the community.
+    <string name="infoUnderstandingMap">We hope you enjoy using this app and that
+        you stay involved with the ICESat-2 mission! Please leave us feedback on the app store. We are excited about the ICESat-2 mission and want to share its results with the community.
         <a href="https://icesat-2.gsfc.nasa.gov/science/data-products">ICESat-2 Data Products</a>
         are available to the public from the <a href="https://nsidc.org/">National Snow and Ice Data Center (NSIDC)</a>.</string>
     <!--    Main Menu-->

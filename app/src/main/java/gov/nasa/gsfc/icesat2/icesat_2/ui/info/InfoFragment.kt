@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.info
 
 import android.os.Bundle
-import android.provider.MediaStore.Video.Thumbnails.VIDEO_ID
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -35,6 +34,9 @@ class InfoFragment : Fragment() {
         }
 
         //clicking on links takes you to the appropriate webpage
-        textViewInfo.movementMethod = LinkMovementMethod.getInstance()
+        textViewInfo1.movementMethod = LinkMovementMethod.getInstance()
+        textViewInfo2.movementMethod = LinkMovementMethod.getInstance()
+        textViewInfo3.movementMethod = LinkMovementMethod.getInstance()
+        textViewInfo4.movementMethod = LinkMovementMethod.getInstance()
     }
 }
