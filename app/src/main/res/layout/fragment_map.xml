@@ -52,7 +52,7 @@
         android:layout_height="wrap_content"
         android:text="@string/laserBeams"
         app:layout_constraintStart_toStartOf="@+id/checkBoxPath"
-        app:layout_constraintTop_toBottomOf="@+id/checkBoxPath"/>
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxPath" />
 
     <TextView
         android:id="@+id/textViewSeeAll"
@@ -78,5 +78,49 @@
         android:visibility="gone"
         app:layout_constraintStart_toStartOf="parent"
         app:layout_constraintTop_toTopOf="parent" />
+
+    <TextView
+        android:id="@+id/textViewPast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/past"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewPast"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageViewPast" />
+
+    <ImageView
+        android:id="@+id/imageViewPast"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toEndOf="@+id/textViewFuture"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxLasers"
+        app:srcCompat="@drawable/green_marker" />
+
+    <TextView
+        android:id="@+id/textViewFuture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:text="@string/future"
+        android:textSize="16sp"
+        app:layout_constraintBottom_toBottomOf="@+id/imageViewFuture"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="@+id/imageViewFuture" />
+
+    <ImageView
+        android:id="@+id/imageViewFuture"
+        android:layout_width="25dp"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="8dp"
+        android:layout_marginTop="4dp"
+        android:adjustViewBounds="true"
+        app:layout_constraintStart_toEndOf="@+id/textViewFuture"
+        app:layout_constraintTop_toBottomOf="@+id/imageViewPast"
+        app:srcCompat="@drawable/green_marker" />
 
 </androidx.constraintlayout.widget.ConstraintLayout>
