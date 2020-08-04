@@ -271,8 +271,13 @@ GoogleMap.OnPolylineClickListener {
 
             val markerAdded = mMap.addMarker(
                 myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+
+
             if (count <= pastFutureThreshold) {
-                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                //markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            } else {
+                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
             }
             markerAdded.tag = count
             markerList.add(markerAdded)
