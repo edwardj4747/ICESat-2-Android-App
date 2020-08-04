@@ -84,7 +84,8 @@ GoogleMap.OnPolylineClickListener {
 
         //check if there are both future and past points
         if (pastFutureThreshold != -1 && pastFutureThreshold + 1 < pointList.size) {
-            textViewPastFuture.visibility = View.VISIBLE
+            //textViewPastFuture.visibility = View.VISIBLE
+            constraintLayoutPastFuture.visibility = View.VISIBLE
         }
 
         /*mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
