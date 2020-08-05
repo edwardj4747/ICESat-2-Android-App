@@ -54,6 +54,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
     private val searchErrorSet = HashSet<SearchError>()
     private var waitingForLocation = false
     private lateinit var sharedPref: SharedPreferences
+    private var observedDateRange = false
 
     companion object {
         private lateinit var mainViewModel: MainViewModel
@@ -170,9 +171,22 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
                                 //downloadData.startDownload()
-                                downloadData.startDownloadDataProcess(sharedPref)
+                                if (!observedDateRange) {
+                                    //will save the dateRange value into shared preferences inside of DownloadData
+                                    Log.d(TAG, "launching search with shared pref")
+                                    downloadData.startDownloadDataProcess(sharedPref)
+                                } else {
+                                    //will ignore the dataRange attribute
+                                    Log.d(TAG, "launching search with null")
+                                    downloadData.startDownloadDataProcess(null)
+                                }
+
                             }
                             searchResultsFound = result.await()
+                            if (!observedDateRange) {
+                                Log.d(TAG, "Setting observedDateRange to true")
+                                observedDateRange = true
+                            }
                         }
 
                         jobDownloadData.join()

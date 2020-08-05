@@ -45,7 +45,7 @@ class DownloadData(private val url: URL, context: Context) {
         }
     }
 
-    suspend fun startDownloadDataProcess(sharedPref: SharedPreferences) : Boolean{
+    suspend fun startDownloadDataProcess(sharedPref: SharedPreferences?) : Boolean{
         var result = false
         withContext(Dispatchers.IO) {
             val job = withTimeoutOrNull(JOB_TIMEOUT) {
@@ -66,7 +66,7 @@ class DownloadData(private val url: URL, context: Context) {
     }
 
     //return true if any points meet search criteria. False if no points meet criteria
-    suspend fun startDownload(sharedPref: SharedPreferences): Boolean{
+    suspend fun startDownload(sharedPref: SharedPreferences?): Boolean{
         Log.d(TAG, "startDownload method begins")
         var resultsFound = false
         mainSearchJob = CoroutineScope(Dispatchers.IO).launch {
@@ -77,19 +77,22 @@ class DownloadData(private val url: URL, context: Context) {
                 val state = jsonObject.getString("state")
 
                 //get the date range to display in the info section
-                try {
-                    val newDateRange = jsonObject.getString("dateRange")
-                    Log.d(TAG, "newDateRange is $newDateRange")
-                    //if there is no dateRange object saved or this one is different
-                    val currentDateRange = sharedPref.getString(DATE_RANGE, "")
+                if (sharedPref != null) {
+                    try {
+                        val newDateRange = jsonObject.getString("dateRange")
+                        Log.d(TAG, "newDateRange is $newDateRange")
+                        //if there is no dateRange object saved or this one is different
+                        val currentDateRange = sharedPref.getString(DATE_RANGE, "")
 
-                    if (currentDateRange == "" || newDateRange != currentDateRange) {
-                        with(sharedPref.edit()) {
-                            putString(DATE_RANGE, newDateRange)
-                            apply()
+                        if (currentDateRange == "" || newDateRange != currentDateRange) {
+                            with(sharedPref.edit()) {
+                                putString(DATE_RANGE, newDateRange)
+                                apply()
+                            }
                         }
-                    }
-                } catch (e: JSONException) { Log.d(TAG, "no dateRange in json CATCH clause") }
+                    } catch (e: JSONException) { Log.d(TAG, "no dateRange in json CATCH clause") }
+                }
+
 
 
                 if (state == "true") {
