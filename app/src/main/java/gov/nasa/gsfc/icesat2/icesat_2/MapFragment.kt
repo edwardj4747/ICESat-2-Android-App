@@ -213,6 +213,8 @@ GoogleMap.OnPolylineClickListener {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
+        mMap.uiSettings.isMapToolbarEnabled = false
+        mMap.uiSettings.isZoomControlsEnabled = false
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
         mMap.setOnPolylineClickListener(this)
@@ -250,7 +252,7 @@ GoogleMap.OnPolylineClickListener {
         var polylineTag = 0
         var polylineOptions = PolylineOptions()
 
-        val pastColor = 0xff320002.toInt()
+        val pastColor = 0xff007fff.toInt()
 
         count = 0
         //adding a marker at each point - maybe polygons are a better way to do this
@@ -375,6 +377,7 @@ GoogleMap.OnPolylineClickListener {
 
     //TODO: Make sure the size of DummyFragment is always the same as MarkerSelectionFragment
     override fun onMarkerClick(p0: Marker?): Boolean {
+        constraintLayoutPastFuture.visibility = View.INVISIBLE
         marker = p0
         val markerTag = marker?.tag as Int
         showMarkerDisplayFragment(markerTag, true)
@@ -399,6 +402,7 @@ GoogleMap.OnPolylineClickListener {
                 replace(R.id.mapFragmentContainer, DummyFragment())
                 commit()
             }
+            constraintLayoutPastFuture.visibility = View.VISIBLE
         }
     }
 
