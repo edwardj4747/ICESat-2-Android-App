@@ -1,7 +1,6 @@
 package gov.nasa.gsfc.icesat2.icesat_2.ui.info
 
 import android.os.Bundle
-import android.provider.MediaStore.Video.Thumbnails.VIDEO_ID
 import android.text.method.LinkMovementMethod
 import android.view.LayoutInflater
 import android.view.View
@@ -16,7 +15,6 @@ private const val TAG = "InfoFragment"
 
 class InfoFragment : Fragment() {
 
-    private lateinit var notificationsViewModel: InfoViewModel
 
     override fun onCreateView(
             inflater: LayoutInflater,
