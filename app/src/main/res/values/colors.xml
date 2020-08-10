@@ -60,10 +60,13 @@
 
     <!-- green -->
     <string-array name="greenColors">
+        <item name="md_green_A200">#69F0AE</item>
+        <item name="md_green_900">#1B5E20</item>
+        <item name="md_green_A700">#00C853</item>
         <item name="md_green_600">#43A047</item>
 <!--        <item name="md_green_700">#388E3C</item>-->
         <item name="md_green_800">#2E7D32</item>
-        <item name="md_green_900">#1B5E20</item>
+
 <!--        <item name="md_green_50">#E8F5E9</item>-->
 <!--        <item name="md_green_100">#C8E6C9</item>-->
 <!--        <item name="md_green_200">#A5D6A7</item>-->
@@ -71,9 +74,8 @@
 <!--        <item name="md_green_400">#66BB6A</item>-->
         <item name="md_green_500">#4CAF50</item>
 <!--        <item name="md_green_A100">#B9F6CA</item>-->
-        <item name="md_green_A200">#69F0AE</item>
+
 <!--        <item name="md_green_A400">#00E676</item>-->
-        <item name="md_green_A700">#00C853</item>
         <!--light green-->
 
         <item name="md_light_green_300">#AED581</item>

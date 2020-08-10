@@ -12,6 +12,12 @@ class MainViewModel : ViewModel() {
         return allPointsList
     }
 
+    var pastPointsList = MutableLiveData<ArrayList<Point>>()
+
+    fun getAllPastPointsList(): LiveData<ArrayList<Point>> {
+        return pastPointsList
+    }
+
     var allPointsChain = MutableLiveData<ArrayList<ArrayList<Point>>>()
 
     fun getAllPointsChain(): LiveData<ArrayList<ArrayList<Point>>> {

@@ -8,6 +8,7 @@ import android.util.Log
 import android.view.*
 import android.widget.ArrayAdapter
 import android.widget.Toast
+import androidx.core.view.isVisible
 import androidx.fragment.app.Fragment
 import androidx.navigation.NavController
 import androidx.navigation.Navigation
@@ -71,6 +72,8 @@ class SearchFragment : Fragment() {
         //will display a menu
         setHasOptionsMenu(true)
 
+        simpleSearch = textViewAdvancedSearch.isVisible
+
         btnTrack.setOnClickListener {
             listener.trackButtonPressed()
         }
@@ -80,7 +83,13 @@ class SearchFragment : Fragment() {
             if (inputs != null) {
                 //http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=-38.9&lon=78.1&r=25&u=miles
                 //val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=${inputs[0]}&lon=${inputs[1]}&r=${inputs[2]}&u=miles"
-                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2], false)
+                Log.d(TAG, "showing past results: ${checkBoxPast.isChecked}")
+                Log.d(TAG, "showing future results: ${checkBoxFuture.isChecked}")
+                if (!checkBoxPast.isChecked && !checkBoxFuture.isChecked) {
+                    createSnackBar(getString(R.string.searchCheckBoxes))
+                    return@setOnClickListener
+                }
+                listener.searchButtonPressed(inputs[0], inputs[1], inputs[2], false, -1L, checkBoxPast.isChecked, checkBoxFuture.isChecked)
             }
         }
 
@@ -101,6 +110,8 @@ class SearchFragment : Fragment() {
             simpleSearch = false
             textViewAdvancedSearch.visibility = View.GONE
 
+            checkBoxPast.visibility = View.VISIBLE
+            checkBoxFuture.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.VISIBLE
             editTextLat.visibility = View.VISIBLE
             editTextLon.visibility = View.VISIBLE
@@ -114,6 +125,8 @@ class SearchFragment : Fragment() {
             textViewAdvancedSearch.visibility = View.VISIBLE
             textViewSimpleSearch.visibility = View.GONE
 
+            checkBoxPast.visibility = View.GONE
+            checkBoxFuture.visibility = View.GONE
             editTextLat.visibility = View.GONE
             editTextLon.visibility = View.GONE
             unitSpinner.visibility = View.GONE
@@ -262,6 +275,8 @@ class SearchFragment : Fragment() {
                 //clearLatLngTextViews()
                 setLatLngTextViews("", "")
                 clearRadiusTextView()
+                checkBoxPast.isChecked = false
+                checkBoxFuture.isChecked = true
             }
 
             R.id.menuSearch -> {
@@ -288,7 +303,7 @@ class SearchFragment : Fragment() {
                 when (resultCode) {
                     RESULT_OK -> {
                         val place = Autocomplete.getPlaceFromIntent(data)
-                        Log.i(TAG, "Place: " + place.name)
+                        Log.i(TAG, "Place: " + place.name + " simple search is $simpleSearch")
                         val latLng = place.latLng
                         setLatLngTextViews(latLng)
                         address = place.name

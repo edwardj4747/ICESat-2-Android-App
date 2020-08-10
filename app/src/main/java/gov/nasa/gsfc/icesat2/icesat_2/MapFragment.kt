@@ -29,6 +29,8 @@ GoogleMap.OnPolylineClickListener {
 
     private lateinit var mMap: GoogleMap
     private lateinit var pointList: ArrayList<Point>
+    private var pastFutureThreshold = 0
+    private lateinit var pastPointList: ArrayList<Point>
     private lateinit var searchCenter: LatLng
     private var searchRadius: Double = -1.0
     private lateinit var fm: FragmentManager
@@ -67,7 +69,31 @@ GoogleMap.OnPolylineClickListener {
 
         val mainActivityViewModel = MainActivity.getMainViewModel()
 
-        mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
+        Log.d(TAG, "CHECKING PAST AND future values")
+        Log.d(TAG, "size ${MainActivity.getMainViewModel()?.pastPointsList?.value?.size}")
+        Log.d(TAG, "${MainActivity.getMainViewModel()?.allPointsList?.value?.size}")
+
+        pointList = arrayListOf()
+        if (mainActivityViewModel?.pastPointsList?.value != null) {
+            pointList.addAll(mainActivityViewModel?.pastPointsList?.value!!)
+            pastFutureThreshold = mainActivityViewModel?.pastPointsList?.value!!.size - 1
+        }
+
+        if (mainActivityViewModel?.allPointsList?.value != null) {
+            pointList.addAll(mainActivityViewModel?.allPointsList?.value!!)
+        }
+        Log.d(TAG, "pointList size is ${pointList.size}")
+        if (this::mMap.isInitialized) {
+            addChainPolyline(pointList)
+        }
+
+        //check if there are both future and past points
+        if (pastFutureThreshold != -1 && pastFutureThreshold + 1 < pointList.size) {
+            //textViewPastFuture.visibility = View.VISIBLE
+            constraintLayoutPastFuture.visibility = View.VISIBLE
+        }
+
+        /*mainActivityViewModel?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             //if MapFragment was launched from MainActivity, we are guaranteed to have at least one result
             Log.d(TAG, "allPointsList is observed. Size of pointList is ${it.size}")
             val notificationTime = mainActivityViewModel.notificationTime.value
@@ -91,6 +117,18 @@ GoogleMap.OnPolylineClickListener {
                 addChainPolyline(it)
             }
         })
+
+        //todo check with notiications
+        mainActivityViewModel?.getAllPastPointsList()?.observe(viewLifecycleOwner, Observer {
+            pastPointList = it
+            if (this::mMap.isInitialized) {
+                Log.d(TAG, "Adding Past polylines from inside observer")
+                markersPlotted = true
+                addChainPolyline(pastPointList, false)
+            } else {
+                Log.d(TAG, "NOT Adding past points observer")
+            }
+        })*/
 
         textViewSeeAll.setOnClickListener {
             textViewSeeAll.visibility = View.INVISIBLE
@@ -174,6 +212,8 @@ GoogleMap.OnPolylineClickListener {
     override fun onMapReady(googleMap: GoogleMap) {
         Log.d(TAG, "onMapReady starts")
         mMap = googleMap
+        mMap.uiSettings.isMapToolbarEnabled = false
+        mMap.uiSettings.isZoomControlsEnabled = false
         mMap.setOnMarkerClickListener(this)
         mMap.setOnMapClickListener(this)
         mMap.setOnPolylineClickListener(this)
@@ -189,12 +229,22 @@ GoogleMap.OnPolylineClickListener {
             mMap.isMyLocationEnabled = true
         }
 
-        if ((this::pointList.isInitialized && !markersPlotted) || this::pointList.isInitialized && !markersPlotted && markerList.isNotEmpty()) {
+
+        //future points
+        if (this::pointList.isInitialized && !markersPlotted) {
             Log.d(TAG, "Adding polylines inside onMapReady")
             markersPlotted = true
             addChainPolyline(pointList)
         }
 
+        /*//past points
+        if (this::mMap.isInitialized) {
+            Log.d(TAG, "Adding Past polylines from inside observer")
+            markersPlotted = true
+            addChainPolyline(pastPointList, false)
+        } else {
+            Log.d(TAG, "NOT Adding past points onMapReady")
+        }*/
     }
 
     private fun addChainPolyline(chain: ArrayList<Point>) {
@@ -202,27 +252,48 @@ GoogleMap.OnPolylineClickListener {
         var polylineTag = 0
         var polylineOptions = PolylineOptions()
 
+        val pastColor = 0xff007fff.toInt()
+
+        count = 0
         //adding a marker at each point - maybe polygons are a better way to do this
         val myMarker = MarkerOptions()
         for (i in 0 until chain.size) {
             //check if the point is on the same chain as the previous point
             if (i != 0 && !onSameChain(chain[i - 1], chain[i])) {
-                drawPolyline(polylineOptions, polylineTag)
+                if (count <= pastFutureThreshold + 1) {
+                    drawPolyline(polylineOptions, polylineTag, pastColor)
+                } else {
+                    drawPolyline(polylineOptions, polylineTag)
+                }
                 polylineTag = count
                 polylineOptions = PolylineOptions()
             }
             polylineOptions.add(LatLng(chain[i].latitude, chain[i].longitude))
             //add marker to map and markerList
+
+
             val markerAdded = mMap.addMarker(
-                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude))
-                    //.title(chain[i].dateString)
-                    .title(getString(R.string.latLngDisplayString, chain[i].latitude.toString(), 0x00B0.toChar(), chain[i].longitude.toString(), 0x00B0.toChar()))
-            )
+
+                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+
+
+            if (count <= pastFutureThreshold) {
+                //markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_BLUE))
+                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_AZURE))
+            } else {
+                markerAdded.setIcon(BitmapDescriptorFactory.defaultMarker(BitmapDescriptorFactory.HUE_GREEN))
+            }
+
             markerAdded.tag = count
             markerList.add(markerAdded)
             count++
         }
-        drawPolyline(polylineOptions, polylineTag)
+        Log.d(TAG, "LAST TIME $count and thresh $pastFutureThreshold")
+        if (count <= pastFutureThreshold + 1) { // +1 because count gets incremented before this check
+            drawPolyline(polylineOptions, polylineTag, pastColor)
+        } else {
+            drawPolyline(polylineOptions, polylineTag)
+        }
         addCircleRadius(searchRadius)
 
         correctForStateIfNeeded()
@@ -281,11 +352,11 @@ GoogleMap.OnPolylineClickListener {
         return abs(p1.dateObject.time - time) < timingThreshold * 1000
     }
 
-    private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int) {
+    private fun drawPolyline(polylineOptions: PolylineOptions, tagValue: Int, lineColor: Int = 0xff32CD32.toInt() ) {
         Log.d(TAG, "Adding polyline with tag $tagValue")
         polylineList.add(mMap.addPolyline(polylineOptions).apply {
             jointType = JointType.ROUND
-            color = (0xff32CD32.toInt())
+            color = lineColor
             isClickable = true
             tag = tagValue
         })
@@ -352,6 +423,7 @@ GoogleMap.OnPolylineClickListener {
 
 
     override fun onMarkerClick(p0: Marker?): Boolean {
+        constraintLayoutPastFuture.visibility = View.INVISIBLE
         marker = p0
         val markerTag = marker?.tag as Int
         showMarkerDisplayFragment(markerTag, true)
@@ -376,6 +448,7 @@ GoogleMap.OnPolylineClickListener {
                 replace(R.id.mapFragmentContainer, DummyFragment())
                 commit()
             }
+            constraintLayoutPastFuture.visibility = View.VISIBLE
         }
     }
 

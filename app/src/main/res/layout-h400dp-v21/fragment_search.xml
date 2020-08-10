@@ -16,11 +16,11 @@
         app:layout_constraintGuide_percent="0.5" />
 
 
-    <LinearLayout
+    <!--<LinearLayout
         android:id="@+id/bannerLinearLayout"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="2dp"
         android:orientation="horizontal"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
@@ -29,7 +29,7 @@
         <ImageView
             android:id="@+id/imageView18"
             android:layout_width="0dp"
-            android:layout_height="60dp"
+            android:layout_height="40dp"
             android:layout_weight="1"
             android:adjustViewBounds="true"
             android:contentDescription="@string/icesatBanner"
@@ -43,35 +43,51 @@
             android:layout_gravity="center"
             android:text="@string/icesatBanner"
             android:textSize="14sp" />
-    </LinearLayout>
+    </LinearLayout>-->
+
+    <TextView
+        android:id="@+id/textViewBanner2"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_gravity="center"
+        android:layout_marginTop="2dp"
+        android:text="@string/icesat2"
+        android:textSize="14sp"
+        android:textStyle="bold"
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent"
+        app:layout_constraintTop_toTopOf="parent" />
 
     <TextView
         android:id="@+id/textViewAdress"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="0dp"
         android:textAlignment="center"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout"
+        app:layout_constraintTop_toBottomOf="@id/textViewBanner2"
         tools:text="Honolulu" />
+
+    <!--        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout"-->
 
     <TextView
         android:id="@+id/textViewEnterLocation"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="0dp"
         android:text="@string/enterLocation"
         android:textColor="@color/design_default_color_on_secondary"
         app:layout_constraintEnd_toEndOf="parent"
         app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout" />
+        app:layout_constraintTop_toBottomOf="@id/textViewBanner2" />
+<!--        app:layout_constraintTop_toBottomOf="@+id/bannerLinearLayout" />-->
 
     <Button
         android:id="@+id/btnSelectOnMap"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginTop="4dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:drawableStart="@drawable/ic_baseline_map_40"
         android:text="@string/useMap"
@@ -84,7 +100,8 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_baseline_map_40"
         android:text="@string/track"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
+        app:layout_constraintTop_toTopOf="@+id/btnUseSearchBar"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUseSearchBar"
         app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
         app:layout_constraintStart_toStartOf="@+id/btnSelectOnMap" />
 
@@ -126,14 +143,14 @@
         android:id="@+id/editTextLat"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="2dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/latHint"
         android:inputType="numberDecimal|numberSigned"
         android:nextFocusDown="@id/editTextLon"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/btnUseSearchBar" />
 
@@ -147,7 +164,7 @@
         android:hint="@string/longHint"
         android:inputType="numberDecimal|numberSigned"
         android:nextFocusDown="@id/editTextRadius"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBaseline_toBaselineOf="@+id/editTextLat"
         app:layout_constraintStart_toStartOf="@+id/guideline" />
 
@@ -155,13 +172,13 @@
         android:id="@+id/editTextRadius"
         android:layout_width="120dp"
         android:layout_height="wrap_content"
-        android:layout_marginTop="8dp"
+        android:layout_marginTop="0dp"
         android:layout_marginEnd="8dp"
         android:autofillHints=""
         android:ems="10"
         android:hint="@string/radius"
         android:inputType="number|numberDecimal"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintEnd_toStartOf="@+id/guideline"
         app:layout_constraintTop_toBottomOf="@+id/editTextLat" />
 
@@ -171,20 +188,44 @@
         android:layout_height="wrap_content"
         android:layout_marginStart="8dp"
         android:entries="@array/unitSelector"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBaseline_toBaselineOf="@id/editTextRadius"
         app:layout_constraintStart_toEndOf="@+id/editTextRadius" />
+
+    <CheckBox
+        android:id="@+id/checkBoxPast"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginEnd="4dp"
+        android:layout_weight="1"
+        android:text="@string/past"
+        android:visibility="invisible"
+        app:layout_constraintEnd_toStartOf="@+id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/editTextRadius" />
+
+    <CheckBox
+        android:id="@+id/checkBoxFuture"
+        android:layout_width="wrap_content"
+        android:layout_height="wrap_content"
+        android:layout_marginStart="4dp"
+        android:layout_weight="1"
+        android:text="@string/future"
+        android:checked="true"
+        android:visibility="invisible"
+        app:layout_constraintBaseline_toBaselineOf="@+id/checkBoxPast"
+        app:layout_constraintStart_toStartOf="@+id/guideline" />
+
 
     <Button
         android:id="@+id/btnSearch"
         android:layout_width="wrap_content"
         android:layout_height="wrap_content"
-        android:layout_marginStart="8dp"
         android:layout_marginTop="0dp"
         android:text="@string/search"
-        android:visibility="gone"
-        app:layout_constraintStart_toStartOf="@+id/guideline"
-        app:layout_constraintTop_toBottomOf="@+id/unitSpinner" />
+        android:visibility="invisible"
+        android:layout_marginStart="8dp"
+        app:layout_constraintStart_toStartOf="@id/guideline"
+        app:layout_constraintTop_toBottomOf="@+id/checkBoxPast" />
 
     <TextView
         android:id="@+id/textViewSimpleSearch"
@@ -193,7 +234,7 @@
         android:layout_marginEnd="8dp"
         android:padding="4dp"
         android:text="@string/simpleSearch"
-        android:visibility="gone"
+        android:visibility="invisible"
         app:layout_constraintBaseline_toBaselineOf="@+id/btnSearch"
         app:layout_constraintEnd_toStartOf="@+id/guideline" />
 
@@ -201,9 +242,10 @@
         android:id="@+id/searchFragSnackCoordinator"
         android:layout_width="match_parent"
         android:layout_height="wrap_content"
+        android:translationZ="1dp"
         app:layout_constraintBottom_toBottomOf="parent"
-        app:layout_constraintStart_toStartOf="parent"
-        app:layout_constraintEnd_toEndOf="parent"/>
+        app:layout_constraintEnd_toEndOf="parent"
+        app:layout_constraintStart_toStartOf="parent" />
 
 
 </androidx.constraintlayout.widget.ConstraintLayout>

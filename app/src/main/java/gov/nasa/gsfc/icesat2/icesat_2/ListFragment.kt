@@ -6,7 +6,6 @@ import android.view.LayoutInflater
 import android.view.View
 import android.view.ViewGroup
 import androidx.fragment.app.Fragment
-import androidx.lifecycle.Observer
 import androidx.recyclerview.widget.LinearLayoutManager
 import kotlinx.android.synthetic.main.fragment_list.*
 
@@ -39,11 +38,29 @@ class ListFragment : Fragment(), ILaunchSingleMarkerMap {
         })*/
 
         var allPointsOneList = ArrayList<Point>()
-        MainActivity.getMainViewModel()?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
+        /*MainActivity.getMainViewModel()?.getAllPointsList()?.observe(viewLifecycleOwner, Observer {
             allPointsOneList = it
             Log.d(TAG, "allPointsList observer called \n $allPointsOneList")
             setUpRecyclerView(allPointsOneList)
         })
+
+        MainActivity.getMainViewModel()?.getAllPastPointsList()?.observe(viewLifecycleOwner, Observer {
+            Log.d(TAG, "observed pastPointsList")
+        })*/
+
+        Log.d(TAG, "LF; Past \n Future")
+        Log.d(TAG, "size ${MainActivity.getMainViewModel()?.pastPointsList?.value?.size}")
+        Log.d(TAG, "${MainActivity.getMainViewModel()?.allPointsList?.value?.size}")
+        if (MainActivity.getMainViewModel()?.pastPointsList?.value != null) {
+            allPointsOneList.addAll(MainActivity.getMainViewModel()?.pastPointsList?.value!!)
+        }
+
+        if (MainActivity.getMainViewModel()?.allPointsList?.value != null) {
+            allPointsOneList.addAll(MainActivity.getMainViewModel()?.allPointsList?.value!!)
+        }
+
+        Log.d(TAG, "size of allPointsList is ${allPointsOneList.size}.")
+        setUpRecyclerView(allPointsOneList)
     }
 
     private fun setUpRecyclerView(allPointsOneList: ArrayList<Point>?) {

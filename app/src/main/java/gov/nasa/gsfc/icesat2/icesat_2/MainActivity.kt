@@ -130,6 +130,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
         waitingForLocation = false
     }
 
+
     /**
      * Starts the searching
      * @param lat the latitude to search for
@@ -140,7 +141,9 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
      * @param time -1 unless called from the user clicking on a notification
      *
      */
-    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long) {
+    override fun searchButtonPressed(lat: Double, long: Double, radius: Double, calledFromSelectOnMap: Boolean, time: Long,
+                                     pastResults: Boolean, futureResults: Boolean) {
+
         Log.d(TAG, "searchButtonPressed. Time is $time")
 
         val serverLocation = "http://icesat2app-env.eba-gvaphfjp.us-east-1.elasticbeanstalk.com/find?lat=$lat&lon=$long&r=$radius&u=miles"
@@ -168,7 +171,7 @@ class MainActivity : AppCompatActivity(), ISearchFragmentCallback, IDownloadData
                             val downloadData = DownloadData(url, this@MainActivity)
                             val result: Deferred<Boolean> = async {
                                 //downloadData.startDownload()
-                                downloadData.startDownloadDataProcess()
+                                downloadData.startDownloadDataProcess(pastResults, futureResults)
                             }
                             searchResultsFound = result.await()
                         }
