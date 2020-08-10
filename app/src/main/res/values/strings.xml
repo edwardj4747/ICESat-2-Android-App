@@ -114,25 +114,16 @@
 
     <string name="currentData"><b>Current Cycle Data:</b> \n%1$s</string>
     <string name="appInfo1">
-        This app allows you to determine when ICESat-2 will be in a particular area using your location, a search
-    query, choosing a location on the map, or by entering a latitude and longitude. You have the option of viewing
-    just the future results, just the past results, or both of the future and past results for all of the
-    current data available in the app.\n\n
+        When will ICESat-2 measure a particular area? With this app, you can find out by using your location, choosing a place on a map, searching for a specific site, or entering a latitude and longitude. You have the option of viewing future results, past results, or both for all of the current data available in the app.
 
-    After searching you will see the Reference Ground Track (RGT) and if you choose, you can select the laser
-    beam checkbox
-    to see the position of the laser beams where measurements are taken for all of the RGTs. Here is an example
-    of what that will look like.\n
+After searching you will see the Reference Ground Track (RGT) and, by selecting the laser beam checkbox, you can add the tracks of the laser beams taking. Here is an example of what that will look like.\n
     </string>
 
     <string name="appInfo2">
-        \nYou may notice that some of the laser beams appear to be different colors. This is
-        just to differentiate the beams for each set of tracks to make it look clearer. For any point
-        of interest, you can save it as a favorite by clicking the star, add it to your calendar from the three
-        dots menu, or set notification reminders for that point using the bell icon. You can also share the results
-        with your friends using the share button on from the search results screen.\n\n
+        \nSome of the laser beams appear as different colors, in order to differentiate the beams for each set of tracks. For any point of interest, you can save it as a favorite by clicking the star, add it to your calendar from the three dots menu, or set notification reminders for that point using the bell icon. You can also share the results with using the share button on from the search results screen.
 
-        From the home screen, you can use the \'Where\'s ICESat-2\' button to determine the current position of ICESat-2.\n
+        From the home screen, you can use the \'Where\'s ICESat-2\' button to determine the current position of ICESat-2.
+        \n
     </string>
 
 
