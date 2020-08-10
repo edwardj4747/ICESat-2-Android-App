@@ -274,7 +274,8 @@ GoogleMap.OnPolylineClickListener {
 
             val markerAdded = mMap.addMarker(
 
-                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude)).title(chain[i].dateString))
+                myMarker.position(LatLng(chain[i].latitude, chain[i].longitude))
+                    .title(getString(R.string.latLngDisplayString, chain[i].latitude.toString(), 0x00B0.toChar(), chain[i].longitude.toString(), 0x00B0.toChar())))
 
 
             if (count <= pastFutureThreshold) {
