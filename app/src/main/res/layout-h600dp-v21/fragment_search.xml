@@ -68,7 +68,8 @@
         android:layout_height="wrap_content"
         android:drawableStart="@drawable/ic_baseline_map_60"
         android:text="@string/track"
-        app:layout_constraintBaseline_toBaselineOf="@+id/btnUseSearchBar"
+        app:layout_constraintTop_toTopOf="@+id/btnUseSearchBar"
+        app:layout_constraintBottom_toBottomOf="@+id/btnUseSearchBar"
         app:layout_constraintEnd_toEndOf="@+id/btnSelectOnMap"
         app:layout_constraintStart_toStartOf="@+id/btnSelectOnMap" />
 
