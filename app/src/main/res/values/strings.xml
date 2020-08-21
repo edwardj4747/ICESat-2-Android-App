@@ -31,7 +31,7 @@
 
     <string name="useMap">Use Map</string>
     <string name="useLocation">Use Loc</string>
-    <string name="track">"Where's\nICESat-2"</string>
+    <string name="track">"ICESat-2"</string>
     <string name="icesatBanner"><b>ICESat-2</b>: ICE, CLOUD, AND\nLAND ELEVATION SATELLITE 2</string>
 
     <string name="yourLocation">Your Location</string>
