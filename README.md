@@ -2,9 +2,7 @@
 
 This app was developed in Summer 2020 for the Crysopheric Sciences Laboratory at NASA Goddard Space Flight Center. It allows a user to determine when [ICESat-2](https://icesat-2.gsfc.nasa.gov/) will be near a particular area using the satellite's Refernce Ground Tracks.
 
-To run the app on an android device, download and install the [APK File]()
-
-Instructions for updating the AWS web server with new RGTs and the python scripts to do that can be found [here](https://drive.google.com/drive/folders/1FLGC25qZzZJtRZ8Jp0XbYKNEGBbGFwF0?usp=sharing)
+To run the app on an android device, download and install it from the Google Play Store.
    
    
    The main functionality of the app can be summarized as follows
