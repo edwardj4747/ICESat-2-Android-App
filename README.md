@@ -18,8 +18,9 @@ To run the app on an android device, download and install it from the Google Pla
    * Share the results with friends
    * Set notification reminders
    
-   [image1](AppStorePhotos/image1.jpg)
-   [image2](AppStorePhotos.jpg?raw=true "image2")
+  
 <p align="center">
   <img height = "300" src="AppStorePhotos/image1.jpg">
+   <img height = "300" src="AppStorePhotos/image1.jpg">
+   <img height = "300" src="AppStorePhotos/image1.jpg">
 </p>
