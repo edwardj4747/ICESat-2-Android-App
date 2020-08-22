@@ -21,5 +21,5 @@ To run the app on an android device, download and install it from the Google Pla
    [image1](AppStorePhotos/image1.jpg)
    [image2](AppStorePhotos.jpg?raw=true "image2")
 <p align="center">
-  <img src="AppStorePhotos/image1.jpg">
+  <img height = "300" src="AppStorePhotos/image1.jpg">
 </p>
