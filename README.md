@@ -20,3 +20,6 @@ To run the app on an android device, download and install it from the Google Pla
    
    [image1](AppStorePhotos/image1.jpg)
    [image2](AppStorePhotos.jpg?raw=true "image2")
+<p align="center">
+  <img width="460" height="300" src="http://www.fillmurray.com/460/300">
+</p>
