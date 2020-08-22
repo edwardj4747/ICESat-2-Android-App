@@ -2,10 +2,24 @@
 
 This app was developed in Summer 2020 for the Crysopheric Sciences Laboratory at NASA Goddard Space Flight Center. It allows a user to determine when [ICESat-2](https://icesat-2.gsfc.nasa.gov/) will be near a particular area using the satellite's Refernce Ground Tracks.
 
-To run the app on an android device, download and install it from the Google Play Store.
+To run this app on an android device, download and install it from the Google Play Store.
+      
+   Using this app, the user can quickly determine when ICESat-2 will be in their area. Applications of this extend to both ground validation campaigns and to civilian scientists working with the Globe appp. The app greatly streamlines the process of determine when ICESat-2 will be in a specific area as without it a user would have to download thousands of KML files and manually parse through themselves.
    
+ <p align="center">
+   <img height = "300" src="AppStorePhotos/image1.jpg">
+   <img height = "300" src="AppStorePhotos/image2.jpg">
+   <img height = "300" src="AppStorePhotos/image3.jpg">
+   <img height = "300" src="AppStorePhotos/image4.jpg">
+</p>
+
+ <p align="center">
+   <img height = "300" src="AppStorePhotos/image1.jpg">
+   <img height = "300" src="AppStorePhotos/image2.jpg">
+   <img height = "300" src="AppStorePhotos/image3.jpg">
+   <img height = "300" src="AppStorePhotos/image4.jpg">
+</p>
    
-   The main functionality of the app can be summarized as follows
    * Find when the satellite will be in a certain area. Search using 
       * User's Location
       * Search Bar
@@ -19,8 +33,4 @@ To run the app on an android device, download and install it from the Google Pla
    * Set notification reminders
    
   
-<p align="center">
-  <img height = "300" src="AppStorePhotos/image1.jpg">
-   <img height = "300" src="AppStorePhotos/image1.jpg">
-   <img height = "300" src="AppStorePhotos/image1.jpg">
-</p>
+
