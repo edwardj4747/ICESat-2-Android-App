@@ -18,3 +18,4 @@ To run the app on an android device, download and install it from the Google Pla
    * Share the results with friends
    * Set notification reminders
    
+   [image1](AppStorePhotos/image1)
