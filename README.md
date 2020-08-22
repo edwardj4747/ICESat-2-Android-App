@@ -10,14 +10,17 @@ To run this app on an android device, download and install it from the Google Pl
    <img height = "300" src="AppStorePhotos/image1.jpg">
    <img height = "300" src="AppStorePhotos/image2.jpg">
    <img height = "300" src="AppStorePhotos/image3.jpg">
-   <img height = "300" src="AppStorePhotos/image4.jpg">
 </p>
 
  <p align="center">
-   <img height = "300" src="AppStorePhotos/image1.jpg">
-   <img height = "300" src="AppStorePhotos/image2.jpg">
-   <img height = "300" src="AppStorePhotos/image3.jpg">
    <img height = "300" src="AppStorePhotos/image4.jpg">
+   <img height = "300" src="AppStorePhotos/image5.jpg">
+   <img height = "300" src="AppStorePhotos/image6.jpg">
+</p>
+
+<p align="center">
+   <img height = "300" src="AppStorePhotos/image7.jpg">
+   <img height = "300" src="AppStorePhotos/image8.jpg">
 </p>
    
    * Find when the satellite will be in a certain area. Search using 
